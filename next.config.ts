@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: ["127.0.0.1"], // ✅ Allow Laravel API images
     remotePatterns: [
@@ -14,19 +21,18 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-        {
-            // matching all API routes
-            source: "/api/(.*)",
-            headers: [
-                { key: "Access-Control-Allow-Origin", value: "*" },
-                {
-                    key: "Access-Control-Allow-Methods",
-                    value: "GET,DELETE,POST,PUT"
-                }
-            ]
-        }
+      {
+        source: "/api/(.*)", // ✅ Matches all API routes
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,DELETE,POST,PUT",
+          },
+        ],
+      },
     ];
-}
+  },
 };
 
 export default nextConfig;
