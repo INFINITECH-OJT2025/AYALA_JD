@@ -60,9 +60,6 @@ const SellerListingsTable = () => {
             </Button>
             <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-          ➕ Create Listing
-        </Button>
       </DialogTrigger>
       {isDialogOpen && (
         <DialogContent className="max-w-5xl h-[90vh] overflow-hidden p-4 m-4">
@@ -71,16 +68,6 @@ const SellerListingsTable = () => {
           </DialogHeader>
           <ScrollArea className="h-[75vh] pr-4">
             <div className="space-y-6">
-              {/* Personal Info */}
-              <div>
-                <h3 className="text-lg font-semibold">Personal Info</h3>
-                <div className="grid grid-cols-2 gap-4 mt-2">
-                  <Input name="first_name" placeholder="First Name" />
-                  <Input name="last_name" placeholder="Last Name" />
-                  <Input name="email" placeholder="Email" type="email" />
-                  <Input name="phone_number" placeholder="Phone Number" />
-                </div>
-              </div>
 
               {/* Type of Listing */}
               <div>

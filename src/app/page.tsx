@@ -18,10 +18,10 @@ function page() {
       <Navbar/>
       <Hero/>
       <FeaturedProperties/>
-      <LoanCalculator/>
+      {/* <LoanCalculator/> */}
       <WhyChooseUs/>
       <Services/>
-      <Testimonials/>
+      {/* <Testimonials/> */}
       <Careers/>
       <NewsUpdates/>
       <ContactForm/>

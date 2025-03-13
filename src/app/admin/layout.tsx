@@ -1,53 +1,98 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Toaster } from "sonner";
 import { AppSidebar } from "@/components/admin/app-sidebar";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
+import Notification from "@/components/common/Notification";
+import { ThemeProvider } from "next-themes";
+import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const authToken = sessionStorage.getItem("authToken");
+
+      if (!authToken) {
+        router.replace("/auth/login");
+      }
+
+      // Hardcore Back Button Prevention
+      window.history.pushState(null, "", window.location.href);
+      window.addEventListener("popstate", function () {
+        window.history.pushState(null, "", window.location.href);
+      });
+
+      return () => {
+        window.removeEventListener("popstate", () => {});
+      };
+    }
+  }, [router]);
+
   return (
-    <SidebarProvider>
-      <div className="p-6 flex justify-center w-screen min-h-[100vh] flex-1 rounded-xl bg-muted/50">
-        {/* Sidebar */}
-        <AppSidebar />
-        
-        {/* Main Content Area */}
-        <SidebarInset className="flex flex-col flex-1">
-          {/* Breadcrumbs & Sidebar Trigger */}
-          <div className="flex items-center gap-2 p-4 border-b">
-            <SidebarTrigger />
-            <Separator orientation="vertical" className="h-6" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Overview</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <SidebarProvider>
+        <div className="p-6 flex justify-center w-screen min-h-screen flex-1 rounded-xl bg-muted/50 dark:bg-gray-900">
+          {/* Sidebar */}
+          <AppSidebar />
 
-          {/* Dashboard Content Goes Here */}
-          <div className="p-4 flex-1">{children}</div>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+          {/* Main Content Area */}
+          <SidebarInset className="flex flex-col flex-1">
+            {/* Header Section */}
+            <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger />
+                <Separator orientation="vertical" className="h-6" />
+              </div>
+
+              {/* Push Notification & Theme Toggle to the right */}
+              <div className="ml-auto flex items-center gap-4">
+                <ThemeToggle />
+                <Notification />
+              </div>
+            </div>
+
+            {/* Dashboard Content Goes Here */}
+            <div className="p-4 flex-1">{children}</div>
+          </SidebarInset>
+        </div>
+
+        {/* Add Toaster for global notifications */}
+        <Toaster richColors position="top-right" />
+      </SidebarProvider>
+    </ThemeProvider>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // Prevents hydration mismatch
+
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="transition-all duration-300"
+    >
+      {theme === "dark" ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-blue-500" />}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 }

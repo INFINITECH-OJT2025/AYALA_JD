@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { fetchProperties, createProperty, deleteProperty } from "@/lib/api";
+import { useEffect, useState } from "react"; // ✅ Import useState
+import { fetchProperties, deleteProperty, updatePropertyStatus } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Eye, Trash2, CheckCircle, XCircle, Plus, FileText, ChevronLeft, ChevronRight, Banknote } from "lucide-react";
+import { List, Hourglass, } from "lucide-react";
+import { MapPin, Mail, Phone, Home, DollarSign, Ruler, Layers, ParkingCircle, Shield, Image as ImageIcon } from "lucide-react";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import CreateListingDialog from "@/components/common/CreateListing"; // Adjust the path if needed
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Eye, Trash2 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Property {
   id: number;
@@ -23,9 +27,11 @@ interface Property {
   unit_status: string;
   location: string;
   price: string;
+  status: string;
   square_meter: number;
   floor_number: number;
   parking: boolean;
+  description: string;
   pool_area: boolean;
   guest_suite: boolean;
   underground_parking: boolean;
@@ -36,53 +42,228 @@ interface Property {
   elevator: boolean;
   concierge_services: boolean;
   security: boolean;
-  property_image: string;
+  property_image: string[];
 }
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    minimumFractionDigits: 2,
-  }).format(price);
-};
+
 
 export default function PropertyList() {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [selectedPropertyId, setSelectedPropertyId] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loadingStatus, setLoadingStatus] = useState<{ [key: number]: { approve?: boolean; reject?: boolean } }>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
+  const [loading, setLoading] = useState(true);
+  // Filtering logic
+  const filteredProperties = properties.filter((property) => {
+    const matchesFilter = filter === "all" || property.status.toLowerCase() === filter;
+    const matchesSearch =
+      property.property_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.location.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesFilter && matchesSearch;
+  });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProperties.length / rowsPerPage);
+  const currentProperties = filteredProperties.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  // Handlers
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   useEffect(() => {
     const loadProperties = async () => {
       try {
         const data = await fetchProperties();
-        setProperties(data);
+        setProperties((prev) => {
+          const hasNewData = JSON.stringify(prev) !== JSON.stringify(data);
+          return hasNewData ? data : prev; // ✅ Update only if new data is different
+        });
       } catch (error) {
         console.error("Error fetching properties:", error);
+      } finally {
+        setLoading(false);
       }
     };
+  
     loadProperties();
+  
+    const interval = setInterval(() => {
+      loadProperties();
+    }, 5000);
+  
+    return () => clearInterval(interval);
   }, []);
-
-  const handleDelete = async (id: number) => {
+  
+  const confirmDelete = (id: number) => {
+    setSelectedPropertyId(id);
+    setIsDeleteDialogOpen(true);
+  };
+  
+  const handleDelete = async () => {
+    if (!selectedPropertyId) return;
+  
     try {
-      await deleteProperty(id);
-      setProperties((prev) => prev.filter((prop) => prop.id !== id));
+      await deleteProperty(selectedPropertyId);
+      setProperties((prev) => prev.filter((prop) => prop.id !== selectedPropertyId));
+  
+      // ✅ Show Sonner toast on successful deletion
+      toast.success("Property Deleted", {
+        description: "The property has been removed successfully.",
+      });
     } catch (error) {
       console.error("Error deleting property:", error);
+      toast.error("Failed to delete property", {
+        description: "Please try again.",
+      });
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setSelectedPropertyId(null);
     }
   };
-
+  
   const handleViewProperty = (property: Property) => {
     setSelectedProperty(property);
     setModalOpen(true);
   };
 
+  const handleAction = async (propertyId: number, action: "approve" | "reject") => {
+    if (action === "reject") {
+      setSelectedPropertyId(propertyId);
+      setIsRejectDialogOpen(true); // ✅ Open rejection dialog
+      return;
+    }
+  
+    await processAction(propertyId, action, "");
+  };
+  
+  const processAction = async (propertyId: number, action: "approve" | "reject", reason: string) => {
+    setLoadingStatus((prev) => ({
+      ...prev,
+      [propertyId]: { ...prev[propertyId], [action]: true },
+    }));
+  
+    try {
+      await updatePropertyStatus(propertyId, action === "approve" ? "approved" : "rejected", reason);
+  
+      setProperties((prev) =>
+        prev.map((prop) =>
+          prop.id === propertyId
+            ? { ...prop, status: action === "approve" ? "approved" : "rejected" }
+            : prop
+        )
+      );
+  
+      // ✅ If selectedProperty is being viewed, update its status in real-time
+      if (selectedProperty && selectedProperty.id === propertyId) {
+        setSelectedProperty((prev) =>
+          prev ? { ...prev, status: action === "approve" ? "approved" : "rejected" } : null
+        );
+      }
+  
+      // ✅ Show Sonner toast notification
+      if (action === "approve") {
+        toast.success("Property Approved", {
+          description: "The property has been successfully approved.",
+        });
+      } else {
+        toast.error("Property Rejected", {
+          description: `The property was rejected for the following reason: ${reason}`,
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Action Failed", {
+        description: "An error occurred while updating the property status.",
+      });
+    } finally {
+      setLoadingStatus((prev) => ({
+        ...prev,
+        [propertyId]: { ...prev[propertyId], [action]: false },
+      }));
+    }
+  };
+  
+  
+  
+  // ✅ Handle rejection dialog submission
+  const confirmRejection = () => {
+    if (!selectedPropertyId || !rejectionReason.trim()) return;
+  
+    processAction(selectedPropertyId, "reject", rejectionReason);
+    setIsRejectDialogOpen(false);
+    setRejectionReason("");
+  };
+  
+  
   return (
-    <div className="container mx-auto p-2">
-      <h1 className="text-2xl font-bold mb-2">Property Listings</h1>
-      <Card className="mt-4">
-        <CardContent>
+    <div className="container mx-auto p-2 ">
+      <h1 className="text-1xl font-bold mb-2">Property Listings</h1>
+
+      <Card className="p-4">
+      {/* Header Actions */}
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex gap-3">
+          {/* Create Listing Button */}
+          <Button variant="success" onClick={() => setIsDialogOpen(true)}>
+            <Plus className="w-5 h-5" />
+            Create Listing
+          </Button>
+
+          {/* Filter Buttons */}
+          <Button variant={filter === "all" ? "default" : "outline"} onClick={() => setFilter("all")}>
+            <List className="w-5 h-5 mr-2" />
+            All Listings
+          </Button>
+          <Button variant={filter === "pending" ? "default" : "outline"} onClick={() => setFilter("pending")}>
+            <Hourglass className="w-5 h-5 mr-2" />
+            Pending
+          </Button>
+          <Button variant={filter === "approved" ? "default" : "outline"} onClick={() => setFilter("approved")}>
+            <CheckCircle className="w-5 h-5 mr-2" />
+            Approved
+          </Button>
+          <Button variant={filter === "rejected" ? "default" : "outline"} onClick={() => setFilter("rejected")}>
+            <XCircle className="w-5 h-5 mr-2" />
+            Rejected
+          </Button>
+        </div>
+
+        {/* Search Input */}
+        <Input
+          type="text"
+          placeholder="Search by property name or location..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-64"
+        />
+      </div>
+
+      <CreateListingDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+
+      {/* Property Table */}
+      <CardContent>
+        {loading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-full" />
+            <Skeleton className="h-6 w-full" />
+          </div>
+        ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -94,88 +275,278 @@ export default function PropertyList() {
                 <TableHead>Unit Status</TableHead>
                 <TableHead>Location</TableHead>
                 <TableHead>Price</TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {properties.map((property) => (
-                <TableRow key={property.id}>
-                  <TableCell>{property.first_name}</TableCell>
-                  <TableCell>{property.last_name}</TableCell>
-                  <TableCell>{property.type_of_listing}</TableCell>
-                  <TableCell>{property.property_name}</TableCell>
-                  <TableCell>{property.unit_type}</TableCell>
-                  <TableCell>{property.unit_status}</TableCell>
-                  <TableCell>{property.location}</TableCell>
-                  <TableCell>{property.price}</TableCell>
-                  <TableCell>
-                    <Button variant="secondary" size="icon" onClick={() => handleViewProperty(property)}>
-                      <Eye className="w-5 h-5" />
-                    </Button>
-                    <Button variant="destructive" size="icon" onClick={() => handleDelete(property.id)} className="ml-2">
-                      <Trash2 className="w-5 h-5" />
-                    </Button>
+              {currentProperties.length > 0 ? (
+                currentProperties.map((property) => (
+                  <TableRow key={property.id}>
+                    <TableCell className="whitespace-nowrap px-2">{property.first_name}</TableCell>
+                    <TableCell className="whitespace-nowrap px-2">{property.last_name}</TableCell>
+                    <TableCell>
+                      {(() => {
+                        try {
+                          const listings =
+                            typeof property.type_of_listing === "string"
+                              ? JSON.parse(property.type_of_listing)
+                              : property.type_of_listing;
+
+                          return Array.isArray(listings) ? listings.join(", ") : property.type_of_listing;
+                        } catch (error) {
+                          console.error("Error parsing type_of_listing:", error);
+                          return property.type_of_listing;
+                        }
+                      })()}
+                    </TableCell>
+                    <TableCell>{property.property_name}</TableCell>
+                    <TableCell>{property.unit_type}</TableCell>
+                    <TableCell>{property.unit_status}</TableCell>
+                    <TableCell>{property.location}</TableCell>
+                    <TableCell>
+                      ₱{parseFloat(property.price).toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </TableCell>
+                    <TableCell>{property.status}</TableCell>
+                    <TableCell className="whitespace-nowrap px-2">
+                      <Button variant="secondary" size="icon" onClick={() => handleViewProperty(property)}>
+                        <Eye className="w-5 h-5" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => confirmDelete(property.id)}
+                        className="ml-2"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={10} className="text-center text-gray-500">
+                    No properties found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        )}
+      </CardContent>
+
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <p>Are you sure you want to delete this property? This action cannot be undone.</p>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex justify-between items-center mt-4 p-4">
+          <Button
+            variant="outline"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeft className="w-5 h-5" />
+            Previous
+          </Button>
+          <span className="text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+            <ChevronRight className="w-5 h-5" />
+          </Button>
+        </div>
+      )}
+    </Card>
+
+      {/* Dialog for Viewing Property */}
+     
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-3xl h-[70vh] overflow-hidden p-4 m-4">
-          <DialogHeader>
-            <DialogTitle>{selectedProperty?.property_name}</DialogTitle>
+        <DialogContent className="max-w-3xl h-[75vh] overflow-auto p-6 rounded-lg shadow-lg bg-white dark:bg-gray-900">
+         <DialogHeader className="mb-4">
+            <DialogTitle className="text-xl font-semibold flex items-center gap-2 text-gray-800 dark:text-white">
+              <Home className="w-6 h-6 text-primary" />
+              {selectedProperty?.property_name}
+              <span
+                key={selectedProperty?.status} // ✅ Forces re-render when status changes
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-300 ${
+                  selectedProperty?.status === "pending"
+                    ? "bg-yellow-200 dark:bg-yellow-600 text-yellow-800 dark:text-yellow-200"
+                    : selectedProperty?.status === "approved"
+                    ? "bg-green-200 dark:bg-green-600 text-green-800 dark:text-green-200"
+                    : "bg-red-200 dark:bg-red-600 text-red-800 dark:text-red-200"
+                }`}
+              >
+                {selectedProperty?.status}
+              </span>
+            </DialogTitle>
           </DialogHeader>
+
+
           {selectedProperty && (
-            <div className="space-y-4">
-              {/* Two-column layout for property details */}
-              <div className="grid grid-cols-2 gap-4">
-                <p><strong>First Name:</strong> {selectedProperty.first_name}</p>
-                <p><strong>Last Name:</strong> {selectedProperty.last_name}</p>
-                <p><strong>Email:</strong> {selectedProperty.email}</p>
-                <p><strong>Phone:</strong> {selectedProperty.phone_number}</p>
-                <p><strong>Location:</strong> {selectedProperty.location}</p>
-                <p><strong>Price:</strong> {selectedProperty.price}</p>
-                <p><strong>Square Meter:</strong> {selectedProperty.square_meter} sqm</p>
-                <p><strong>Floor Number:</strong> {selectedProperty.floor_number}</p>
-                <p><strong>Parking:</strong> {selectedProperty.parking ? "Yes" : "No"}</p>
+            <div className="space-y-6">
+              {/* Contact Information */}
+              <div className="grid grid-cols-2 gap-4 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <strong>First Name:</strong> {selectedProperty.first_name}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <strong>Last Name:</strong> {selectedProperty.last_name}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Mail className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Email:</strong> {selectedProperty.email}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Phone className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Phone:</strong> {selectedProperty.phone_number}
+                </p>
               </div>
 
-              {/* Two-column layout for amenities */}
+              {/* Property Details */}
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <MapPin className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Location:</strong> {selectedProperty.location}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Banknote className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Price:</strong> ₱{Number(selectedProperty.price).toLocaleString("en-PH")}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Ruler className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Square Meter:</strong> {selectedProperty.square_meter} sqm
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Layers className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Floor Number:</strong> {selectedProperty.floor_number}
+                </p>
+                <p className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <ParkingCircle className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <strong>Parking:</strong> {selectedProperty.parking ? "Yes" : "No"}
+                </p>
+                <p className="flex items-start gap-2 col-span-2 text-gray-700 dark:text-gray-300">
+                  <strong>Description:</strong> {selectedProperty.description || "No description provided"}
+                </p>
+              </div>
+
+              {/* Amenities */}
               <div>
-                <p><strong>Amenities:</strong></p>
-                <div className="grid grid-cols-2 gap-4">
-                  <p>Pool Area: {selectedProperty.pool_area ? "Yes" : "No"}</p>
-                  <p>Guest Suite: {selectedProperty.guest_suite ? "Yes" : "No"}</p>
-                  <p>Underground Parking: {selectedProperty.underground_parking ? "Yes" : "No"}</p>
-                  <p>Pet Friendly: {selectedProperty.pet_friendly_facilities ? "Yes" : "No"}</p>
-                  <p>Balcony/Terrace: {selectedProperty.balcony_terrace ? "Yes" : "No"}</p>
-                  <p>Club House: {selectedProperty.club_house ? "Yes" : "No"}</p>
-                  <p>Gym/Fitness Center: {selectedProperty.gym_fitness_center ? "Yes" : "No"}</p>
-                  <p>Elevator: {selectedProperty.elevator ? "Yes" : "No"}</p>
-                  <p>Concierge Services: {selectedProperty.concierge_services ? "Yes" : "No"}</p>
-                  <p>Security: {selectedProperty.security ? "Yes" : "No"}</p>
+                <p className="font-semibold text-gray-800 dark:text-white mb-2">Amenities:</p>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {[
+                    { label: "Security", value: selectedProperty.security, icon: "🛡️" },
+                    { label: "Pool Area", value: selectedProperty.pool_area, icon: "🏊" },
+                    { label: "Guest Suite", value: selectedProperty.guest_suite, icon: "🏢" },
+                    { label: "Underground Parking", value: selectedProperty.underground_parking, icon: "🚗" },
+                    { label: "Pet-Friendly", value: selectedProperty.pet_friendly_facilities, icon: "🐶" },
+                    { label: "Balcony/Terrace", value: selectedProperty.balcony_terrace, icon: "🌿" },
+                    { label: "Club House", value: selectedProperty.club_house, icon: "🏡" },
+                    { label: "Gym", value: selectedProperty.gym_fitness_center, icon: "🏋" },
+                    { label: "Elevator", value: selectedProperty.elevator, icon: "🚀" },
+                    { label: "Concierge Services", value: selectedProperty.concierge_services, icon: "🛎️" },
+                  ].map(
+                    (feature, index) =>
+                      feature.value && (
+                        <p key={index} className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          {feature.icon} {feature.label}: 
+                          <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </p>
+                      )
+                  )}
                 </div>
               </div>
 
-              {/* Property Image - Full width */}
-              {selectedProperty.property_image && (
-                <div className="w-full">
-                  <img 
-                    src={selectedProperty.property_image} 
-                    alt="Property Image" 
-
-                  />
+              {/* Property Images */}
+              {selectedProperty.property_image && selectedProperty.property_image.length > 0 ? (
+                <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {selectedProperty.property_image.map((image: string, index: number) => (
+                    <div key={index} className="w-full">
+                      <img
+                        src={image}
+                        alt={`Property ${index + 1}`}
+                        className="w-full h-60 object-cover rounded-lg shadow-md border border-gray-300 dark:border-gray-700"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-60 flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-800 rounded-lg">
+                  <ImageIcon className="w-12 h-12 text-gray-500 dark:text-gray-400" />
+                  <p className="text-gray-500 dark:text-gray-300">No Images Available</p>
                 </div>
               )}
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-4">
+              <Button
+                onClick={() => handleAction(selectedProperty.id, "approve")}
+                disabled={selectedProperty.status === "approved" || loadingStatus[selectedProperty.id]?.approve}
+                className={`bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded ${
+                  selectedProperty.status === "approved" ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {loadingStatus[selectedProperty.id]?.approve ? "Approving..." : "Approve"}
+              </Button>
+
+              <Button
+                onClick={() => handleAction(selectedProperty.id, "reject")}
+                disabled={selectedProperty.status === "rejected" || loadingStatus[selectedProperty.id]?.reject}
+                className={`bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded ${
+                  selectedProperty.status === "rejected" ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {loadingStatus[selectedProperty.id]?.reject ? "Rejecting..." : "Reject"}
+              </Button>
+
+              </div>
+              <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Reject Property</DialogTitle>
+                    <p>Please provide a reason for rejecting this property.</p>
+                  </DialogHeader>
+
+                  <Textarea
+                    placeholder="Enter rejection reason..."
+                    value={rejectionReason}
+                    onChange={(e) => setRejectionReason(e.target.value)}
+                  />
+
+                  <DialogFooter>
+                    <Button onClick={() => setIsRejectDialogOpen(false)} variant="outline">
+                      Cancel
+                    </Button>
+                    <Button onClick={confirmRejection} disabled={!rejectionReason.trim()} className="bg-red-600 text-white">
+                      Confirm Rejection
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </DialogContent>
       </Dialog>
-
-
     </div>
   );
 }

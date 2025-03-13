@@ -1,37 +1,33 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
-  Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
+  Inbox,
+  Newspaper,
   SquareTerminal,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/admin/nav-main"
-import { NavProjects } from "@/app/admin/overview/nav-projects"
-import { NavUser } from "@/components/admin/nav-user"
-import { TeamSwitcher } from "@/components/admin/team-switcher"
+import { NavMain } from "@/components/admin/nav-main";
+import { NavUser } from "@/components/admin/nav-user";
+import { TeamSwitcher } from "@/components/admin/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
-// This is sample data.
+// ✅ Sidebar Data
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "",
+    avatar: "", // ✅ Empty avatar fallback handled in `NavUser`
   },
   teams: [
     {
@@ -52,137 +48,59 @@ const data = {
   ],
   navMain: [
     {
-      title: "Dashboard",
-      url: "/admin/dashboard", // New top-level dashboard page
-      icon: SquareTerminal,
-      isActive: false, // Set Dashboard as the active page
-      items : [
-        {
-          title: "Listings Trend",
-          url: "#",
-        },
-        {
-          title: "User Engagement",
-          url: "#",
-        },
-        {
-          title: "Popular Searches",
-          url: "#",
-        },
-        {
-          title: "Top Listings",
-          url: "#",
-        },
-      ]
-    },
-    {
       title: "Overview",
-      url: "/admin/overview/listed-properties", // Keep the default route for Overview
+      url: "#",
       icon: SquareTerminal,
-      isActive: true, // Not active by default
+      isActive: true,
       items: [
-        {
-          title: "Listed Properties",
-          url: "/admin/overview/listed-properties", // Directly links to the page
-        },
-        {
-          title: "Pending Approvals",
-          url: "/admin/overview/pending-approvals",
-        },
-        {
-          title: "Total Users",
-          url: "/admin/overview/total-users",
-        },
-        {
-          title: "Inquiries Received",
-          url: "/admin/overview/inquiries-received",
-        },
-        {
-          title: "Job Applications",
-          url: "/admin/overview/job-applications",
-        },
-        {
-          title: "Recent Transactions",
-          url: "/admin/overview/recent-transactions",
-        },
+        { title: "Dashboard", url: "/admin/overview/dashboard" },
+        { title: "Listed Properties", url: "/admin/overview/listed-properties" },
+        { title: "Job Applications", url: "/admin/overview/job-applications" },
       ],
     },
     {
-      title: "Activity Log",
+      title: "Messages",
       url: "#",
-      icon: BookOpen,
+      icon: Inbox,
       items: [
-        {
-          title: "New Properties",
-          url: "#",
-        },
-        {
-          title: "User Signups",
-          url: "#",
-        },
-        {
-          title: "Inquiries & Responses",
-          url: "#",
-        },
-        {
-          title: "Job Applications",
-          url: "#",
-        },
+        { title: "Property Inquiries", url: "/admin/Inquiries-Appointments/property-inquiries" },
+        { title: "Property Appointments", url: "/admin/Inquiries-Appointments/property-appointments" },
+        { title: "General Inquiries", url: "/admin/overview/inquiries-received" },
       ],
     },
     {
-      title: "Quick Actions",
+      title: "Posting and Updates",
       url: "#",
-      icon: Settings2,
+      icon: Newspaper,
       items: [
-        {
-          title: "Approve/Deny Properties",
-          url: "#",
-        },
-        {
-          title: "Post Announcement/Blog",
-          url: "#",
-        },
-        {
-          title: "Manage Roles & Permissions",
-          url: "#",
-        },
+        { title: "News Updates", url: "/admin/Posting/news-updates" },
+        { title: "Services", url: "/admin/Posting/services" },
       ],
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
+};
 
+// ✅ Sidebar Component
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
+      {/* ✅ Sidebar Header (Team Switcher) */}
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
+
+      {/* ✅ Sidebar Content (Main Navigation) */}
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
       </SidebarContent>
+
+      {/* ✅ Sidebar Footer (User Profile) */}
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
+
+      {/* ✅ Sidebar Rail (for collapsible mode) */}
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
