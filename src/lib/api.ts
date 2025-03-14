@@ -670,6 +670,78 @@ export async function fetchJobApplications() {
 }
 
 
+export interface Notification {
+  id: number;
+  message: string;
+  type: "success" | "error" | "info";
+  is_read: "read" | "unread";
+  created_at: string;
+}
+
+// ✅ Fetch all notifications
+export async function fetchNotifications(): Promise<Notification[]> {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/notifications");
+    if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return [];
+  }
+}
+
+export async function fetchLatestNotifications(latestId: number): Promise<Notification[]> {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/notifications?latest_id=${latestId}`);
+    if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return [];
+  }
+}
+
+// ✅ Mark a notification as read
+export async function markNotificationAsRead(id: number): Promise<boolean> {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/notifications/${id}/mark-read`, {
+      method: "POST",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    return false;
+  }
+}
+
+// ✅ Mark all notifications as read
+export async function markAllNotificationsAsRead(): Promise<boolean> {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/notifications/mark-all-read", {
+      method: "POST",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error marking all notifications as read:", error);
+    return false;
+  }
+}
+
+// ✅ Delete a notification
+export async function deleteNotification(id: number): Promise<boolean> {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/notifications/${id}`, {
+      method: "DELETE",
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    return false;
+  }
+}
+
 
 
 

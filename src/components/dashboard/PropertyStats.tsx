@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchPropertyStats } from "@/lib/api";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { Loader2 } from "lucide-react";
+import { Eye, Loader2 } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
 
 interface PropertyStats {
@@ -100,14 +100,13 @@ export default function PropertyStats() {
                       })
                     : "N/A"}
                 </p>
-
-                <div className="flex">
-                <p className="text-sm font-semibold mr-3">Unique Views:</p>
-                  <div className="text-blue-600">
-                  {stats?.uniqueViews || 0}
+                  <div className="flex items-center space-x-2 mt-4">
+                    <p className="text-sm font-semibold">Unique Views:</p>
+                    <div className="flex items-center text-gray-600">
+                      {stats?.uniqueViews || 0}
+                      <Eye className="w-4 h-4 ml-1" />
+                    </div>
                   </div>
-
-                </div>
               </>
             )}
           </CardContent>

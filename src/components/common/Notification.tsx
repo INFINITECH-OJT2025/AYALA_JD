@@ -22,45 +22,21 @@ export default function Notification() {
     setNotifications(fetchedNotifications);
   }, [fetchedNotifications]);
 
-   // ✅ Fetch unread notifications separately
-   useEffect(() => {
-    fetchNotifications(); // Ensure fresh data on load
-  }, []);
-
-  // ✅ Mark all notifications as read
-  const markAllAsRead = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/notifications/mark-all-read", { 
-        method: "POST"
-      });
-      const result = await response.json();
-
-      if (result.updated_count > 0) {
-        setNotifications((prev) =>
-          prev.map((notif) => ({ ...notif, is_read: "read" }))
-        );
-        setTimeout(fetchNotifications, 500); // ✅ Fetch after a short delay
-      }
-
-      toast.success("All notifications marked as read.");
-    } catch (error) {
-      console.error("Error marking notifications as read:", error);
-      toast.error("Failed to mark notifications as read.");
-    }
-  };
 
   // ✅ Mark a single notification as read
   const markAsRead = async (id: number) => {
     try {
       await fetch(`http://127.0.0.1:8000/api/notifications/${id}/mark-read`, { method: "POST" });
-
       setNotifications((prev) =>
         prev.map((notif) =>
           notif.id === id ? { ...notif, is_read: "read" } : notif
         )
       );
+      setTimeout(fetchNotifications, 5000);
+      toast.success("Notification marked as read.");
     } catch (error) {
       console.error("Error marking notification as read:", error);
+      toast.error("Failed to mark notification as read.");
     }
   };
 
@@ -115,7 +91,7 @@ export default function Notification() {
 
     if (message.startsWith("new property submitted")) return "/admin/overview/listed-properties";
     if (message.startsWith("new job application")) return "/admin/overview/job-applications";
-    if (message.startsWith("new property inquiry")) return "/admin/inquiries-appointments/property-inquiries";
+    if (message.startsWith("new property inquiry")) return "/admin/Inquiries-Appointments/property-inquiries";
     if (message.startsWith("new appointment booked")) return "/admin/inquiries-appointments/property-appointments";
     if (message.startsWith("new general inquiry")) return "/admin/overview/inquiries-received";
 
@@ -132,9 +108,9 @@ export default function Notification() {
       {/* ✅ Notification Bell */}
       <Button variant="ghost" className="relative" onClick={() => setIsOpen(!isOpen)}>
         <Bell className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-        {notifications.some((n) => n.is_read === "unread") && (
+        {filteredNotifications.some((n) => !n.is_read) && (
           <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-            {notifications.filter((n) => n.is_read === "unread").length}
+            {filteredNotifications.filter((n) => !n.is_read).length}
           </span>
         )}
       </Button>
@@ -148,13 +124,6 @@ export default function Notification() {
           transition={{ duration: 0.3 }}
           className="absolute right-0 mt-2 w-80 bg-white dark:bg-gray-900 shadow-lg border border-gray-300 dark:border-gray-700 rounded-lg p-4 z-50 h-max overflow-hidden"
         >
-          {/* ✅ Header */}
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">🔔 Notifications</h3>
-            <Button variant="outline" size="sm" onClick={markAllAsRead}>
-              Mark All as Read
-            </Button>
-          </div>
 
           {/* ✅ Tabs for "All" and "Unread" */}
           <div className="flex border-b pb-2 mb-3">
@@ -190,27 +159,14 @@ export default function Notification() {
 
                   {/* ✅ Three-dot Menu */}
                   <div className="relative">
-                    <Button variant="ghost" size="icon" onClick={() => setOpenMenu(openMenu === notif.id ? null : notif.id)}>
-                      <MoreVertical className="w-5 h-5" />
-                    </Button>
-
-                    {openMenu === notif.id && (
-                    <div className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg z-50">
-                      <button
-                        className="flex items-center w-full px-3 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700"
-                        onClick={() => markAsRead(notif.id)}
-                      >
-                        <Check className="w-4 h-4 mr-2" /> Mark as Read
-                      </button>
                       <button
                         className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-100 dark:hover:bg-red-800"
                         onClick={() => deleteNotification(notif.id)}
                       >
-                        <Trash2 className="w-4 h-4 mr-2" /> Delete
+                        <Trash2 className="w-4 h-4 mr-2" />
                       </button>
-                    </div>                    )}
+                    </div>                   
                   </div>
-                </div>
               ))
             ) : (
               <p className="text-center text-gray-500">No new notifications</p>
