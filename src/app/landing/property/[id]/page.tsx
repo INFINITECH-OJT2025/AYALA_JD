@@ -15,8 +15,6 @@ import {
 } from "react-icons/fa";
 import Inquiry from "@/components/common/Inquiry";
 import Nearby from "@/components/common/Nearby";
-import PropertyImages from "@/components/common/PropertyImages";
-
 
 interface Property {
   id: number;
@@ -60,7 +58,9 @@ useEffect(() => {
       try {
         const data = await fetchPropertyById(id as string);
         if (data) {
-          setProperty(data); 
+          setProperty(data); // Set only the property object from the response
+          // If you need to store the unique views somewhere:
+          // setUniqueViews(data.unique_views);
         }
       } catch (error) {
         console.error("Error fetching property:", error);
@@ -87,9 +87,40 @@ useEffect(() => {
       <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 p-5 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
         {/* Left Section: Property Images & Details */}
         <div className="col-span-7">
-        
-        <PropertyImages property={property} />
-        
+          <div className="relative">
+            {property.property_image?.length ? (
+              <>
+                <img
+                  src={property.property_image[currentImageIndex]}
+                  alt={`Property ${currentImageIndex + 1}`}
+                   className="w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] object-cover rounded-lg"
+                />
+                <button
+                   className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
+                   onClick={() =>
+                    setCurrentImageIndex((prev) =>
+                      prev === 0 ? property.property_image.length - 1 : prev - 1
+                    )
+                  }
+                >
+                  <ChevronLeft className="w-5 sm:w-6 h-5 sm:h-6" />
+                </button>
+                <button
+                    className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
+                    onClick={() =>
+                    setCurrentImageIndex((prev) =>
+                      (prev + 1) % property.property_image.length
+                    )
+                  }
+                >
+                   <ChevronRight className="w-5 sm:w-6 h-5 sm:h-6" />
+                </button>
+              </>
+            ) : (
+              <p className="text-center text-gray-500 dark:text-gray-400">No images available</p>
+            )}
+          </div>
+
           {/* Image Thumbnails */}
           <div className="flex justify-center space-x-2 mt-4 overflow-x-auto">
             {property.property_image?.map((src, index) => (

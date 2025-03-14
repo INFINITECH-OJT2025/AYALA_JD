@@ -613,7 +613,7 @@ export async function fetchPropertyStats() {
 
 export async function fetchJobStats() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/job-applications/stats`, {
+    const res = await fetch(`${API_URL}/job-applications/stats`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -623,7 +623,7 @@ export async function fetchJobStats() {
     return await res.json();
   } catch (error) {
     console.error("Error fetching job stats:", error);
-    return { total: 0, pending: 0, approved: 0, rejected: 0 }; // Return default values
+    return { total: 0, pending: 0, approved: 0, rejected: 0, applications: [] }; // ✅ Default values
   }
 }
 
@@ -655,18 +655,20 @@ export async function fetchRecentInquiries() {
 
 export async function fetchJobApplications() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/job-applications`, {
+    const res = await fetch(`${API_URL}/job-applications`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
+
     if (!res.ok) throw new Error(`Failed to fetch job applications: ${res.status}`);
 
     return await res.json();
   } catch (error) {
     console.error("Error fetching job applications:", error);
-    return [];
+    return []; // ✅ Return empty array on failure
   }
 }
+
 
 
 

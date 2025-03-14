@@ -22,6 +22,11 @@ export default function Notification() {
     setNotifications(fetchedNotifications);
   }, [fetchedNotifications]);
 
+   // ✅ Fetch unread notifications separately
+   useEffect(() => {
+    fetchNotifications(); // Ensure fresh data on load
+  }, []);
+
   // ✅ Mark all notifications as read
   const markAllAsRead = async () => {
     try {
@@ -48,16 +53,14 @@ export default function Notification() {
   const markAsRead = async (id: number) => {
     try {
       await fetch(`http://127.0.0.1:8000/api/notifications/${id}/mark-read`, { method: "POST" });
+
       setNotifications((prev) =>
         prev.map((notif) =>
           notif.id === id ? { ...notif, is_read: "read" } : notif
         )
       );
-      setTimeout(fetchNotifications, 500);
-      toast.success("Notification marked as read.");
     } catch (error) {
       console.error("Error marking notification as read:", error);
-      toast.error("Failed to mark notification as read.");
     }
   };
 
@@ -129,9 +132,9 @@ export default function Notification() {
       {/* ✅ Notification Bell */}
       <Button variant="ghost" className="relative" onClick={() => setIsOpen(!isOpen)}>
         <Bell className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-        {filteredNotifications.some((n) => !n.is_read) && (
+        {notifications.some((n) => n.is_read === "unread") && (
           <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-            {filteredNotifications.filter((n) => !n.is_read).length}
+            {notifications.filter((n) => n.is_read === "unread").length}
           </span>
         )}
       </Button>

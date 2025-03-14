@@ -19,6 +19,8 @@ export default function JobApplicationsDashboard() {
 
   useEffect(() => {
     async function loadStats() {
+      console.log("Loading job stats..."); // ✅ Debug log
+  
       try {
         const data = await fetchJobStats();
         setStats(data);
@@ -28,8 +30,10 @@ export default function JobApplicationsDashboard() {
         setLoading(false);
       }
     }
+  
     loadStats();
   }, []);
+  
 
   const cards = [
     { title: "Total Applications", key: "total", color: "text-blue-600 dark:text-blue-400", icon: <Briefcase className="text-blue-500 w-10 h-10" /> },

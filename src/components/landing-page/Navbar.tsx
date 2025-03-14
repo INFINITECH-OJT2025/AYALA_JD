@@ -9,13 +9,12 @@ import Image from "next/image";
 import clsx from "clsx";
 import { useTheme } from "next-themes";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MobileNavbar } from "../common/MobileNavbar";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { setTheme, theme } = useTheme();
-  const [mounted, setMounted] = useState(false); // Ensure theme is only rendered on the client
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -36,77 +35,124 @@ export function Navbar() {
     { name: "Careers", path: "/landing/joblistings" },
     { name: "Contact", path: "/landing/contactus" },
     { name: "Properties", path: "/landing/properties" },
-    // { name: "Submit Property", path: "/landing/consignment" },
   ];
 
   return (
     <>
-     <nav className="bg-[#fafffe] dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
+      <nav className="bg-white dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
+      <div className="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-y-4 max-w-screen-xl">
+  {/* Logo */}
+  <Link href="/" className="flex items-center space-x-2">
+    <Image src="/logo.png" alt="Ayala Land Logo" width={30} height={30} />
+    <span className="text-xl font-bold text-gray-800 dark:text-gray-100 whitespace-nowrap">Ayala Land</span>
+  </Link>
 
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <Image src="/logo.png" alt="Ayala Land Logo" width={25} height={25} />
-            <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">Ayala Land</span>
-          </Link>
+  {/* Desktop Menu (Centered) */}
+  <div className="hidden md:flex flex-grow justify-center gap-x-4">
+    {navLinks.map((link) => (
+      <Link
+        key={link.path}
+        href={link.path}
+        className={clsx(
+          "hover:text-blue-600 dark:hover:text-green-400 transition text-lg font-semibold whitespace-nowrap",
+          pathname === link.path && "text-blue-600 dark:text-green-400 font-semibold"
+        )}
+      >
+        {link.name}
+      </Link>
+    ))}
+  </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6">
+  {/* Right-side buttons (Fixed Alignment) */}
+  <div className="hidden md:flex items-center gap-x-4">
+    {/* Theme Toggle */}
+    {mounted && (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon">
+            {theme === "dark" ? <Moon size={20} /> : theme === "light" ? <Sun size={20} /> : <Monitor size={20} />}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setTheme("light")}>
+            <Sun className="w-4 h-4 mr-2" /> Light
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("dark")}>
+            <Moon className="w-4 h-4 mr-2" /> Dark
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>
+            <Monitor className="w-4 h-4 mr-2" /> System
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )}
+
+    {/* Loan Calculator Button (Fixed Width) */}
+    <Button className="bg-blue-700 hover:bg-blue-800 dark:bg-blue-400 dark:hover:bg-blue-500 transition px-4 min-w-[160px]" asChild>
+      <Link href="/landing/loancalculator">Loan Calculator</Link>
+    </Button>
+  </div>
+
+  {/* Mobile Menu Button */}
+  <button onClick={() => setIsOpen(!isOpen)} className="md:hidden focus:outline-none">
+    {isOpen ? <X size={28} className="text-gray-800 dark:text-gray-100" /> : <Menu size={28} className="text-gray-800 dark:text-gray-100" />}
+  </button>
+</div>
+
+
+        {/* Mobile Menu Overlay */}
+        <div
+          className={`fixed inset-0 bg-black/50 z-40 transition-opacity ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
+          onClick={() => setIsOpen(false)}
+        ></div>
+
+        {/* Mobile Menu */}
+        <div
+          className={`fixed top-0 right-0 w-3/4 h-full bg-white dark:bg-[#003865] z-50 shadow-lg transform transition-transform ${
+            isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex justify-end p-4">
+            <button onClick={() => setIsOpen(false)} className="focus:outline-none">
+              <X size={28} className="text-gray-800 dark:text-gray-100" />
+            </button>
+          </div>
+
+          <div className="flex flex-col items-center space-y-6 mt-10">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 href={link.path}
-                className={clsx(
-                  "hover:text-gray-900 dark:hover:text-gray-200 transition text-lg font-semibold",
-                  pathname === link.path && "text-blue-600 dark:text-green-400 font-semibold"
-                )}
+                className="text-xl font-semibold text-gray-800 dark:text-gray-100 hover:text-blue-600 dark:hover:text-green-400"
+                onClick={() => setIsOpen(false)}
               >
                 {link.name}
               </Link>
             ))}
-          </div>
-
-          {/* Right side - Buttons */}
-          <div className="hidden md:flex space-x-3 items-center">
-            {/* Theme Toggle */}
-            {mounted && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    {theme === "dark" ? <Moon size={20} /> : theme === "light" ? <Sun size={20} /> : <Monitor size={20} />}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setTheme("light")}>
-                    <Sun className="w-4 h-4 mr-2" /> Light
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    <Moon className="w-4 h-4 mr-2" /> Dark
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")}>
-                    <Monitor className="w-4 h-4 mr-2" /> System
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
 
             {/* Loan Calculator Button */}
-            <Button className="bg-blue-700 hover:bg-blue-700 dark:bg-blue-400 dark:hover:bg-blue-500  transition" asChild>
+            <Button className="bg-blue-700 hover:bg-blue-800 dark:bg-blue-400 dark:hover:bg-blue-500 transition w-3/4" asChild>
               <Link href="/landing/loancalculator">Loan Calculator</Link>
             </Button>
+
+            {/* Theme Toggle for Mobile */}
+            {mounted && (
+              <div className="flex space-x-4">
+                <button onClick={() => setTheme("light")} className="p-2 rounded-md bg-gray-200 dark:bg-gray-700">
+                  <Sun className="w-6 h-6 text-gray-800 dark:text-gray-100" />
+                </button>
+                <button onClick={() => setTheme("dark")} className="p-2 rounded-md bg-gray-200 dark:bg-gray-700">
+                  <Moon className="w-6 h-6 text-gray-800 dark:text-gray-100" />
+                </button>
+                <button onClick={() => setTheme("system")} className="p-2 rounded-md bg-gray-200 dark:bg-gray-700">
+                  <Monitor className="w-6 h-6 text-gray-800 dark:text-gray-100" />
+                </button>
+              </div>
+            )}
           </div>
-
-          {/* Mobile Menu Button */}
-         
         </div>
-
-        {/* Mobile Menu */}
-        
       </nav>
-        <div className="md:hidden">
-          <MobileNavbar/>
-        </div>
-   
+
       {/* Spacer to prevent content overlap */}
       <div className="h-16 md:h-20"></div>
     </>

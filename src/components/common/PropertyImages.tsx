@@ -57,11 +57,11 @@ export default function PropertyImages({ property }: { property: any }) {
           <DialogTitle className="text-lg font-semibold">360° View</DialogTitle>
 
           {/* ✅ Ensure it loads the correct image */}
-          <ReactPhotoSphereViewer
-            src={'property.property_image[currentImageIndex'} // ✅ Fix: Ensure it uses the correct image
+          {/* <ReactPhotoSphereViewer
+             src={property.property_image[currentImageIndex]} // ✅ Fix: Ensure it uses the correct image
             height={"80vh"}
             width={"100%"}
-          />
+          /> */}
           {/* <img src={property.property_image[currentImageIndex]} alt={property as string}/> */}
         </DialogContent>
       </Dialog>

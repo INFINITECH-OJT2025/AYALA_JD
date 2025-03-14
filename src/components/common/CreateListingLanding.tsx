@@ -84,99 +84,97 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-2">
               {/* Personal Information */}
               <div className="grid grid-cols-2 gap-4">
-                <FormField control={form.control} name="first_name" render={({ field }) => (
+                <FormField control={form.control} name="first_name" rules={{ required: "First Name is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><Contact className="inline-block mr-2" />First Name</FormLabel>
+                    <FormLabel><Contact className="inline-block mr-2" />First Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input placeholder="First Name" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name="last_name" render={({ field }) => (
+                
+                <FormField control={form.control} name="last_name" rules={{ required: "Last Name is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><Contact className="inline-block mr-2" />Last Name</FormLabel>
+                    <FormLabel><Contact className="inline-block mr-2" />Last Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input placeholder="Last Name" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
-    
-              <FormField control={form.control} name="email" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Mail className="inline-block mr-2" />Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Email" {...field} value={field.value || ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-              <FormField control={form.control} name="phone_number" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Phone className="inline-block mr-2" />Phone Number</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="Phone Number" {...field} value={field.value || ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-            </div>
-    
-                {/* Property Information */}
-                <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">Property Information</h2>
-                <div className="grid grid-cols-3 gap-4">
-                <FormField control={form.control} name="property_name" render={({ field }) => (
+
+                <FormField control={form.control} name="email" rules={{ required: "Email is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><Home className="inline-block mr-2" />Property Name</FormLabel>
+                    <FormLabel><Mail className="inline-block mr-2" />Email <span className="text-red-500">*</span></FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Email" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="phone_number" rules={{ required: "Phone Number is required" }} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel><Phone className="inline-block mr-2" />Phone Number <span className="text-red-500">*</span></FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="Phone Number" {...field} value={field.value || ""} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </div>
+
+              {/* Property Information */}
+              <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">Property Information</h2>
+              <div className="grid grid-cols-3 gap-4">
+                <FormField control={form.control} name="property_name" rules={{ required: "Property Name is required" }} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel><Home className="inline-block mr-2" />Property Name <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input placeholder="Property Name" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name="location" render={({ field }) => (
+
+                <FormField control={form.control} name="location" rules={{ required: "Location is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><MapPin className="inline-block mr-2" />Location</FormLabel>
+                    <FormLabel><MapPin className="inline-block mr-2" />Location <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input placeholder="Location" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
-        
-    
-              <FormField control={form.control} name="unit_status" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><AirVent className="inline-block mr-2" />Unit Status</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Unit Status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Bare">Bare</SelectItem>
-                      <SelectItem value="Semi-Furnished">Semi-Furnished</SelectItem>
-                      <SelectItem value="Fully-Furnished">Fully-Furnished</SelectItem>
-                      <SelectItem value="Interiored">Interiored</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-    
-    
+
+                <FormField control={form.control} name="unit_status" rules={{ required: "Unit Status is required" }} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel><AirVent className="inline-block mr-2" />Unit Status <span className="text-red-500">*</span></FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Unit Status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Bare">Bare</SelectItem>
+                        <SelectItem value="Semi-Furnished">Semi-Furnished</SelectItem>
+                        <SelectItem value="Fully-Furnished">Fully-Furnished</SelectItem>
+                        <SelectItem value="Interiored">Interiored</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
               </div>
+
               
     
               <div className="grid grid-cols-3 gap-4">
-                <FormField control={form.control} name="price" render={({ field }) => (
+                <FormField control={form.control} name="price" rules={{ required: "Price is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><Banknote className="inline-block mr-2" />Price</FormLabel>
+                    <FormLabel><Banknote className="inline-block mr-2" />Price <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Price"
@@ -193,103 +191,101 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name="square_meter" render={({ field }) => (
+
+                <FormField control={form.control} name="square_meter" rules={{ required: "Square Meter is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><Grid2X2Check className="inline-block mr-2" /> Square Meter</FormLabel>
+                    <FormLabel><Grid2X2Check className="inline-block mr-2" />Square Meter <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
-                      <Input  placeholder="Square Meter" {...field} value={field.value || ""} />
+                      <Input placeholder="Square Meter" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
-                <FormField control={form.control} name="floor_number" render={({ field }) => (
+
+                <FormField control={form.control} name="floor_number" rules={{ required: "Floor Number is required" }} render={({ field }) => (
                   <FormItem>
-                    <FormLabel><Building2 className="inline-block mr-2"/> Floor Number</FormLabel>
+                    <FormLabel><Building2 className="inline-block mr-2"/> Floor Number <span className="text-red-500">*</span></FormLabel>
                     <FormControl>
-                      <Input  placeholder="Floor Number" {...field} value={field.value || ""} />
+                      <Input placeholder="Floor Number" {...field} value={field.value || ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
               </div>
-              
+
               <div className="grid grid-cols-3 gap-4">
-              <FormField control={form.control} name="parking" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Car className="inline-block mr-2" /> Parking</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Parking Availability" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="with">With Parking</SelectItem>
-                      <SelectItem value="without">Without Parking</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-              <FormField control={form.control} name="unit_type" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Combine className="inline-block mr-2"/> Unit Type</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Unit Type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="studio type">Studio type</SelectItem>
-                      <SelectItem value="1br">1BR</SelectItem>
-                      <SelectItem value="2br">2BR</SelectItem>
-                      <SelectItem value="loft">Loft</SelectItem>
-                      <SelectItem value="penthouse">Penthouse</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-    
-                <FormField
-                  control={form.control}
-                  name="type_of_listing"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel><List className="inline-block mr-2" /> Listing Type</FormLabel>
-                      <div className="grid grid-cols-2 gap-2">
-                        {listingOptions.map((option) => (
-                          <FormField
-                            key={option}
-                            control={form.control}
-                            name="type_of_listing"
-                            render={({ field }) => (
-                              <FormItem className="flex items-end gap-2">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(option)}
-                                    onCheckedChange={(checked) => {
-                                      const newValue = checked
-                                        ? [...(field.value || []), option] // Add selected option
-                                        : field.value.filter((item: string) => item !== option); // Remove unchecked
-                                      field.onChange(newValue);
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel>{option}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                        ))}
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <FormField control={form.control} name="parking" rules={{ required: "Parking selection is required" }} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel><Car className="inline-block mr-2" /> Parking <span className="text-red-500">*</span></FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Parking Availability" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="with">With Parking</SelectItem>
+                        <SelectItem value="without">Without Parking</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="unit_type" rules={{ required: "Unit Type is required" }} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel><Combine className="inline-block mr-2"/> Unit Type <span className="text-red-500">*</span></FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select Unit Type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="studio type">Studio type</SelectItem>
+                        <SelectItem value="1br">1BR</SelectItem>
+                        <SelectItem value="2br">2BR</SelectItem>
+                        <SelectItem value="loft">Loft</SelectItem>
+                        <SelectItem value="penthouse">Penthouse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="type_of_listing" rules={{ required: "At least one listing type is required" }} render={({ field }) => (
+                  <FormItem>
+                    <FormLabel><List className="inline-block mr-2" /> Listing Type <span className="text-red-500">*</span></FormLabel>
+                    <div className="grid grid-cols-2 gap-2">
+                      {listingOptions.map((option) => (
+                        <FormField
+                          key={option}
+                          control={form.control}
+                          name="type_of_listing"
+                          render={({ field }) => (
+                            <FormItem className="flex items-end gap-2">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(option)}
+                                  onCheckedChange={(checked) => {
+                                    const newValue = checked
+                                      ? [...(field.value || []), option] // Add selected option
+                                      : field.value.filter((item: string) => item !== option); // Remove unchecked
+                                    field.onChange(newValue);
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel>{option}</FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )} />
               </div>
+
     
               <FormField control={form.control} name="description" render={({ field }) => (
                   <FormItem>
@@ -339,8 +335,11 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
     
               {/* Image Upload */}
               <div className="mt-4" >
-              <FormLabel><ImageIcon className="inline-block mr-2" />Property Images</FormLabel>
+              <FormLabel>Upload Images <span className="text-red-500">*</span></FormLabel>
+              <FormControl>
                 <Input type="file" multiple onChange={handleImageChange} className="mt-2" />
+              </FormControl>
+              <FormMessage />
                 <div className="mt-4 flex flex-wrap gap-2">
                   {selectedImages.map((image, index) => (
                     <div key={index} className="relative w-24 h-24">
