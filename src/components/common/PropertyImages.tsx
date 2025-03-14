@@ -58,7 +58,7 @@ export default function PropertyImages({ property }: { property: any }) {
 
           {/* ✅ Ensure it loads the correct image */}
           <ReactPhotoSphereViewer
-            src={`${property.property_image[currentImageIndex]}`} // ✅ Fix: Ensure it uses the correct image
+            src={'property.property_image[currentImageIndex'} // ✅ Fix: Ensure it uses the correct image
             height={"80vh"}
             width={"100%"}
           />
