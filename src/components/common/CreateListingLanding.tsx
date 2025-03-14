@@ -74,7 +74,8 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl h-[90vh] overflow-hidden p-4 m-4">
+      <DialogContent className="max-w-5xl h-[90vh] overflow-hidden p-4 m-4 sm:p-6 sm:m-6 md:p-8 md:m-8">
+
         <DialogHeader>
           <DialogTitle>Submit Your Property</DialogTitle>
         </DialogHeader>
