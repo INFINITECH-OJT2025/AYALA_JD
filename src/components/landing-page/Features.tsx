@@ -74,13 +74,14 @@ export function FeaturedProperties() {
               >
                 <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden">
                   <div className="relative">
-                    <Image
-                      src={property.property_image?.[0] || "/placeholder.jpg"} // ✅ Show first image or fallback
+                  <img
+                      src={property.property_image?.[0] || "/prop1.jpg"} // ✅ Show first image or fallback
                       alt={property.property_name}
                       width={500}
                       height={300}
                       className="w-full h-48 object-cover"
                     />
+
                     <span
                       className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
                         Array.isArray(property.type_of_listing)
