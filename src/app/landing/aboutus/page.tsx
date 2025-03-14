@@ -103,11 +103,8 @@ const AboutUs = () => {
             <h2 className="text-4xl font-bold drop-shadow-lg">Be Part of Our Legacy</h2>
             <p className="mt-4 text-lg opacity-90">Explore careers or discover our latest developments today.</p>
             <div className="mt-6 space-x-4">
-              <a href="/careers" className="bg-white text-green-700 px-6 py-2 rounded-full font-semibold shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+              <a href="/landing/joblistings" className="bg-white text-green-700 px-6 py-2 rounded-full font-semibold shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
                 Careers
-              </a>
-              <a href="/projects" className="bg-white text-green-700 px-6 py-2 rounded-full font-semibold shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
-                Our Projects
               </a>
             </div>
           </div>
