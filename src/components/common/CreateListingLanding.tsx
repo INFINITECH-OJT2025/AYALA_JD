@@ -83,7 +83,7 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
            <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-2">
               {/* Personal Information */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField control={form.control} name="first_name" rules={{ required: "First Name is required" }} render={({ field }) => (
                   <FormItem>
                     <FormLabel><Contact className="inline-block mr-2" />First Name <span className="text-red-500">*</span></FormLabel>
@@ -127,7 +127,7 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
 
               {/* Property Information */}
               <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">Property Information</h2>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <FormField control={form.control} name="property_name" rules={{ required: "Property Name is required" }} render={({ field }) => (
                   <FormItem>
                     <FormLabel><Home className="inline-block mr-2" />Property Name <span className="text-red-500">*</span></FormLabel>
@@ -171,7 +171,7 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
 
               
     
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                 <FormField control={form.control} name="price" rules={{ required: "Price is required" }} render={({ field }) => (
                   <FormItem>
                     <FormLabel><Banknote className="inline-block mr-2" />Price <span className="text-red-500">*</span></FormLabel>
@@ -213,7 +213,7 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
                 )} />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                 <FormField control={form.control} name="parking" rules={{ required: "Parking selection is required" }} render={({ field }) => (
                   <FormItem>
                     <FormLabel><Car className="inline-block mr-2" /> Parking <span className="text-red-500">*</span></FormLabel>
@@ -256,7 +256,7 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
                 <FormField control={form.control} name="type_of_listing" rules={{ required: "At least one listing type is required" }} render={({ field }) => (
                   <FormItem>
                     <FormLabel><List className="inline-block mr-2" /> Listing Type <span className="text-red-500">*</span></FormLabel>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {listingOptions.map((option) => (
                         <FormField
                           key={option}
@@ -298,9 +298,9 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
                 )} />
     
               <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">General Features and Amenities</h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {[
                     "Pool Area",
                     "Gym Fitness Center",
