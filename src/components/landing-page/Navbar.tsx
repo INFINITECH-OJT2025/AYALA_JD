@@ -88,7 +88,7 @@ export function Navbar() {
     )}
 
     {/* Loan Calculator Button (Fixed Width) */}
-    <Button className="bg-blue-700 hover:bg-blue-800 dark:bg-blue-400 dark:hover:bg-blue-500 transition px-4 min-w-[160px]" asChild>
+    <Button className="text-gray-200 dark:text-gray-80 bg-blue-700 hover:bg-blue-800 dark:bg-blue-400 dark:hover:bg-blue-500 transition px-4 min-w-[160px]" asChild>
       <Link href="/landing/loancalculator">Loan Calculator</Link>
     </Button>
   </div>
