@@ -68,11 +68,24 @@ export function Navbar() {
     {/* Theme Toggle */}
     {mounted && (
       <DropdownMenu>
+       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="w-10 h-10">
             {theme === "dark" ? <Moon size={20} /> : theme === "light" ? <Sun size={20} /> : <Monitor size={20} />}
           </Button>
         </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setTheme("light")}>
+            <Sun size={16} className="mr-2" /> Light Mode
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("dark")}>
+            <Moon size={16} className="mr-2" /> Dark Mode
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setTheme("system")}>
+            <Monitor size={16} className="mr-2" /> System Default
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setTheme("light")}>
             <Sun className="w-4 h-4 mr-2" /> Light
