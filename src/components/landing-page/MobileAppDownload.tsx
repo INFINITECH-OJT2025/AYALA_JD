@@ -8,37 +8,45 @@ import { Download, Smartphone, Star } from "lucide-react";
 export function MobileAppDownload() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [isPWAInstallable, setIsPWAInstallable] = useState(false);
 
   useEffect(() => {
-    // Detect iOS
+    // Detect if the user is on an iPhone (iOS Safari)
     const userAgent = window.navigator.userAgent.toLowerCase();
     if (/iphone|ipad|ipod/.test(userAgent) && navigator.vendor.includes("Apple")) {
       setIsIOS(true);
     }
 
-    // Capture beforeinstallprompt event (Android/Chrome)
+    // Capture beforeinstallprompt event
     const handleBeforeInstallPrompt = (event: any) => {
       event.preventDefault();
       setDeferredPrompt(event);
-      setShowInstallPrompt(true); // ✅ Show prompt instantly when opened via QR
+      setIsPWAInstallable(true);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    // ✅ Auto-show install prompt when accessed via QR
-    if (window.matchMedia("(display-mode: browser)").matches) {
-      setTimeout(() => {
-        handleInstallPWA(); // Auto trigger install after 2 seconds
-      }, 2000);
-    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
-  // ✅ Handle PWA Installation
+  // ✅ Auto-show install prompt when the user interacts (click, tap)
+  useEffect(() => {
+    const autoShowPrompt = () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        setDeferredPrompt(null); // Prevent duplicate prompts
+      }
+    };
+
+    window.addEventListener("click", autoShowPrompt, { once: true });
+
+    return () => {
+      window.removeEventListener("click", autoShowPrompt);
+    };
+  }, [deferredPrompt]);
+
   const handleInstallPWA = async () => {
     if (isIOS) {
       alert("To install this app on iPhone:\n\n1️⃣ Open Safari\n2️⃣ Tap Share Button (📤)\n3️⃣ Tap 'Add to Home Screen'\n4️⃣ Tap 'Add'");
@@ -86,7 +94,7 @@ export function MobileAppDownload() {
 
           {/* PWA Install Button */}
           <div className="mt-6 flex flex-col md:flex-row gap-4">
-            {showInstallPrompt && (
+            {isPWAInstallable && (
               <Button
                 onClick={handleInstallPWA}
                 className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
