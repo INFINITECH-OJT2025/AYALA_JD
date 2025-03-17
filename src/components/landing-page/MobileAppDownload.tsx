@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Download, Smartphone, Star } from "lucide-react";
 
-export function MobileAppDownload() {
+export default function MobileAppDownload() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
 
@@ -88,7 +88,7 @@ export function MobileAppDownload() {
 
         {/* QR Code & Mobile Image */}
         <div className="flex flex-col items-center">
-          <p className="text-gray-600 dark:text-gray-300 text-sm">Scan the QR code to install instantly</p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm">Scan the QR code to install</p>
           <Image src="/qr.png.png" alt="Mobile App Mockup" width={300} height={300} className="mt-6" />
         </div>
       </div>
