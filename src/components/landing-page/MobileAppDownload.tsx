@@ -8,27 +8,37 @@ import { Download, Smartphone, Star } from "lucide-react";
 export function MobileAppDownload() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   useEffect(() => {
-    // Detect if the user is on an iPhone (iOS Safari)
+    // Detect iOS
     const userAgent = window.navigator.userAgent.toLowerCase();
     if (/iphone|ipad|ipod/.test(userAgent) && navigator.vendor.includes("Apple")) {
       setIsIOS(true);
     }
 
-    // Capture beforeinstallprompt event (not supported in iOS)
+    // Capture beforeinstallprompt event (Android/Chrome)
     const handleBeforeInstallPrompt = (event: any) => {
       event.preventDefault();
       setDeferredPrompt(event);
+      setShowInstallPrompt(true); // ✅ Show prompt instantly when opened via QR
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    // ✅ Auto-show install prompt when accessed via QR
+    if (window.matchMedia("(display-mode: browser)").matches) {
+      setTimeout(() => {
+        handleInstallPWA(); // Auto trigger install after 2 seconds
+      }, 2000);
+    }
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
 
+  // ✅ Handle PWA Installation
   const handleInstallPWA = async () => {
     if (isIOS) {
       alert("To install this app on iPhone:\n\n1️⃣ Open Safari\n2️⃣ Tap Share Button (📤)\n3️⃣ Tap 'Add to Home Screen'\n4️⃣ Tap 'Add'");
@@ -76,20 +86,22 @@ export function MobileAppDownload() {
 
           {/* PWA Install Button */}
           <div className="mt-6 flex flex-col md:flex-row gap-4">
-            <Button
-              onClick={handleInstallPWA}
-              className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
-            >
-              <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
-              {isIOS ? "How to Install on iPhone" : "Install AYALAPP"}
-            </Button>
+            {showInstallPrompt && (
+              <Button
+                onClick={handleInstallPWA}
+                className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
+              >
+                <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
+                {isIOS ? "How to Install on iPhone" : "Install AYALAPP"}
+              </Button>
+            )}
           </div>
         </div>
 
         {/* QR Code & Mobile Image */}
         <div className="flex flex-col items-center">
           <p className="text-gray-600 dark:text-gray-300 text-sm">Scan the QR code to install instantly</p>
-          <Image src="/ayalaqr.png" alt="Mobile App Mockup" width={300} height={300} className="mt-6" />
+          <Image src="/qr.png.png" alt="Mobile App Mockup" width={300} height={300} className="mt-6" />
         </div>
       </div>
     </section>
