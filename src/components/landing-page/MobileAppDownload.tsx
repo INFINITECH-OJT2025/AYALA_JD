@@ -80,7 +80,7 @@ export function MobileAppDownload() {
               onClick={handleInstallPWA}
               className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
             >
-              <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
+              <Image src="/logo.png" alt="ayala" width={20} height={20} />
               {isIOS ? "How to Install on iPhone" : "Install AYALAPP"}
             </Button>
           </div>
