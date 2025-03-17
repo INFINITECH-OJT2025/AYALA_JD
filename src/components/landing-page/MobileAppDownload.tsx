@@ -7,12 +7,19 @@ import { Download, Smartphone, Star } from "lucide-react";
 
 export function MobileAppDownload() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    // Detect if the user is on an iPhone (iOS Safari)
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(userAgent) && navigator.vendor.includes("Apple")) {
+      setIsIOS(true);
+    }
+
+    // Capture beforeinstallprompt event (not supported in iOS)
     const handleBeforeInstallPrompt = (event: any) => {
-      event.preventDefault(); // Prevent automatic prompt
+      event.preventDefault();
       setDeferredPrompt(event);
-      console.log("✅ Install prompt captured.");
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -23,21 +30,19 @@ export function MobileAppDownload() {
   }, []);
 
   const handleInstallPWA = async () => {
-    if (!deferredPrompt) {
-      alert("PWA installation is not available. Try adding this page to your home screen manually.");
+    if (isIOS) {
+      alert("To install this app on iPhone:\n\n1️⃣ Open Safari\n2️⃣ Tap Share Button (📤)\n3️⃣ Tap 'Add to Home Screen'\n4️⃣ Tap 'Add'");
       return;
     }
 
-    deferredPrompt.prompt(); // Show install prompt
-
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      console.log("🎉 PWA installed successfully!");
-    } else {
-      console.log("❌ PWA installation was declined.");
+    if (!deferredPrompt) {
+      alert("PWA installation is not available. Try opening this page in a browser.");
+      return;
     }
 
-    setDeferredPrompt(null); // Reset prompt
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    setDeferredPrompt(null);
   };
 
   return (
@@ -75,8 +80,8 @@ export function MobileAppDownload() {
               onClick={handleInstallPWA}
               className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
             >
-              <Image src="/logo.png" alt="Google Play" width={20} height={20} />
-              Install AYALAPP
+              <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
+              {isIOS ? "How to Install on iPhone" : "Install AYALAPP"}
             </Button>
           </div>
         </div>
