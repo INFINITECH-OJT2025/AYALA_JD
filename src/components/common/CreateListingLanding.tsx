@@ -13,6 +13,7 @@ import Image from "next/image";
 import { submitProperty } from "@/lib/api";
 import { Phone, MapPin, DollarSign, Home, CheckSquare, Car, Mail, Contact, Image as ImageIcon, AirVent, Grid2X2Check, Building2, List, Combine, PencilLine, Banknote } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 interface CreateListingDialogProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ interface CreateListingDialogProps {
 }
 
 export default function CreateListingLand({ isOpen, onClose }: CreateListingDialogProps) {
- const form = useForm();
+  const form = useForm();
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,40 +37,51 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
 
   const onSubmit = async (data: any) => {
     console.log("Submitting Data:", data);
-  
+
     const formData = new FormData();
-  
+
     // ✅ Convert type_of_listing to JSON string before sending
     formData.append("type_of_listing", JSON.stringify(data.type_of_listing));
-  
+
     // ✅ Convert features to JSON string before sending
     const selectedFeatures = Object.keys(data.features).filter((key) => data.features[key] === true);
     formData.append("features", JSON.stringify(selectedFeatures));
-  
+
     // ✅ Append all other form fields
     Object.entries(data).forEach(([key, value]) => {
       if (key !== "features" && key !== "type_of_listing") {
         formData.append(key, value as string);
       }
     });
-  
+
     // ✅ Attach Admin User ID (Hardcoded for Now)
     formData.append("user_id", "1"); // Replace with actual admin ID dynamically
-  
+
     // ✅ Append images
     selectedImages.forEach((image) => formData.append("property_image[]", image));
-  
+
     try {
       const response = await submitProperty(formData);
       console.log("Property submitted successfully", response);
+
+      // ✅ Success toast
+      toast.success("Property Submitted!", {
+        description: "Your property listing has been successfully submitted.",
+      });
+
       onClose(); // Close dialog after submission
     } catch (error) {
       console.error("Error submitting property", error);
+
+      // ❌ Error toast
+      toast.error("Submission Failed", {
+        description: "There was an error submitting your property. Please try again.",
+      });
     }
   };
-  
 
-  const listingOptions = ["For Rent", "For Sale",];
+  const listingOptions = ["For Rent", "For Sale"];
+
 
 
   return (
@@ -173,25 +185,41 @@ export default function CreateListingLand({ isOpen, onClose }: CreateListingDial
               
     
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                <FormField control={form.control} name="price" rules={{ required: "Price is required" }} render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><Banknote className="inline-block mr-2" />Price <span className="text-red-500">*</span></FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Price"
-                        {...field}
-                        value={field.value ? Number(field.value.replace(/,/g, "")).toLocaleString("en-US") : ""}
-                        onChange={(e) => {
-                          const rawValue = e.target.value.replace(/,/g, ""); // Remove existing commas
-                          if (!isNaN(Number(rawValue))) {
-                            field.onChange(Number(rawValue).toLocaleString("en-US")); // Format as user types
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+              <FormField
+                    control={form.control}
+                    name="price"
+                    rules={{
+                      required: "Price is required",
+                      validate: (value) => !isNaN(Number(value)) || "The price field must be a number.",
+                    }}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          <Banknote className="inline-block mr-2" />
+                          Price <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Price"
+                            value={field.value ? Number(field.value).toLocaleString("en-US") : ""}
+                            onChange={(e) => {
+                              const rawValue = e.target.value.replace(/,/g, ""); // Remove commas
+                              if (!isNaN(Number(rawValue))) {
+                                field.onChange(rawValue); // Store raw number string
+                              }
+                            }}
+                            onBlur={() => {
+                              if (!isNaN(Number(field.value))) {
+                                field.onChange(Number(field.value)); // Convert to number on blur
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
 
                 <FormField control={form.control} name="square_meter" rules={{ required: "Square Meter is required" }} render={({ field }) => (
                   <FormItem>

@@ -1,8 +1,45 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Download, Smartphone, Star } from "lucide-react";
 
 export function MobileAppDownload() {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event: any) => {
+      event.preventDefault(); // Prevent automatic prompt
+      setDeferredPrompt(event);
+      console.log("✅ Install prompt captured.");
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallPWA = async () => {
+    if (!deferredPrompt) {
+      alert("PWA installation is not available. Try adding this page to your home screen manually.");
+      return;
+    }
+
+    deferredPrompt.prompt(); // Show install prompt
+
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      console.log("🎉 PWA installed successfully!");
+    } else {
+      console.log("❌ PWA installation was declined.");
+    }
+
+    setDeferredPrompt(null); // Reset prompt
+  };
+
   return (
     <section className="py-12 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
@@ -32,20 +69,15 @@ export function MobileAppDownload() {
             </div>
           </div>
 
-          {/* App Download Buttons */}
+          {/* PWA Install Button */}
           <div className="mt-6 flex flex-col md:flex-row gap-4">
-            <a href="https://play.google.com" target="_blank" rel="noopener noreferrer">
-              <Button className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6">
-                <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
-                Get on Google Play
-              </Button>
-            </a>
-            <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer">
-              <Button className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6">
-                <Image src="/appstore.png" alt="App Store" width={20} height={20} />
-                Download on the App Store
-              </Button>
-            </a>
+            <Button
+              onClick={handleInstallPWA}
+              className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
+            >
+              <Image src="/logo.png" alt="Google Play" width={20} height={20} />
+              Install AYALAPP
+            </Button>
           </div>
         </div>
 
