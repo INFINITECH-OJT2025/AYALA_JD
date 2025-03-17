@@ -8,7 +8,6 @@ import { Download, Smartphone, Star } from "lucide-react";
 export function MobileAppDownload() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
-  const [isPWAInstallable, setIsPWAInstallable] = useState(false);
 
   useEffect(() => {
     // Detect if the user is on an iPhone (iOS Safari)
@@ -17,11 +16,10 @@ export function MobileAppDownload() {
       setIsIOS(true);
     }
 
-    // Capture beforeinstallprompt event
+    // Capture beforeinstallprompt event (not supported in iOS)
     const handleBeforeInstallPrompt = (event: any) => {
       event.preventDefault();
       setDeferredPrompt(event);
-      setIsPWAInstallable(true);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -30,22 +28,6 @@ export function MobileAppDownload() {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     };
   }, []);
-
-  // ✅ Auto-show install prompt when the user interacts (click, tap)
-  useEffect(() => {
-    const autoShowPrompt = () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        setDeferredPrompt(null); // Prevent duplicate prompts
-      }
-    };
-
-    window.addEventListener("click", autoShowPrompt, { once: true });
-
-    return () => {
-      window.removeEventListener("click", autoShowPrompt);
-    };
-  }, [deferredPrompt]);
 
   const handleInstallPWA = async () => {
     if (isIOS) {
@@ -94,15 +76,13 @@ export function MobileAppDownload() {
 
           {/* PWA Install Button */}
           <div className="mt-6 flex flex-col md:flex-row gap-4">
-            {isPWAInstallable && (
-              <Button
-                onClick={handleInstallPWA}
-                className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
-              >
-                <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
-                {isIOS ? "How to Install on iPhone" : "Install AYALAPP"}
-              </Button>
-            )}
+            <Button
+              onClick={handleInstallPWA}
+              className="bg-black text-white hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 flex items-center gap-2 px-6"
+            >
+              <Image src="/gplay.png" alt="Google Play" width={20} height={20} />
+              {isIOS ? "How to Install on iPhone" : "Install AYALAPP"}
+            </Button>
           </div>
         </div>
 
