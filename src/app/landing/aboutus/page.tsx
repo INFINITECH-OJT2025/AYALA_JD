@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Navbar } from "@/components/landing-page/Navbar";
 import { Footer } from "@/components/landing-page/Footer";
 import { fetchAboutUsContent } from "@/lib/api";
+import { NewsUpdates } from "@/components/landing-page/NewsUpdates";
 
 export default function AboutUsPage() {
   const [aboutUs, setAboutUs] = useState<any>(null);
@@ -99,6 +100,8 @@ export default function AboutUsPage() {
             ))}
           </div>
         </section>
+
+        <NewsUpdates/>
       </div>
       <Footer />
     </>

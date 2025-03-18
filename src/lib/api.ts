@@ -63,6 +63,25 @@ export async function logout() {
   }
 }
 
+export async function forgotPassword(email: string) {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/forgot-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      throw new Error(data.error || "Failed to send reset link.");
+    }
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+}
+
 // Fetch properties
 export async function fetchProperties() {
   try {
