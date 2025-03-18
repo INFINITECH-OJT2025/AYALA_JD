@@ -743,6 +743,55 @@ export async function deleteNotification(id: number): Promise<boolean> {
 }
 
 
+export async function fetchAboutUsContent() {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/about-us`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch About Us content");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching About Us:", error);
+    return null;
+  }
+}
+
+export async function updateAboutUsContent(formData: FormData) {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/about-us`, {
+      method: "POST", // ✅ Supports both create & update
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update About Us content");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating About Us:", error);
+    return null;
+  }
+}
+
+export async function deleteAboutUsContent() {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/about-us`, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete About Us content");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting About Us:", error);
+    return null;
+  }
+}
+
+
 
 
 

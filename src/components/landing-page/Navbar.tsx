@@ -44,7 +44,7 @@ export function Navbar() {
   {/* Logo */}
   <Link href="/" className="flex items-center space-x-2">
     <Image src="/logo.png" alt="Ayala Land Logo" width={30} height={30} />
-    <span className="text-xl font-bold text-gray-800 dark:text-gray-100 whitespace-nowrap">Ayala Land</span>
+    <span className="text-xl font-bold text-gray-800 dark:text-gray-100 whitespace-nowrap">AyalaLand</span>
   </Link>
 
   {/* Desktop Menu (Centered) */}

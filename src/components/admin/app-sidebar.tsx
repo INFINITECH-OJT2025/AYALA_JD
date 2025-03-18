@@ -75,6 +75,7 @@ const data = {
       items: [
         { title: "News Updates", url: "/admin/Posting/news-updates" },
         { title: "Services", url: "/admin/Posting/services" },
+        { title: "About Us", url: "/admin/Posting/about-us" },
       ],
     },
   ],

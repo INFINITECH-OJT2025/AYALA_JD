@@ -34,7 +34,7 @@ export default function useFetchAllNotifications() {
   useEffect(() => {
     isMounted.current = true;
     fetchNotifications();
-    intervalRef.current = setInterval(fetchNotifications, 5000);
+    // intervalRef.current = setInterval(fetchNotifications, 5000);
 
     return () => {
       isMounted.current = false; // Prevent state updates after unmount
