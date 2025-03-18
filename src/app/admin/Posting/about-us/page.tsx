@@ -107,7 +107,7 @@ export default function AdminAboutUs() {
 
   return (
     <div className=" bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
-     <h2 className="text-2xl font-bold mb-4">Manage About Us</h2>
+      <h2 className="text-2xl font-bold mb-4">Manage About Us</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           {/* Hero Image */}

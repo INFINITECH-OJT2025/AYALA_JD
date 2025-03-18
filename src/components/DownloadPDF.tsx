@@ -19,7 +19,10 @@ interface DownloadPDFProps {
 
 export function DownloadPDF({ targetRef, loanDetails }: DownloadPDFProps) {
   const formatNumber = (num: number) =>
-    num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    num.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
   const downloadPDF = async () => {
     const pdf = new jsPDF("p", "mm", "a4");
@@ -36,8 +39,15 @@ export function DownloadPDF({ targetRef, loanDetails }: DownloadPDFProps) {
     // Company Details
     pdf.setFontSize(10);
     pdf.setFont("helvetica", "normal");
-    pdf.text("Unit 202, Campos Rueda Building, 101 Urban Ave, Makati, 1206 Metro Manila", 105, 42, { align: "center" });
-    pdf.text("Phone: (+63)9175-4809-99 | Email: info@ayalaland.com", 105, 48, { align: "center" });
+    pdf.text(
+      "Unit 202, Campos Rueda Building, 101 Urban Ave, Makati, 1206 Metro Manila",
+      105,
+      42,
+      { align: "center" }
+    );
+    pdf.text("Phone: (+63)9175-4809-99 | Email: info@ayalaland.com", 105, 48, {
+      align: "center",
+    });
 
     // Title: Loan Calculation Results
     pdf.setFontSize(14);
@@ -53,13 +63,21 @@ export function DownloadPDF({ targetRef, loanDetails }: DownloadPDFProps) {
         ["Months", `${loanDetails.months} Month(s)`],
         ["Loan Amount", `PHP ${formatNumber(loanDetails.loanAmount)}`],
         ["Interest Rate", `${loanDetails.interestRate.toFixed(2)}%`],
-        ["Total Loan Amount (w/ interest)", `PHP ${formatNumber(loanDetails.totalLoanAmount)}`],
+        [
+          "Total Loan Amount (w/ interest)",
+          `PHP ${formatNumber(loanDetails.totalLoanAmount)}`,
+        ],
         ["Monthly Payment", `PHP ${formatNumber(loanDetails.monthlyPayment)}`],
         ["Total Amount", `PHP ${formatNumber(loanDetails.totalLoanAmount)}`],
       ],
       theme: "grid",
       styles: { fontSize: 10, halign: "center" },
-      headStyles: { fillColor: [0, 102, 51], textColor: 255, fontSize: 11, fontStyle: "bold" },
+      headStyles: {
+        fillColor: [0, 102, 51],
+        textColor: 255,
+        fontSize: 11,
+        fontStyle: "bold",
+      },
       alternateRowStyles: { fillColor: [240, 240, 240] },
       margin: { top: 70 },
     });

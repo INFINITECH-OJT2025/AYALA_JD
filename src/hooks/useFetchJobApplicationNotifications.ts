@@ -6,7 +6,9 @@ const useFetchJobApplicationNotifications = () => {
   // ✅ Fetch job application notifications
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/notifications/job-applications");
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/notifications/job-applications"
+      );
       const data = await response.json();
       setNotifications(data);
     } catch (error) {

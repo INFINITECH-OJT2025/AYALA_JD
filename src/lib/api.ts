@@ -1,4 +1,3 @@
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000/api";
 const API_BASE = "http://127.0.0.1:8000/api";
 
@@ -22,7 +21,6 @@ export const login = async (email: string, password: string) => {
 
   return response.json();
 };
-
 
 // ✅ Fetch user data
 export async function fetchUser() {
@@ -65,44 +63,48 @@ export async function logout() {
   }
 }
 
-
-
 // Fetch properties
 export async function fetchProperties() {
   try {
-      const response = await fetch(`${API_URL}/properties`);
-      
-      if (!response.ok) {
-          throw new Error(`Failed to fetch properties: ${response.status} ${response.statusText}`);
-      }
+    const response = await fetch(`${API_URL}/properties`);
 
-      const text = await response.text();
-      console.log("API Response:", text);
-      const data = JSON.parse(text);
-
-      // ✅ Fetch unique views for each property
-      const propertiesWithViews = await Promise.all(
-          data.map(async (property: any) => {
-              const viewResponse = await fetch(`${API_URL}/properties/${property.id}`);
-              const viewData = await viewResponse.json();
-              return { ...property, unique_views: viewData.unique_views }; // ✅ Add unique_views to property
-          })
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch properties: ${response.status} ${response.statusText}`
       );
+    }
 
-      return propertiesWithViews;
+    const text = await response.text();
+    console.log("API Response:", text);
+    const data = JSON.parse(text);
+
+    // ✅ Fetch unique views for each property
+    const propertiesWithViews = await Promise.all(
+      data.map(async (property: any) => {
+        const viewResponse = await fetch(
+          `${API_URL}/properties/${property.id}`
+        );
+        const viewData = await viewResponse.json();
+        return { ...property, unique_views: viewData.unique_views }; // ✅ Add unique_views to property
+      })
+    );
+
+    return propertiesWithViews;
   } catch (error) {
-      console.error("Error fetching properties:", error);
-      return [];
+    console.error("Error fetching properties:", error);
+    return [];
   }
 }
 
-
 export async function trackPropertyView(propertyId: number) {
   try {
-    const response = await fetch(`${API_URL}/properties/${propertyId}/track-view`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      `${API_URL}/properties/${propertyId}/track-view`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
 
     const result = await response.json();
     console.log("Track View Response:", result); // ✅ Log response
@@ -113,18 +115,17 @@ export async function trackPropertyView(propertyId: number) {
 
 // Upload images
 export async function uploadImage(formData: FormData) {
-    try {
-        const response = await fetch("http://127.0.0.1:8000/api/properties", {
-            method: "POST",
-            body: formData,
-        });
-        return await response.json();
-    } catch (error) {
-        console.error("Upload error:", error);
-        return null;
-    }
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/properties", {
+      method: "POST",
+      body: formData,
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Upload error:", error);
+    return null;
+  }
 }
-
 
 export async function submitProperty(formData: FormData) {
   try {
@@ -150,13 +151,20 @@ export const deleteProperty = async (id: number) => {
   if (!res.ok) throw new Error("Failed to delete property");
 };
 
-export async function updatePropertyStatus(propertyId: number, status: string, reason?: string) {
+export async function updatePropertyStatus(
+  propertyId: number,
+  status: string,
+  reason?: string
+) {
   try {
-    const response = await fetch(`${API_URL}/properties/${propertyId}/update-status`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status, reason }),
-    });
+    const response = await fetch(
+      `${API_URL}/properties/${propertyId}/update-status`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status, reason }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to update property status");
@@ -168,9 +176,6 @@ export async function updatePropertyStatus(propertyId: number, status: string, r
     throw error;
   }
 }
-
-
-
 
 export async function fetchPropertyById(id: string) {
   try {
@@ -219,9 +224,6 @@ export const fetchFeaturedJobs = async () => {
   if (!res.ok) throw new Error("Failed to fetch featured jobs");
   return res.json();
 };
-
-
-
 
 // export const updateJob = async (id: number, updatedData: any) => {
 //   const formData = new FormData();
@@ -298,21 +300,27 @@ export const fetchApplicants = async () => {
 };
 
 export const approveApplicant = async (id: number, message: string) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/job-applicants/${id}/approve`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/job-applicants/${id}/approve`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to approve applicant");
 };
 
 export const rejectApplicant = async (id: number, message: string) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/job-applicants/${id}/reject`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/job-applicants/${id}/reject`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to reject applicant");
 };
@@ -325,7 +333,7 @@ export const deleteApplicant = async (id: number) => {
   if (!res.ok) throw new Error("Failed to delete applicant");
 };
 
-//over inquiries 
+//over inquiries
 
 export const sendInquiry = async (inquiryData: any) => {
   const res = await fetch("http://127.0.0.1:8000/api/inquiries", {
@@ -357,17 +365,19 @@ export async function replyInquiries(id: number, message: string) {
   return response.ok ? response.json() : null;
 }
 
-
 export async function archiveInquiries(id: number) {
-  const response = await fetch(`${API_URL}/inquiries/${id}/archive`, { method: "PUT" });
+  const response = await fetch(`${API_URL}/inquiries/${id}/archive`, {
+    method: "PUT",
+  });
   return response.ok ? response.json() : null;
 }
 
 export async function unarchiveInquiries(id: number) {
-  const response = await fetch(`${API_URL}/inquiries/${id}/unarchive`, { method: "PUT" });
+  const response = await fetch(`${API_URL}/inquiries/${id}/unarchive`, {
+    method: "PUT",
+  });
   return response.ok ? response.json() : null;
 }
-
 
 export const deleteInquiries = async (id: number) => {
   const res = await fetch(`http://127.0.0.1:8000/api/inquiries/${id}`, {
@@ -391,20 +401,26 @@ export const sendPropertyInquiry = async (formData: FormData) => {
 };
 
 export const replyInquiry = async (id: number, message: string) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/property-inquiries/${id}/reply`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/property-inquiries/${id}/reply`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to send reply");
   return res.json();
 };
 
 export const archiveInquiry = async (id: number) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/property-inquiries/${id}/archive`, {
-    method: "PUT",
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/property-inquiries/${id}/archive`,
+    {
+      method: "PUT",
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to archive inquiry");
   return res.json();
@@ -412,24 +428,28 @@ export const archiveInquiry = async (id: number) => {
 
 // ✅ New function: Unarchive an inquiry
 export const unarchiveInquiry = async (id: number) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/property-inquiries/${id}/unarchive`, {
-    method: "PUT",
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/property-inquiries/${id}/unarchive`,
+    {
+      method: "PUT",
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to unarchive inquiry");
   return res.json();
 };
 
 export const deleteInquiry = async (id: number) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/property-inquiries/${id}`, {
-    method: "DELETE",
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/property-inquiries/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to delete inquiry");
   return res.json();
 };
-
-
 
 //property appointment
 export const fetchAppointments = async () => {
@@ -438,31 +458,39 @@ export const fetchAppointments = async () => {
   return res.json();
 };
 
-
 export const replyAppointment = async (id: number, message: string) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/appointments/${id}/reply`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/appointments/${id}/reply`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to send reply");
   return res.json();
 };
 
 export const archiveAppointment = async (id: number) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/appointments/${id}/archive`, {
-    method: "PUT",
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/appointments/${id}/archive`,
+    {
+      method: "PUT",
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to archive appointment");
   return res.json();
 };
 
 export const unarchiveAppointment = async (id: number) => {
-  const res = await fetch(`http://127.0.0.1:8000/api/appointments/${id}/unarchive`, {
-    method: "PUT",
-  });
+  const res = await fetch(
+    `http://127.0.0.1:8000/api/appointments/${id}/unarchive`,
+    {
+      method: "PUT",
+    }
+  );
 
   if (!res.ok) throw new Error("Failed to unarchive appointment");
   return res.json();
@@ -477,7 +505,6 @@ export const deleteAppointment = async (id: number) => {
   return res.json();
 };
 
-
 export const createAppointment = async (appointmentData: any) => {
   const res = await fetch("http://127.0.0.1:8000/api/appointments", {
     method: "POST",
@@ -489,7 +516,7 @@ export const createAppointment = async (appointmentData: any) => {
   return res.json();
 };
 
-// admin property inquiries 
+// admin property inquiries
 export const submitPropertyInquiry = async (inquiryData: any) => {
   const res = await fetch("http://127.0.0.1:8000/api/property-inquiries", {
     method: "POST",
@@ -560,8 +587,7 @@ export const deleteNews = async (id: number) => {
   return res.json();
 };
 
-
-// services 
+// services
 export async function fetchServices() {
   const response = await fetch(`${API_URL}/services`);
   if (!response.ok) throw new Error("Failed to fetch services");
@@ -589,7 +615,6 @@ export async function updateService(id: number, formData: FormData) {
   return response.json();
 }
 
-
 export async function deleteService(id: number) {
   const response = await fetch(`${API_URL}/services/${id}`, {
     method: "DELETE",
@@ -597,7 +622,6 @@ export async function deleteService(id: number) {
   if (!response.ok) throw new Error("Failed to delete service");
   return response.json();
 }
-
 
 // Fetch property stats
 export async function fetchPropertyStats() {
@@ -660,7 +684,8 @@ export async function fetchJobApplications() {
       headers: { "Content-Type": "application/json" },
     });
 
-    if (!res.ok) throw new Error(`Failed to fetch job applications: ${res.status}`);
+    if (!res.ok)
+      throw new Error(`Failed to fetch job applications: ${res.status}`);
 
     return await res.json();
   } catch (error) {
@@ -668,7 +693,6 @@ export async function fetchJobApplications() {
     return []; // ✅ Return empty array on failure
   }
 }
-
 
 export interface Notification {
   id: number;
@@ -683,7 +707,7 @@ export async function fetchNotifications(): Promise<Notification[]> {
   try {
     const response = await fetch("http://127.0.0.1:8000/api/notifications");
     if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
-    
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching notifications:", error);
@@ -691,11 +715,15 @@ export async function fetchNotifications(): Promise<Notification[]> {
   }
 }
 
-export async function fetchLatestNotifications(latestId: number): Promise<Notification[]> {
+export async function fetchLatestNotifications(
+  latestId: number
+): Promise<Notification[]> {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/notifications?latest_id=${latestId}`);
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/notifications?latest_id=${latestId}`
+    );
     if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
-    
+
     return await response.json();
   } catch (error) {
     console.error("Error fetching notifications:", error);
@@ -706,9 +734,12 @@ export async function fetchLatestNotifications(latestId: number): Promise<Notifi
 // ✅ Mark a notification as read
 export async function markNotificationAsRead(id: number): Promise<boolean> {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/notifications/${id}/mark-read`, {
-      method: "POST",
-    });
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/notifications/${id}/mark-read`,
+      {
+        method: "POST",
+      }
+    );
     return response.ok;
   } catch (error) {
     console.error("Error marking notification as read:", error);
@@ -719,9 +750,12 @@ export async function markNotificationAsRead(id: number): Promise<boolean> {
 // ✅ Mark all notifications as read
 export async function markAllNotificationsAsRead(): Promise<boolean> {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/notifications/mark-all-read", {
-      method: "POST",
-    });
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/notifications/mark-all-read",
+      {
+        method: "POST",
+      }
+    );
     return response.ok;
   } catch (error) {
     console.error("Error marking all notifications as read:", error);
@@ -732,16 +766,18 @@ export async function markAllNotificationsAsRead(): Promise<boolean> {
 // ✅ Delete a notification
 export async function deleteNotification(id: number): Promise<boolean> {
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/notifications/${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/notifications/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
     return response.ok;
   } catch (error) {
     console.error("Error deleting notification:", error);
     return false;
   }
 }
-
 
 export async function fetchAboutUsContent() {
   try {
@@ -790,10 +826,3 @@ export async function deleteAboutUsContent() {
     return null;
   }
 }
-
-
-
-
-
-
-

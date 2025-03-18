@@ -6,7 +6,7 @@ interface Notification {
   id: number;
   message: string;
   type: "success" | "error" | "info";
-  is_read: "read" | "unread"; 
+  is_read: "read" | "unread";
   created_at: string;
 }
 
@@ -24,7 +24,9 @@ export default function useFetchAllNotifications() {
       const data: Notification[] = await response.json();
 
       if (isMounted.current) {
-        setNotifications((prev) => (JSON.stringify(prev) === JSON.stringify(data) ? prev : data)); // Avoid unnecessary state updates
+        setNotifications((prev) =>
+          JSON.stringify(prev) === JSON.stringify(data) ? prev : data
+        ); // Avoid unnecessary state updates
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);

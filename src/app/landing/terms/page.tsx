@@ -9,7 +9,7 @@ export default function TermsPage() {
     <div>
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        <TermsPrivacy/>
+        <TermsPrivacy />
       </main>
       <Footer />
     </div>

@@ -20,7 +20,7 @@ export default function JobApplicationsDashboard() {
   useEffect(() => {
     async function loadStats() {
       console.log("Loading job stats..."); // ✅ Debug log
-  
+
       try {
         const data = await fetchJobStats();
         setStats(data);
@@ -30,16 +30,35 @@ export default function JobApplicationsDashboard() {
         setLoading(false);
       }
     }
-  
+
     loadStats();
   }, []);
-  
 
   const cards = [
-    { title: "Total Applications", key: "total", color: "text-blue-600 dark:text-blue-400", icon: <Briefcase className="text-blue-500 w-10 h-10" /> },
-    { title: "Pending", key: "pending", color: "text-yellow-600 dark:text-yellow-400", icon: <Clock className="text-yellow-500 w-10 h-10" /> },
-    { title: "Approved", key: "approved", color: "text-green-600 dark:text-green-400", icon: <CheckCircle className="text-green-500 w-10 h-10" /> },
-    { title: "Rejected", key: "rejected", color: "text-red-600 dark:text-red-400", icon: <XCircle className="text-red-500 w-10 h-10" /> },
+    {
+      title: "Total Applications",
+      key: "total",
+      color: "text-blue-600 dark:text-blue-400",
+      icon: <Briefcase className="text-blue-500 w-10 h-10" />,
+    },
+    {
+      title: "Pending",
+      key: "pending",
+      color: "text-yellow-600 dark:text-yellow-400",
+      icon: <Clock className="text-yellow-500 w-10 h-10" />,
+    },
+    {
+      title: "Approved",
+      key: "approved",
+      color: "text-green-600 dark:text-green-400",
+      icon: <CheckCircle className="text-green-500 w-10 h-10" />,
+    },
+    {
+      title: "Rejected",
+      key: "rejected",
+      color: "text-red-600 dark:text-red-400",
+      icon: <XCircle className="text-red-500 w-10 h-10" />,
+    },
   ] as const;
 
   return (
@@ -47,13 +66,32 @@ export default function JobApplicationsDashboard() {
       {/* ✅ Dashboard Cards with Skeleton Loading */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.map((card, index) => (
-          <Card key={index} className="shadow-md flex flex-col items-center p-4 dark:bg-gray-800">
-            {loading ? <Skeleton className="h-10 w-10 rounded-full" /> : card.icon}
+          <Card
+            key={index}
+            className="shadow-md flex flex-col items-center p-4 dark:bg-gray-800"
+          >
+            {loading ? (
+              <Skeleton className="h-10 w-10 rounded-full" />
+            ) : (
+              card.icon
+            )}
             <CardHeader>
-              {loading ? <Skeleton className="h-6 w-32 rounded-md" /> : <CardTitle className="text-primary text-center">{card.title}</CardTitle>}
+              {loading ? (
+                <Skeleton className="h-6 w-32 rounded-md" />
+              ) : (
+                <CardTitle className="text-primary text-center">
+                  {card.title}
+                </CardTitle>
+              )}
             </CardHeader>
             <CardContent>
-              {loading ? <Skeleton className="h-10 w-16 rounded-md" /> : <p className={`text-4xl font-bold ${card.color}`}>{stats ? stats[card.key] : 0}</p>}
+              {loading ? (
+                <Skeleton className="h-10 w-16 rounded-md" />
+              ) : (
+                <p className={`text-4xl font-bold ${card.color}`}>
+                  {stats ? stats[card.key] : 0}
+                </p>
+              )}
             </CardContent>
           </Card>
         ))}

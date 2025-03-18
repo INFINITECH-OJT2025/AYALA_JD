@@ -6,8 +6,18 @@ import { Navbar } from "@/components/landing-page/Navbar";
 import { Footer } from "@/components/landing-page/Footer";
 import ApplicationModal from "@/components/common/ApplicationModal";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Command, CommandInput, CommandItem, CommandList, CommandEmpty } from "@/components/ui/command";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandEmpty,
+} from "@/components/ui/command";
 import { FaMoneyBill } from "react-icons/fa";
 import { ChevronsUpDown } from "lucide-react";
 
@@ -46,7 +56,8 @@ const JobListings = () => {
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-4">Careers</h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
-            Experience exceptional real estate services, tailored to meet your needs and exceed expectations.
+            Experience exceptional real estate services, tailored to meet your
+            needs and exceed expectations.
           </p>
 
           {loading ? (
@@ -76,8 +87,8 @@ const JobListings = () => {
                 {/* Job Selection Dropdown (with Autocomplete) */}
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="w-full flex justify-between bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700"
                     >
                       {selectedJob?.title || "Select a Job"}
@@ -86,15 +97,19 @@ const JobListings = () => {
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput 
-                        placeholder="Search for a job..." 
-                        value={search} 
-                        onValueChange={setSearch} 
+                      <CommandInput
+                        placeholder="Search for a job..."
+                        value={search}
+                        onValueChange={setSearch}
                       />
                       <CommandList>
                         <CommandEmpty>No jobs found.</CommandEmpty>
                         {jobs
-                          .filter((job) => job.title.toLowerCase().includes(search.toLowerCase()))
+                          .filter((job) =>
+                            job.title
+                              .toLowerCase()
+                              .includes(search.toLowerCase())
+                          )
                           .map((job) => (
                             <CommandItem
                               key={job.id}
@@ -116,9 +131,11 @@ const JobListings = () => {
                 {/* Salary */}
                 <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
                   <FaMoneyBill className="w-4 h-4 mr-2 text-green-600 dark:text-green-500" />
-                  Salary Starts: 
+                  Salary Starts:
                   <span className="font-bold text-green-700 dark:text-green-500 ml-2">
-                    {selectedJob?.salary ? `₱${Number(selectedJob.salary).toLocaleString("en-PH")}` : "Not specified"}
+                    {selectedJob?.salary
+                      ? `₱${Number(selectedJob.salary).toLocaleString("en-PH")}`
+                      : "Not specified"}
                   </span>
                 </div>
 
@@ -150,12 +167,18 @@ const JobListings = () => {
               </div>
             </div>
           ) : (
-            <p className="text-center text-gray-600 dark:text-gray-300">No jobs found.</p>
+            <p className="text-center text-gray-600 dark:text-gray-300">
+              No jobs found.
+            </p>
           )}
 
           {/* Application Modal */}
           {selectedJob && (
-            <ApplicationModal job={selectedJob} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <ApplicationModal
+              job={selectedJob}
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+            />
           )}
         </div>
       </section>

@@ -18,7 +18,9 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
     message: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -36,7 +38,15 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
       if (!res.ok) throw new Error("Failed to book appointment");
 
       toast.success("Appointment booked successfully! 📅✅");
-      setForm({ last_name: "", first_name: "", email: "", phone: "", date: "", time: "", message: "" });
+      setForm({
+        last_name: "",
+        first_name: "",
+        email: "",
+        phone: "",
+        date: "",
+        time: "",
+        message: "",
+      });
     } catch (error) {
       toast.error("Failed to book appointment. Please try again.");
     }
@@ -48,28 +58,74 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
         <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-300" />
         <span>Book an On-Site Viewing</span>
       </h3>
-      <p className="text-gray-500 dark:text-gray-300 text-sm">Select your preferred date and time.</p>
+      <p className="text-gray-500 dark:text-gray-300 text-sm">
+        Select your preferred date and time.
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input name="last_name" placeholder="Last Name" value={form.last_name} onChange={handleChange} required />
-        <Input name="first_name" placeholder="First Name" value={form.first_name} onChange={handleChange} required />
+        <Input
+          name="last_name"
+          placeholder="Last Name"
+          value={form.last_name}
+          onChange={handleChange}
+          required
+        />
+        <Input
+          name="first_name"
+          placeholder="First Name"
+          value={form.first_name}
+          onChange={handleChange}
+          required
+        />
       </div>
 
-      <Input name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-      <Input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} required />
+      <Input
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+        required
+      />
+      <Input
+        name="phone"
+        placeholder="Phone Number"
+        value={form.phone}
+        onChange={handleChange}
+        required
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="relative">
-          <Input type="date" name="date" value={form.date} onChange={handleChange} required />
+          <Input
+            type="date"
+            name="date"
+            value={form.date}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div className="relative">
-          <Input type="time" name="time" value={form.time} onChange={handleChange} required />
+          <Input
+            type="time"
+            name="time"
+            value={form.time}
+            onChange={handleChange}
+            required
+          />
           <Clock className="absolute right-3 top-3 w-5 h-5 text-gray-600 dark:text-gray-300" />
         </div>
       </div>
 
-      <Textarea name="message" placeholder="Leave us a message..." value={form.message} onChange={handleChange} />
-      <Button type="submit" className="w-full bg-green-700 dark:bg-green-600 hover:bg-green-800 dark:hover:bg-green-700 text-white">
+      <Textarea
+        name="message"
+        placeholder="Leave us a message..."
+        value={form.message}
+        onChange={handleChange}
+      />
+      <Button
+        type="submit"
+        className="w-full bg-green-700 dark:bg-green-600 hover:bg-green-800 dark:hover:bg-green-700 text-white"
+      >
         BOOK APPOINTMENT
       </Button>
     </form>

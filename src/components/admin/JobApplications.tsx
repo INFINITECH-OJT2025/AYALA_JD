@@ -36,7 +36,11 @@ const JobApplications: React.FC<JobApplicationsProps> = ({ applications }) => {
               <td className="border p-2">{app.phone}</td>
               <td className="border p-2">{app.position}</td>
               <td className="border p-2">
-                <a href={app.resume} download className="text-blue-600 flex items-center">
+                <a
+                  href={app.resume}
+                  download
+                  className="text-blue-600 flex items-center"
+                >
                   <Download className="w-5 h-5 mr-2" />
                   Download
                 </a>

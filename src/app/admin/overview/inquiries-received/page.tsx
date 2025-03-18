@@ -1,11 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchInquiries, replyInquiries, archiveInquiries, unarchiveInquiries, deleteInquiries } from "@/lib/api";
+import {
+  fetchInquiries,
+  replyInquiries,
+  archiveInquiries,
+  unarchiveInquiries,
+  deleteInquiries,
+} from "@/lib/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Archive, Trash, Inbox, User } from "lucide-react";
 import { toast } from "sonner";
@@ -19,7 +31,9 @@ export default function AdminInquiries() {
   const [replyMessage, setReplyMessage] = useState("");
   const [filter, setFilter] = useState("all");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedInquiryId, setSelectedInquiryId] = useState<number | null>(null);
+  const [selectedInquiryId, setSelectedInquiryId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const getInquiries = async () => {
@@ -33,45 +47,48 @@ export default function AdminInquiries() {
         setLoading(false);
       }
     };
-  
+
     getInquiries(); // Initial fetch
-  
+
     const interval = setInterval(getInquiries, 5000); // ✅ Auto-refresh every 5 seconds
-  
+
     return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
-  
 
   // ✅ Apply filter
   useEffect(() => {
     if (filter === "all") {
       setFilteredInquiries(inquiries);
     } else if (filter === "archived") {
-      setFilteredInquiries(inquiries.filter((inq) => inq.status === "archived"));
+      setFilteredInquiries(
+        inquiries.filter((inq) => inq.status === "archived")
+      );
     } else {
-      setFilteredInquiries(inquiries.filter((inq) => inq.status !== "archived"));
+      setFilteredInquiries(
+        inquiries.filter((inq) => inq.status !== "archived")
+      );
     }
   }, [filter, inquiries]);
 
   // ✅ Handle sending reply
   const handleReply = async () => {
     if (!selectedInquiry) return;
-  
+
     try {
       await replyInquiries(selectedInquiry.id, replyMessage);
-  
+
       // ✅ Update the status to "replied"
       setInquiries((prev) =>
         prev.map((i) =>
           i.id === selectedInquiry.id ? { ...i, status: "replied" } : i
         )
       );
-  
+
       // ✅ Show Sonner toast notification
       toast.success("Reply Sent", {
         description: `Your response has been sent to ${selectedInquiry.email}. The status is now marked as 'Replied'.`,
       });
-  
+
       setSelectedInquiry(null);
       setReplyMessage("");
     } catch {
@@ -80,38 +97,40 @@ export default function AdminInquiries() {
       });
     }
   };
-  
-  
 
   // ✅ Handle archiving/unarchiving
   const handleToggleArchive = async (id: number, isArchived: boolean) => {
     try {
       let updatedStatus = isArchived ? "active" : "archived";
-  
+
       // ✅ Ensure API is correctly updating the inquiry status
-      const response = isArchived ? await unarchiveInquiries(id) : await archiveInquiries(id);
-  
+      const response = isArchived
+        ? await unarchiveInquiries(id)
+        : await archiveInquiries(id);
+
       if (!response) throw new Error("Failed to update inquiry status");
-  
+
       setInquiries((prev) =>
         prev.map((i) => (i.id === id ? { ...i, status: updatedStatus } : i))
       );
-  
+
       // ✅ Show success toast
-      toast.success(`Inquiry ${updatedStatus === "archived" ? "Archived" : "Unarchived"}`, {
-        description: `The inquiry has been ${updatedStatus}.`,
-      });
+      toast.success(
+        `Inquiry ${updatedStatus === "archived" ? "Archived" : "Unarchived"}`,
+        {
+          description: `The inquiry has been ${updatedStatus}.`,
+        }
+      );
     } catch (error) {
       console.error("Error updating inquiry status:", error);
-  
+
       toast.error("Failed to update inquiry", {
-        description: "There was an issue updating the status. Please try again.",
+        description:
+          "There was an issue updating the status. Please try again.",
       });
     }
   };
-  
 
-  
   const confirmDelete = (id: number) => {
     setSelectedInquiryId(id);
     setIsDeleteDialogOpen(true);
@@ -120,25 +139,25 @@ export default function AdminInquiries() {
   // ✅ Handle deleting an inquiry
   const handleDelete = async () => {
     if (!selectedInquiryId) return;
-  
+
     try {
       await deleteInquiries(selectedInquiryId);
       setInquiries((prev) => prev.filter((i) => i.id !== selectedInquiryId));
-  
+
       // ✅ Show Sonner toast notification
       toast.success("Inquiry Deleted", {
         description: "The inquiry has been removed successfully.",
       });
     } catch {
       toast.error("Failed to delete inquiry", {
-        description: "There was an issue deleting the inquiry. Please try again.",
+        description:
+          "There was an issue deleting the inquiry. Please try again.",
       });
     } finally {
       setIsDeleteDialogOpen(false);
       setSelectedInquiryId(null);
     }
   };
-  
 
   // ✅ Table Columns
   const columns: ColumnDef<any>[] = [
@@ -154,7 +173,11 @@ export default function AdminInquiries() {
       cell: ({ row }) => (
         <div className="flex space-x-2">
           {/* Reply Button */}
-          <Button size="sm" variant="outline" onClick={() => setSelectedInquiry(row.original)}>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setSelectedInquiry(row.original)}
+          >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
 
@@ -162,7 +185,12 @@ export default function AdminInquiries() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => handleToggleArchive(row.original.id, row.original.status === "archived")}
+            onClick={() =>
+              handleToggleArchive(
+                row.original.id,
+                row.original.status === "archived"
+              )
+            }
           >
             {row.original.status === "archived" ? (
               <>
@@ -176,7 +204,11 @@ export default function AdminInquiries() {
           </Button>
 
           {/* Delete Button */}
-          <Button size="sm" variant="destructive" onClick={() => confirmDelete(row.original.id)}>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => confirmDelete(row.original.id)}
+          >
             <Trash className="w-4 h-4" /> Delete
           </Button>
         </div>
@@ -186,7 +218,9 @@ export default function AdminInquiries() {
 
   return (
     <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center md:text-left">Customer Inquiries</h2>
+      <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
+        Customer Inquiries
+      </h2>
 
       {/* ✅ Filter Buttons */}
       <div className="flex justify-center md:justify-start space-x-4 mb-4">
@@ -212,7 +246,9 @@ export default function AdminInquiries() {
 
       {loading ? (
         <div className="flex justify-center items-center">
-          <p className="text-gray-500 dark:text-gray-300">Loading inquiries...</p>
+          <p className="text-gray-500 dark:text-gray-300">
+            Loading inquiries...
+          </p>
         </div>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
@@ -224,23 +260,29 @@ export default function AdminInquiries() {
 
       {/* ✅ Reply Dialog */}
       {selectedInquiry && (
-        <Dialog open={!!selectedInquiry} onOpenChange={() => setSelectedInquiry(null)}>
+        <Dialog
+          open={!!selectedInquiry}
+          onOpenChange={() => setSelectedInquiry(null)}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Reply to Inquiry</DialogTitle>
             </DialogHeader>
-        
+
             {/* ✅ Display the Client's Message */}
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md border border-gray-300 dark:border-gray-700 mb-4">
-            <div className="flex items-center space-x-2">
-              <User className="w-5 h-5 text-gray-700 dark:text-gray-300" /> {/* Profile Icon */}
-              <h3 className="font-semibold text-gray-700 dark:text-gray-200">Client Message:</h3>
-            </div>
+            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md border border-gray-300 dark:border-gray-700 mb-4">
+              <div className="flex items-center space-x-2">
+                <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />{" "}
+                {/* Profile Icon */}
+                <h3 className="font-semibold text-gray-700 dark:text-gray-200">
+                  Client Message:
+                </h3>
+              </div>
               <p className="text-gray-600 dark:text-gray-300 mt-2">
                 {selectedInquiry?.message || "No message provided."}
               </p>
             </div>
-        
+
             {/* Reply Section */}
             <div>
               <p className="mb-2">
@@ -252,10 +294,13 @@ export default function AdminInquiries() {
                 placeholder="Type your reply message..."
               />
             </div>
-        
+
             {/* Buttons */}
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setSelectedInquiry(null)}>
+              <Button
+                variant="outline"
+                onClick={() => setSelectedInquiry(null)}
+              >
                 Cancel
               </Button>
               <Button onClick={handleReply} variant="success">
@@ -264,17 +309,25 @@ export default function AdminInquiries() {
             </div>
           </DialogContent>
         </Dialog>
-      
       )}
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={() => setIsDeleteDialogOpen(false)}>
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={() => setIsDeleteDialogOpen(false)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Deletion</DialogTitle>
-            <p>Are you sure you want to delete this inquiry? This action cannot be undone.</p>
+            <p>
+              Are you sure you want to delete this inquiry? This action cannot
+              be undone.
+            </p>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
@@ -283,7 +336,6 @@ export default function AdminInquiries() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }

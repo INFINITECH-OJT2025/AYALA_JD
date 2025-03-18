@@ -3,7 +3,13 @@
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function DownloadResume({ resumePath, fileName }: { resumePath: string; fileName: string }) {
+export default function DownloadResume({
+  resumePath,
+  fileName,
+}: {
+  resumePath: string;
+  fileName: string;
+}) {
   const handleDownload = () => {
     if (!resumePath) {
       console.error("Resume path is missing");

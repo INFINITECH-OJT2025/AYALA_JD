@@ -36,12 +36,19 @@ export function MobileNavbar() {
       {/* ✅ Mobile Navbar Header */}
       <div className="bg-[#fafffe] dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0 flex justify-between items-center px-6 py-4">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+        <Link
+          href="/"
+          className="text-2xl font-bold text-gray-800 dark:text-gray-100"
+        >
           Ayala Land
         </Link>
 
         {/* Mobile Menu Button */}
-        <button className="md:hidden text-gray-600 dark:text-gray-300" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle Menu">
+        <button
+          className="md:hidden text-gray-600 dark:text-gray-300"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label="Toggle Menu"
+        >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -71,13 +78,25 @@ export function MobileNavbar() {
           {/* ✅ Theme Toggle in Mobile Menu */}
           {mounted && (
             <div className="flex space-x-3">
-              <Button variant="ghost" size="icon" onClick={() => setTheme("light")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme("light")}
+              >
                 <Sun className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => setTheme("dark")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme("dark")}
+              >
                 <Moon className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => setTheme("system")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme("system")}
+              >
                 <Monitor className="w-5 h-5" />
               </Button>
             </div>

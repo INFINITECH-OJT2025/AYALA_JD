@@ -1,17 +1,52 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage,} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
 import Image from "next/image";
 import { submitProperty } from "@/lib/api";
-import { Phone, MapPin, DollarSign, Home, Car, Mail, Contact, Image as ImageIcon, AirVent, Grid2X2Check, Building2, List, Combine, PencilLine, Banknote } from "lucide-react";
+import {
+  Phone,
+  MapPin,
+  DollarSign,
+  Home,
+  Car,
+  Mail,
+  Contact,
+  Image as ImageIcon,
+  AirVent,
+  Grid2X2Check,
+  Building2,
+  List,
+  Combine,
+  PencilLine,
+  Banknote,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner"; // ✅ Import Sonner
 interface CreateListingDialogProps {
@@ -19,8 +54,11 @@ interface CreateListingDialogProps {
   onClose: () => void;
 }
 
-export default function CreateListingDialog({ isOpen, onClose }: CreateListingDialogProps) {
- const form = useForm();
+export default function CreateListingDialog({
+  isOpen,
+  onClose,
+}: CreateListingDialogProps) {
+  const form = useForm();
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,53 +72,54 @@ export default function CreateListingDialog({ isOpen, onClose }: CreateListingDi
     setSelectedImages(selectedImages.filter((_, i) => i !== index));
   };
 
-  
-const onSubmit = async (data: any) => {
-  console.log("Submitting Data:", data);
+  const onSubmit = async (data: any) => {
+    console.log("Submitting Data:", data);
 
-  const formData = new FormData();
-  formData.append("status", "approved"); // ✅ Auto-approve for admin
+    const formData = new FormData();
+    formData.append("status", "approved"); // ✅ Auto-approve for admin
 
-  formData.append("type_of_listing", JSON.stringify(data.type_of_listing));
-  const selectedFeatures = Object.keys(data.features).filter((key) => data.features[key] === true);
-  formData.append("features", JSON.stringify(selectedFeatures));
+    formData.append("type_of_listing", JSON.stringify(data.type_of_listing));
+    const selectedFeatures = Object.keys(data.features).filter(
+      (key) => data.features[key] === true
+    );
+    formData.append("features", JSON.stringify(selectedFeatures));
 
-  Object.entries(data).forEach(([key, value]) => {
-    if (key !== "features" && key !== "type_of_listing") {
-      formData.append(key, value as string);
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "features" && key !== "type_of_listing") {
+        formData.append(key, value as string);
+      }
+    });
+
+    selectedImages.forEach((image) =>
+      formData.append("property_image[]", image)
+    );
+
+    try {
+      const response = await submitProperty(formData);
+      console.log("Property submitted successfully", response);
+
+      // ✅ Show toast notification on success
+      // ✅ Show toast on success
+      toast("Property Created", {
+        description: `The property "${data.property_name}" has been successfully published.`,
+        action: {
+          label: "View",
+          onClick: () => console.log("Redirect to property details"),
+        },
+      });
+
+      onClose(); // ✅ Close dialog after submission
+    } catch (error) {
+      console.error("Error submitting property", error);
+
+      // ✅ Show toast error if submission fails
+      toast.error("Failed to create property", {
+        description: "Please try again.",
+      });
     }
-  });
+  };
 
-  selectedImages.forEach((image) => formData.append("property_image[]", image));
-
-  try {
-    const response = await submitProperty(formData);
-    console.log("Property submitted successfully", response);
-
-    // ✅ Show toast notification on success
-     // ✅ Show toast on success
-     toast("Property Created", {
-      description: `The property "${data.property_name}" has been successfully published.`,
-      action: {
-        label: "View",
-        onClick: () => console.log("Redirect to property details"),
-      },
-    });
-
-    onClose(); // ✅ Close dialog after submission
-  } catch (error) {
-    console.error("Error submitting property", error);
-
-    // ✅ Show toast error if submission fails
-    toast.error("Failed to create property", {
-      description: "Please try again.",
-    });
-  }
-};
-  
-
-  const listingOptions = ["For Rent", "For Sale",];
-
+  const listingOptions = ["For Rent", "For Sale"];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -89,199 +128,326 @@ const onSubmit = async (data: any) => {
           <DialogTitle>Create New Listing</DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[75vh] pr-4">
-        <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-6">Personal Information</h2>
-           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-2">
+          <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mb-6">
+            Personal Information
+          </h2>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6 p-2"
+            >
               {/* Personal Information */}
               <div className="grid grid-cols-2 gap-4">
-                <FormField control={form.control} name="first_name" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><Contact className="inline-block mr-2" />First Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="First Name" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="last_name" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><Contact className="inline-block mr-2" />Last Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Last Name" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-    
-              <FormField control={form.control} name="email" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Mail className="inline-block mr-2" />Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Email" {...field} value={field.value || ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-              <FormField control={form.control} name="phone_number" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Phone className="inline-block mr-2" />Phone Number</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="Phone Number" {...field} value={field.value || ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-            </div>
-    
-                {/* Property Information */}
-                <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">Property Information</h2>
-                <div className="grid grid-cols-3 gap-4">
-                <FormField control={form.control} name="property_name" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><Home className="inline-block mr-2" />Property Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Property Name" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="location" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><MapPin className="inline-block mr-2" />Location</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Location" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-        
-    
-              <FormField control={form.control} name="unit_status" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><AirVent className="inline-block mr-2" />Unit Status</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Unit Status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Bare">Bare</SelectItem>
-                      <SelectItem value="Semi-Furnished">Semi-Furnished</SelectItem>
-                      <SelectItem value="Fully-Furnished">Fully-Furnished</SelectItem>
-                      <SelectItem value="Interiored">Interiored</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              </div>
-
-              
-              <div className="grid grid-cols-3 gap-4">
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => {
-                  const formatPrice = (value: string) => {
-                    const numericValue = value.replace(/[^0-9.]/g, "");
-                    return new Intl.NumberFormat("en-US").format(parseFloat(numericValue) || 0);
-                  };
-
-                  return (
+                <FormField
+                  control={form.control}
+                  name="first_name"
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <Banknote className="inline-block mr-2" />
-                        Price
+                        <Contact className="inline-block mr-2" />
+                        First Name
                       </FormLabel>
-
                       <FormControl>
                         <Input
-                          placeholder="Price"
+                          placeholder="First Name"
                           {...field}
-                          value={field.value ? formatPrice(field.value.toString()) : ""}
-                          onChange={(e) => {
-                            // Update form state with unformatted numeric value
-                            const rawValue = e.target.value.replace(/,/g, ""); // Remove commas before saving
-                            field.onChange(rawValue);
-                          }}
+                          value={field.value || ""}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  );
-                }}
-              />
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="last_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Contact className="inline-block mr-2" />
+                        Last Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Last Name"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                <FormField control={form.control} name="square_meter" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><Grid2X2Check className="inline-block mr-2" /> Square Meter</FormLabel>
-                    <FormControl>
-                      <Input  placeholder="Square Meter" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="floor_number" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel><Building2 className="inline-block mr-2"/> Floor Number</FormLabel>
-                    <FormControl>
-                      <Input  placeholder="Floor Number" {...field} value={field.value || ""} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Mail className="inline-block mr-2" />
+                        Email
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Email"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="phone_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Phone className="inline-block mr-2" />
+                        Phone Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="tel"
+                          placeholder="Phone Number"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-              
+
+              {/* Property Information */}
+              <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">
+                Property Information
+              </h2>
               <div className="grid grid-cols-3 gap-4">
-              <FormField control={form.control} name="parking" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Car className="inline-block mr-2" /> Parking</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Parking Availability" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="with">With Parking</SelectItem>
-                      <SelectItem value="without">Without Parking</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-              <FormField control={form.control} name="unit_type" render={({ field }) => (
-                <FormItem>
-                  <FormLabel><Combine className="inline-block mr-2"/> Unit Type</FormLabel>
-                  <Select onValueChange={field.onChange}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Unit Type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="studio type">Studio type</SelectItem>
-                      <SelectItem value="1br">1BR</SelectItem>
-                      <SelectItem value="2br">2BR</SelectItem>
-                      <SelectItem value="loft">Loft</SelectItem>
-                      <SelectItem value="penthouse">Penthouse</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )} />
-    
-    
+                <FormField
+                  control={form.control}
+                  name="property_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Home className="inline-block mr-2" />
+                        Property Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Property Name"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <MapPin className="inline-block mr-2" />
+                        Location
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Location"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="unit_status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <AirVent className="inline-block mr-2" />
+                        Unit Status
+                      </FormLabel>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Unit Status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Bare">Bare</SelectItem>
+                          <SelectItem value="Semi-Furnished">
+                            Semi-Furnished
+                          </SelectItem>
+                          <SelectItem value="Fully-Furnished">
+                            Fully-Furnished
+                          </SelectItem>
+                          <SelectItem value="Interiored">Interiored</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => {
+                    const formatPrice = (value: string) => {
+                      const numericValue = value.replace(/[^0-9.]/g, "");
+                      return new Intl.NumberFormat("en-US").format(
+                        parseFloat(numericValue) || 0
+                      );
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          <Banknote className="inline-block mr-2" />
+                          Price
+                        </FormLabel>
+
+                        <FormControl>
+                          <Input
+                            placeholder="Price"
+                            {...field}
+                            value={
+                              field.value
+                                ? formatPrice(field.value.toString())
+                                : ""
+                            }
+                            onChange={(e) => {
+                              // Update form state with unformatted numeric value
+                              const rawValue = e.target.value.replace(/,/g, ""); // Remove commas before saving
+                              field.onChange(rawValue);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="square_meter"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Grid2X2Check className="inline-block mr-2" /> Square
+                        Meter
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Square Meter"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="floor_number"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Building2 className="inline-block mr-2" /> Floor Number
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Floor Number"
+                          {...field}
+                          value={field.value || ""}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="parking"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Car className="inline-block mr-2" /> Parking
+                      </FormLabel>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Parking Availability" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="with">With Parking</SelectItem>
+                          <SelectItem value="without">
+                            Without Parking
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="unit_type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <Combine className="inline-block mr-2" /> Unit Type
+                      </FormLabel>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Unit Type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="studio type">
+                            Studio type
+                          </SelectItem>
+                          <SelectItem value="1br">1BR</SelectItem>
+                          <SelectItem value="2br">2BR</SelectItem>
+                          <SelectItem value="loft">Loft</SelectItem>
+                          <SelectItem value="penthouse">Penthouse</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="type_of_listing"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel><List className="inline-block mr-2" /> Listing Type</FormLabel>
+                      <FormLabel>
+                        <List className="inline-block mr-2" /> Listing Type
+                      </FormLabel>
                       <div className="grid grid-cols-2 gap-2">
                         {listingOptions.map((option) => (
                           <FormField
@@ -296,7 +462,9 @@ const onSubmit = async (data: any) => {
                                     onCheckedChange={(checked) => {
                                       const newValue = checked
                                         ? [...(field.value || []), option] // Add selected option
-                                        : field.value.filter((item: string) => item !== option); // Remove unchecked
+                                        : field.value.filter(
+                                            (item: string) => item !== option
+                                          ); // Remove unchecked
                                       field.onChange(newValue);
                                     }}
                                   />
@@ -312,62 +480,93 @@ const onSubmit = async (data: any) => {
                   )}
                 />
               </div>
-    
-              <FormField control={form.control} name="description" render={({ field }) => (
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
                   <FormItem>
-                    <FormLabel><PencilLine className="inline-block mr-2"/> Description</FormLabel>
+                    <FormLabel>
+                      <PencilLine className="inline-block mr-2" /> Description
+                    </FormLabel>
                     <FormControl>
-                    <Textarea placeholder="Enter property description" {...field} />
+                      <Textarea
+                        placeholder="Enter property description"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                )} />
-    
-              <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">General Features and Amenities</h2>
+                )}
+              />
+
+              <h2 className="text-2xl font-bold text-green-700 dark:text-green-400 mt-6">
+                General Features and Amenities
+              </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    "Pool Area",
-                    "Gym Fitness Center",
-                    "Underground Parking",
-                    "Balcony Terrace",
-                    "Security",
-                    "Pet Friendly Facilities",
-                    "Elevator",
-                    "Concierge Services",
-                    "Guest Suite",
-                    "Club House"
-                  ].map((feature) => (
-                    <FormField
-                      key={feature}
-                      control={form.control}
-                      name={`features.${feature}`}
-                      render={({ field }) => (
-                        <FormItem className="flex items-end gap-2">
-                          <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <FormLabel>{feature}</FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                  ))}
-                </div>
-    
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      "Pool Area",
+                      "Gym Fitness Center",
+                      "Underground Parking",
+                      "Balcony Terrace",
+                      "Security",
+                      "Pet Friendly Facilities",
+                      "Elevator",
+                      "Concierge Services",
+                      "Guest Suite",
+                      "Club House",
+                    ].map((feature) => (
+                      <FormField
+                        key={feature}
+                        control={form.control}
+                        name={`features.${feature}`}
+                        render={({ field }) => (
+                          <FormItem className="flex items-end gap-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormLabel>{feature}</FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-    
-    
+
               {/* Image Upload */}
-              <div className="mt-4" >
-              <FormLabel><ImageIcon className="inline-block mr-2" />Property Images</FormLabel>
-                <Input type="file" multiple onChange={handleImageChange} className="mt-2" />
+              <div className="mt-4">
+                <FormLabel>
+                  <ImageIcon className="inline-block mr-2" />
+                  Property Images
+                </FormLabel>
+                <Input
+                  type="file"
+                  multiple
+                  onChange={handleImageChange}
+                  className="mt-2"
+                />
                 <div className="mt-4 flex flex-wrap gap-2">
                   {selectedImages.map((image, index) => (
                     <div key={index} className="relative w-24 h-24">
-                      <Image src={URL.createObjectURL(image)} alt={`Selected ${index}`} width={96} height={96} className="object-cover rounded-lg border" />
-                      <Button size="sm" variant="destructive" className="absolute top-0 right-0 p-1" onClick={() => removeImage(index)}>
+                      <Image
+                        src={URL.createObjectURL(image)}
+                        alt={`Selected ${index}`}
+                        width={96}
+                        height={96}
+                        className="object-cover rounded-lg border"
+                      />
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="absolute top-0 right-0 p-1"
+                        onClick={() => removeImage(index)}
+                      >
                         ✕
                       </Button>
                     </div>
@@ -375,16 +574,14 @@ const onSubmit = async (data: any) => {
                 </div>
               </div>
               <div className="flex justify-end gap-2">
-              <Button type="submit" variant="default">
-                Publish Property
-              </Button>
+                <Button type="submit" variant="default">
+                  Publish Property
+                </Button>
               </div>
-              
             </form>
           </Form>
         </ScrollArea>
-        <DialogFooter>
-        </DialogFooter>
+        <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>
   );

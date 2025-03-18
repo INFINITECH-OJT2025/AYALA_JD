@@ -6,7 +6,15 @@ import Link from "next/link";
 import { Footer } from "@/components/landing-page/Footer";
 import { Navbar } from "@/components/landing-page/Navbar";
 import { fetchProperties, trackPropertyView } from "@/lib/api";
-import { Plus, Send, Upload, Loader2, HomeIcon, Home, HousePlus, } from "lucide-react";
+import {
+  Plus,
+  Send,
+  Upload,
+  Loader2,
+  HomeIcon,
+  Home,
+  HousePlus,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CreateListingLand from "@/components/common/CreateListingLanding";
 import ComparisonModal from "@/components/common/ComparisonModal"; // Adjust path if needed
@@ -36,36 +44,33 @@ export default function FeaturedProperties() {
         setLoading(false);
       }
     };
-  
+
     loadProperties(); // Initial fetch
-  
+
     const interval = setInterval(loadProperties, 5000); // ✅ Fetch new data every 5 seconds
-  
+
     return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
-  
-  
-  
 
   const togglePropertySelection = (property: Property) => {
     setSelectedProperties((prevSelected) => {
       if (prevSelected.some((p) => p.id === property.id)) {
         return prevSelected.filter((p) => p.id !== property.id); // ✅ Remove if already selected
       }
-  
+
       if (prevSelected.length >= 3) {
         return prevSelected; // ✅ Prevent adding more than 3
       }
-  
+
       return [...prevSelected, property]; // ✅ Add property
     });
   };
 
   const removeFromComparison = (propertyId: number) => {
-    setSelectedProperties((prev) => prev.filter((property) => property.id !== propertyId));
+    setSelectedProperties((prev) =>
+      prev.filter((property) => property.id !== propertyId)
+    );
   };
-
-  
 
   const formatPrice = (price: string) => {
     return parseFloat(price.replace(/[^\d.]/g, "")) || 0;
@@ -80,7 +85,9 @@ export default function FeaturedProperties() {
 
   const filteredProperties = properties.filter((property) => {
     const matchesSearch =
-      property.property_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.property_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
       property.location.toLowerCase().includes(searchQuery.toLowerCase());
 
     const priceCategory = getPriceRange(formatPrice(property.price));
@@ -98,7 +105,8 @@ export default function FeaturedProperties() {
             Properties
           </h2>
           <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
-            Turning Dreams into Addresses, Secure Your Future with the Right Property.
+            Turning Dreams into Addresses, Secure Your Future with the Right
+            Property.
           </p>
 
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 items-center">
@@ -119,155 +127,184 @@ export default function FeaturedProperties() {
               <option value="10M+">₱10M+</option>
             </select>
 
-            <Button variant="success" className="font-bold" onClick={() => setIsDialogOpen(true)}>
+            <Button
+              variant="success"
+              className="font-bold"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Upload className="w-5 h-5" />
               Submit Property
             </Button>
           </div>
 
-          <CreateListingLand isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+          <CreateListingLand
+            isOpen={isDialogOpen}
+            onClose={() => setIsDialogOpen(false)}
+          />
 
           {selectedProperties.length > 0 && (
-          <div className="fixed top-20 right-5 w-[45%] 
+            <div
+              className="fixed top-20 right-5 w-[45%] 
             bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg flex items-center 
             justify-between z-50 border border-gray-300 dark:border-gray-600 
-            outline outline-2 outline-gray-300 dark:outline-gray-500">
-
-            {/* ✅ Label on the left */}
-            <div className="mr-auto">
-              <span className="font-bold text-gray-800 dark:text-gray-100">COMPARE PROPERTIES:</span>
-            </div>
-
-            {/* ✅ Selected properties (max 3) and button stay at the right */}
-            <div className="flex gap-2 items-center">
-              {selectedProperties.slice(0, 3).map((property) => (
-                <span
-                  key={property.id}
-                  className="bg-green-600 text-gray-100 px-3 py-1 rounded flex items-center max-w-[120px] truncate"
-                  title={property.property_name} // ✅ Tooltip on hover
-                >
-                  <span className="truncate max-w-[80px]">{property.property_name}</span> 
-                  <button
-                    className="ml-2 text-sm font-extrabold text-red-600"
-                    onClick={() => togglePropertySelection(property)}
-                  >
-                    ✕
-                  </button>
+            outline outline-2 outline-gray-300 dark:outline-gray-500"
+            >
+              {/* ✅ Label on the left */}
+              <div className="mr-auto">
+                <span className="font-bold text-gray-800 dark:text-gray-100">
+                  COMPARE PROPERTIES:
                 </span>
-              ))}
-              <Button variant="success" className="font-bold" onClick={() => setIsComparisonOpen(true)}>Compare</Button>
+              </div>
+
+              {/* ✅ Selected properties (max 3) and button stay at the right */}
+              <div className="flex gap-2 items-center">
+                {selectedProperties.slice(0, 3).map((property) => (
+                  <span
+                    key={property.id}
+                    className="bg-green-600 text-gray-100 px-3 py-1 rounded flex items-center max-w-[120px] truncate"
+                    title={property.property_name} // ✅ Tooltip on hover
+                  >
+                    <span className="truncate max-w-[80px]">
+                      {property.property_name}
+                    </span>
+                    <button
+                      className="ml-2 text-sm font-extrabold text-red-600"
+                      onClick={() => togglePropertySelection(property)}
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+                <Button
+                  variant="success"
+                  className="font-bold"
+                  onClick={() => setIsComparisonOpen(true)}
+                >
+                  Compare
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-
-          <ComparisonModal 
-            isOpen={isComparisonOpen} 
-            onClose={() => setIsComparisonOpen(false)} 
-            selectedProperties={selectedProperties} 
+          <ComparisonModal
+            isOpen={isComparisonOpen}
+            onClose={() => setIsComparisonOpen(false)}
+            selectedProperties={selectedProperties}
             removeFromComparison={removeFromComparison} // ✅ Pass the function
           />
 
           {/* ✅ Show Loading Spinner if Data is Loading */}
           {loading ? (
-              <div className="flex justify-center items-center mt-6">
-                <Loader2 className="animate-spin w-10 h-10 text-green-600 dark:text-green-400" />
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-5 gap-6 mt-6">
-                {filteredProperties.length > 0 ? (
-                  filteredProperties.map((property) => (
-                    <div
-                      key={property.id}
-                      className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden flex flex-col h-full"
+            <div className="flex justify-center items-center mt-6">
+              <Loader2 className="animate-spin w-10 h-10 text-green-600 dark:text-green-400" />
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-5 gap-6 mt-6">
+              {filteredProperties.length > 0 ? (
+                filteredProperties.map((property) => (
+                  <div
+                    key={property.id}
+                    className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden flex flex-col h-full"
+                  >
+                    {/* ✅ Only Image is Clickable */}
+                    <Link
+                      href=""
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        await trackPropertyView(property.id);
+                        window.location.href = `/landing/property/${property.id}`;
+                      }}
+                      className="block hover:scale-105 transition-transform duration-300"
                     >
-                      {/* ✅ Only Image is Clickable */}
-                      <Link
-                        href=""
-                        onClick={async (e) => {
-                          e.preventDefault();
-                          await trackPropertyView(property.id);
-                          window.location.href = `/landing/property/${property.id}`;
-                        }}
-                        className="block hover:scale-105 transition-transform duration-300"
-                      >
-                        <div className="relative cursor-pointer">
-                          <Image
-                            src={property.property_image?.[0] || "/placeholder.jpg"}
-                            alt={property.property_name}
-                            width={500}
-                            height={300}
-                            className="w-full h-48 object-cover"
-                          />
-                          <span
-                            className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
-                              Array.isArray(property.type_of_listing)
-                                ? property.type_of_listing.includes("For Sale") &&
-                                  property.type_of_listing.includes("For Rent")
-                                  ? "bg-gradient-to-r from-green-500 to-blue-500"
-                                  : property.type_of_listing.includes("For Sale")
-                                  ? "bg-green-500"
-                                  : "bg-blue-500"
-                                : property.type_of_listing === "For Sale"
+                      <div className="relative cursor-pointer">
+                        <Image
+                          src={
+                            property.property_image?.[0] || "/placeholder.jpg"
+                          }
+                          alt={property.property_name}
+                          width={500}
+                          height={300}
+                          className="w-full h-48 object-cover"
+                        />
+                        <span
+                          className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
+                            Array.isArray(property.type_of_listing)
+                              ? property.type_of_listing.includes("For Sale") &&
+                                property.type_of_listing.includes("For Rent")
+                                ? "bg-gradient-to-r from-green-500 to-blue-500"
+                                : property.type_of_listing.includes("For Sale")
                                 ? "bg-green-500"
                                 : "bg-blue-500"
-                            }`}
-                          >
-                            {Array.isArray(property.type_of_listing)
-                              ? property.type_of_listing.join(" & ")
-                              : property.type_of_listing}
-                          </span>
+                              : property.type_of_listing === "For Sale"
+                              ? "bg-green-500"
+                              : "bg-blue-500"
+                          }`}
+                        >
+                          {Array.isArray(property.type_of_listing)
+                            ? property.type_of_listing.join(" & ")
+                            : property.type_of_listing}
+                        </span>
 
-                          <span className="absolute top-2 right-2 flex items-center bg-gray-800/80 text-white text-xs font-bold px-3 py-1 rounded">
-                            <Eye className="w-4 h-4 mr-1" />
-                            {property.views.length ?? 0} {property.views.length === 1 ? "View" : "Views"}
-                          </span>
-                        </div>
-                      </Link>
+                        <span className="absolute top-2 right-2 flex items-center bg-gray-800/80 text-white text-xs font-bold px-3 py-1 rounded">
+                          <Eye className="w-4 h-4 mr-1" />
+                          {property.views.length ?? 0}{" "}
+                          {property.views.length === 1 ? "View" : "Views"}
+                        </span>
+                      </div>
+                    </Link>
 
-                      {/* 🏡 Property Details */}
-                      <div className="p-4 flex flex-col flex-grow">
+                    {/* 🏡 Property Details */}
+                    <div className="p-4 flex flex-col flex-grow">
                       <span className="inline-block w-fit text-xs bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-300 font-bold px-2 py-1 rounded">
                         {property.unit_status}
                       </span>
-                        <h3 className="mt-2 text-sm font-bold dark:text-white">
-                          {property.unit_type} | {property.property_name}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">{property.location}</p>
+                      <h3 className="mt-2 text-sm font-bold dark:text-white">
+                        {property.unit_type} | {property.property_name}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        {property.location}
+                      </p>
 
-                        {/* ✅ Bottom Section: Sticks to Bottom */}
-                        <div className="mt-auto flex justify-between items-center pt-4">
-                          <p className="text-lg font-bold text-green-800 dark:text-green-400">
-                            ₱{new Intl.NumberFormat("en-PH").format(formatPrice(property.price))}
-                          </p>
+                      {/* ✅ Bottom Section: Sticks to Bottom */}
+                      <div className="mt-auto flex justify-between items-center pt-4">
+                        <p className="text-lg font-bold text-green-800 dark:text-green-400">
+                          ₱
+                          {new Intl.NumberFormat("en-PH").format(
+                            formatPrice(property.price)
+                          )}
+                        </p>
 
-                          {/* ✅ Home+ Button (Add to Compare) */}
-                          <Button
-                            variant={selectedProperties.some((p) => p.id === property.id) ? "success" : "outline"}
-                            size="icon"
-                            onClick={() => togglePropertySelection(property)}
-                          >
-                            <HousePlus
-                              className={`w-5 h-5 ${
-                                selectedProperties.some((p) => p.id === property.id)
-                                  ? "text-white"
-                                  : "text-green-600 dark:text-green-400"
-                              }`}
-                            />
-                          </Button>
-                        </div>
+                        {/* ✅ Home+ Button (Add to Compare) */}
+                        <Button
+                          variant={
+                            selectedProperties.some((p) => p.id === property.id)
+                              ? "success"
+                              : "outline"
+                          }
+                          size="icon"
+                          onClick={() => togglePropertySelection(property)}
+                        >
+                          <HousePlus
+                            className={`w-5 h-5 ${
+                              selectedProperties.some(
+                                (p) => p.id === property.id
+                              )
+                                ? "text-white"
+                                : "text-green-600 dark:text-green-400"
+                            }`}
+                          />
+                        </Button>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500 dark:text-gray-400 text-center col-span-5">
-                    No properties found matching your criteria.
-                  </p>
-                )}
-              </div>
-
-            )}
-
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400 text-center col-span-5">
+                  No properties found matching your criteria.
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </section>
       <div className="border-t border-gray-300 dark:border-gray-700 my-4"></div>

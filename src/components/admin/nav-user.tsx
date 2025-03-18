@@ -30,11 +30,11 @@ export function NavUser() {
   const handleLogout = async () => {
     try {
       await logout();
-      
+
       // ✅ Clear sessionStorage & prevent back navigation
-      sessionStorage.removeItem("authToken");  
+      sessionStorage.removeItem("authToken");
       localStorage.clear(); // Ensure all auth-related data is cleared
-  
+
       // ✅ Force reload to prevent cached pages
       router.push("/auth/login");
       setTimeout(() => {
@@ -44,7 +44,6 @@ export function NavUser() {
       console.error("Logout failed:", error);
     }
   };
-  
 
   return (
     <SidebarMenu>
@@ -59,7 +58,9 @@ export function NavUser() {
                 <AvatarFallback className="rounded-lg">A</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate text-xs">anyayahanjosedexter@gmail.com</span>
+                <span className="truncate text-xs">
+                  anyayahanjosedexter@gmail.com
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -76,13 +77,18 @@ export function NavUser() {
                   <AvatarFallback className="rounded-lg">A</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate text-xs">anyayahanjosedexter@gmail.com</span>
+                  <span className="truncate text-xs">
+                    anyayahanjosedexter@gmail.com
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer"
+              >
                 <LogOut className="mr-2" />
                 Log out
               </DropdownMenuItem>

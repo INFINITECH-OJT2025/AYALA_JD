@@ -45,7 +45,12 @@ export function NavMain({
           const isActive = pathname === item.url; // ✅ Check if the page is active
 
           return (
-            <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
+            <Collapsible
+              key={item.title}
+              asChild
+              defaultOpen={item.isActive}
+              className="group/collapsible"
+            >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
@@ -56,13 +61,14 @@ export function NavMain({
                         : "text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`}
                   >
-                    <Link href={item.url} className="flex items-center w-full gap-3">
+                    <Link
+                      href={item.url}
+                      className="flex items-center w-full gap-3"
+                    >
                       {item.icon && <item.icon size={22} />}
                       <span className="text-[15px]">{item.title}</span>
                       {item.items && (
-                        <ChevronRight
-                          className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90"
-                        />
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       )}
                     </Link>
                   </SidebarMenuButton>
@@ -84,7 +90,9 @@ export function NavMain({
                               }`}
                             >
                               <Link href={subItem.url}>
-                                <span className="text-[14px]">{subItem.title}</span>
+                                <span className="text-[14px]">
+                                  {subItem.title}
+                                </span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>

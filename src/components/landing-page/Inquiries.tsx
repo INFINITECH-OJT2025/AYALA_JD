@@ -9,7 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
@@ -38,7 +42,9 @@ export function Inquiries() {
 
   // ✅ Correctly set the schema based on selected tab
   const form = useForm<InquiryForm | AppointmentForm>({
-    resolver: zodResolver(tab === "inquiry" ? inquirySchema : appointmentSchema),
+    resolver: zodResolver(
+      tab === "inquiry" ? inquirySchema : appointmentSchema
+    ),
     defaultValues: {
       lastName: "",
       firstName: "",
@@ -65,10 +71,17 @@ export function Inquiries() {
 
   return (
     <div className="w-full mx-auto">
-      <Tabs defaultValue="inquiry" onValueChange={(v) => setTab(v as "inquiry" | "appointment")}>
+      <Tabs
+        defaultValue="inquiry"
+        onValueChange={(v) => setTab(v as "inquiry" | "appointment")}
+      >
         <TabsList className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-md">
-          <TabsTrigger value="inquiry" className="dark:text-gray-300">Inquiry</TabsTrigger>
-          <TabsTrigger value="appointment" className="dark:text-gray-300">Appointment</TabsTrigger>
+          <TabsTrigger value="inquiry" className="dark:text-gray-300">
+            Inquiry
+          </TabsTrigger>
+          <TabsTrigger value="appointment" className="dark:text-gray-300">
+            Appointment
+          </TabsTrigger>
         </TabsList>
 
         <div className="relative w-full">
@@ -79,34 +92,48 @@ export function Inquiries() {
               </h3>
 
               {/* Common Fields */}
-              <Input 
-                placeholder="Last Name" 
+              <Input
+                placeholder="Last Name"
                 className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                {...register("lastName")} 
+                {...register("lastName")}
               />
-              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
+              {errors.lastName && (
+                <p className="text-red-500 text-sm">
+                  {errors.lastName.message}
+                </p>
+              )}
 
-              <Input 
-                placeholder="First Name" 
+              <Input
+                placeholder="First Name"
                 className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                {...register("firstName")} 
+                {...register("firstName")}
               />
-              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
+              {errors.firstName && (
+                <p className="text-red-500 text-sm">
+                  {errors.firstName.message}
+                </p>
+              )}
 
-              <Input 
-                placeholder="Email" 
-                type="email" 
+              <Input
+                placeholder="Email"
+                type="email"
                 className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                {...register("email")} 
+                {...register("email")}
               />
-              {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
 
-              <Input 
-                placeholder="Phone Number" 
+              <Input
+                placeholder="Phone Number"
                 className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                {...register("phoneNumber")} 
+                {...register("phoneNumber")}
               />
-              {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>}
+              {errors.phoneNumber && (
+                <p className="text-red-500 text-sm">
+                  {errors.phoneNumber.message}
+                </p>
+              )}
 
               {/* Appointment-Specific Fields */}
               {tab === "appointment" && (
@@ -122,7 +149,9 @@ export function Inquiries() {
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
-                        {watch("date") ? format(watch("date") as Date, "PPP") : "Select a date"}
+                        {watch("date")
+                          ? format(watch("date") as Date, "PPP")
+                          : "Select a date"}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -136,26 +165,26 @@ export function Inquiries() {
                   </Popover>
 
                   {/* Time Input */}
-                  <Input 
-                    type="time" 
+                  <Input
+                    type="time"
                     className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                    {...register("time")} 
+                    {...register("time")}
                   />
                 </>
               )}
 
               {/* Message Field */}
-              <Textarea 
-                placeholder="Leave us a message..." 
+              <Textarea
+                placeholder="Leave us a message..."
                 className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
-                {...register("message")} 
+                {...register("message")}
               />
             </CardContent>
 
             {/* Submit Button Fixed at Bottom */}
             <div className="sticky bottom-0 bg-white dark:bg-gray-800 p-4 border-t dark:border-gray-700">
-              <Button 
-                className="w-full bg-blue-500 dark:bg-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500 text-white" 
+              <Button
+                className="w-full bg-blue-500 dark:bg-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500 text-white"
                 onClick={handleSubmit(onSubmit)}
               >
                 {tab === "inquiry" ? "Send Inquiry" : "Submit Appointment"}

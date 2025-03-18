@@ -84,7 +84,8 @@ export function FeaturedProperties() {
                     <span
                       className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
                         Array.isArray(property.type_of_listing)
-                          ? property.type_of_listing.includes("For Sale") && property.type_of_listing.includes("For Rent")
+                          ? property.type_of_listing.includes("For Sale") &&
+                            property.type_of_listing.includes("For Rent")
                             ? "bg-gradient-to-r from-green-500 to-blue-500"
                             : property.type_of_listing.includes("For Sale")
                             ? "bg-green-500"
@@ -94,16 +95,24 @@ export function FeaturedProperties() {
                           : "bg-blue-500"
                       }`}
                     >
-                      {Array.isArray(property.type_of_listing) ? property.type_of_listing.join(" & ") : property.type_of_listing}
+                      {Array.isArray(property.type_of_listing)
+                        ? property.type_of_listing.join(" & ")
+                        : property.type_of_listing}
                     </span>
                   </div>
                   <div className="p-4">
                     <h3 className="mt-2 text-lg font-bold dark:text-white">
                       {property.unit_type} | {property.property_name}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">{property.location}</p>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm">
+                      {property.location}
+                    </p>
                     <p className="mt-2 text-xl font-bold text-green-800 dark:text-green-400">
-                      ₱{parseFloat(property.price).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      ₱
+                      {parseFloat(property.price).toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -119,8 +128,15 @@ export function FeaturedProperties() {
         {/* Submit Your Property Section */}
         <div className="mt-10 text-center">
           <p className="text-lg text-gray-700 dark:text-gray-300">
-            Do you have a property for <span className="text-green-600 dark:text-green-400 font-semibold">sale</span> or{" "}
-            <span className="text-blue-600 dark:text-blue-400 font-semibold">rent</span>?
+            Do you have a property for{" "}
+            <span className="text-green-600 dark:text-green-400 font-semibold">
+              sale
+            </span>{" "}
+            or{" "}
+            <span className="text-blue-600 dark:text-blue-400 font-semibold">
+              rent
+            </span>
+            ?
           </p>
           <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
             List it with us and connect with potential buyers or tenants.

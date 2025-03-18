@@ -5,9 +5,9 @@ import { Footer } from "@/components/landing-page/Footer";
 function page() {
   return (
     <>
-    <Navbar/>
-    <LoanCalculator/>
-    <Footer/>
+      <Navbar />
+      <LoanCalculator />
+      <Footer />
     </>
   );
 }

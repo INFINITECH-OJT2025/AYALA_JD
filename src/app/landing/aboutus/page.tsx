@@ -78,11 +78,15 @@ export default function AboutUsPage() {
                 className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition"
               >
                 {item.image && (
-              <img
-                    src={item.image.startsWith("http") ? item.image : `http://127.0.0.1:8000/storage/${item.image}`}
+                  <img
+                    src={
+                      item.image.startsWith("http")
+                        ? item.image
+                        : `http://127.0.0.1:8000/storage/${item.image}`
+                    }
                     alt={item.title}
                     className="w-full h-48 object-cover rounded-md"
-                    onError={(e) => (e.currentTarget.style.display = 'none')} // Hide broken images
+                    onError={(e) => (e.currentTarget.style.display = "none")} // Hide broken images
                   />
                 )}
                 <h3 className="text-xl font-semibold mt-4 text-gray-800 dark:text-gray-100">

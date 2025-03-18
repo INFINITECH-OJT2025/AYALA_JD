@@ -1,5 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Download, Mail, CheckCircle, XCircle } from "lucide-react";
 
@@ -11,7 +18,7 @@ const inquiries = [
     email: "juandelacruz@gmail.com",
     phone: "09924401097",
     inquiryType: "General Inquiry",
-    message: "I want to know more about the property in Makati."
+    message: "I want to know more about the property in Makati.",
   },
   {
     id: 2,
@@ -20,8 +27,8 @@ const inquiries = [
     email: "mariasantos@email.com",
     phone: "09123456789",
     inquiryType: "Appointment Request",
-    message: "Can I schedule a visit to your office this weekend?"
-  }
+    message: "Can I schedule a visit to your office this weekend?",
+  },
 ];
 
 const jobApplications = [
@@ -31,7 +38,7 @@ const jobApplications = [
     email: "carlosmendoza@email.com",
     position: "Software Developer",
     status: "Pending",
-    resume: "resume-carlos.pdf"
+    resume: "resume-carlos.pdf",
   },
   {
     id: 2,
@@ -39,8 +46,8 @@ const jobApplications = [
     email: "annagarcia@email.com",
     position: "Marketing Specialist",
     status: "Reviewed",
-    resume: "resume-anna.pdf"
-  }
+    resume: "resume-anna.pdf",
+  },
 ];
 
 const recentTransactions = [
@@ -49,22 +56,22 @@ const recentTransactions = [
     client: "John Doe",
     property: "Condo in BGC",
     amount: "$250,000",
-    status: "Completed"
+    status: "Completed",
   },
   {
     id: 2,
     client: "Jane Smith",
     property: "House in Quezon City",
     amount: "$180,000",
-    status: "Pending"
-  }
+    status: "Pending",
+  },
 ];
 
 export default function AdminDashboard() {
   return (
     <div className="container mx-auto p-4 grid grid-cols-1 gap-4">
       <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      
+
       {/* Client Inquiries & Appointments */}
       <Card>
         <CardHeader>
@@ -85,13 +92,17 @@ export default function AdminDashboard() {
             <TableBody>
               {inquiries.map((inquiry) => (
                 <TableRow key={inquiry.id}>
-                  <TableCell>{inquiry.firstName} {inquiry.lastName}</TableCell>
+                  <TableCell>
+                    {inquiry.firstName} {inquiry.lastName}
+                  </TableCell>
                   <TableCell>{inquiry.email}</TableCell>
                   <TableCell>{inquiry.phone}</TableCell>
                   <TableCell>{inquiry.inquiryType}</TableCell>
                   <TableCell>{inquiry.message}</TableCell>
                   <TableCell>
-                    <Button variant="outline"><Mail className="w-4 h-4" /></Button>
+                    <Button variant="outline">
+                      <Mail className="w-4 h-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

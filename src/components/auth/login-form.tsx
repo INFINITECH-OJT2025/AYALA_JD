@@ -14,12 +14,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+export function LoginForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,20 +44,38 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       }
 
       const data = await response.json();
-
-      // ✅ Ensure only the predefined admin can log in
       if (data.user.email !== "anyayahanjosedexter@gmail.com") {
         throw new Error("Access denied. Only the admin can log in.");
       }
 
-      // ✅ Store session token
       sessionStorage.setItem("authToken", data.token);
-
-      // ✅ Redirect to admin dashboard
       router.push("/admin/overview/dashboard");
     } catch (err) {
       setLoading(false);
       setError(err instanceof Error ? err.message : "Something went wrong.");
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setForgotPasswordMessage("Please enter your email to reset password.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send password reset email.");
+      }
+
+      setForgotPasswordMessage("Password reset link sent to your email.");
+    } catch (err) {
+      setForgotPasswordMessage(err instanceof Error ? err.message : "Something went wrong.");
     }
   };
 
@@ -92,6 +114,14 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
               </Button>
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm text-blue-600 hover:underline mt-2"
+              >
+                Forgot Password?
+              </button>
+              {forgotPasswordMessage && <p className="text-sm text-green-600">{forgotPasswordMessage}</p>}
             </div>
           </form>
         </CardContent>

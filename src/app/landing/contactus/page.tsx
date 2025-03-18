@@ -1,5 +1,10 @@
 "use client";
-import { FaPhoneAlt, FaEnvelope, FaFacebookF, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaFacebookF,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
 import { Footer } from "@/components/landing-page/Footer";
 import { Navbar } from "@/components/landing-page/Navbar";
 import Contact from "@/components/common/Contact";
@@ -18,26 +23,36 @@ export default function ContactPage() {
                 Get in Touch with Ayala Land
               </h2>
               <p className="text-gray-700 dark:text-gray-300 mt-3">
-                Our expert team is ready to assist you in finding your dream home or investment property. Reach out today!
+                Our expert team is ready to assist you in finding your dream
+                home or investment property. Reach out today!
               </p>
 
               {/* Contact Icons */}
               <div className="mt-6 space-y-4">
                 <div className="flex items-center space-x-3 text-lg">
                   <FaPhoneAlt className="text-green-600 dark:text-green-400" />
-                  <a href="tel:+639265536964" className="text-blue-700 dark:text-blue-400 hover:underline">
+                  <a
+                    href="tel:+639265536964"
+                    className="text-blue-700 dark:text-blue-400 hover:underline"
+                  >
                     (+63) 926 553 6964
                   </a>
                 </div>
                 <div className="flex items-center space-x-3 text-lg">
                   <FaEnvelope className="text-green-600 dark:text-green-400" />
-                  <a href="mailto:info@ayalaland.com" className="text-blue-700 dark:text-blue-400 hover:underline">
+                  <a
+                    href="mailto:info@ayalaland.com"
+                    className="text-blue-700 dark:text-blue-400 hover:underline"
+                  >
                     info@ayalaland.com
                   </a>
                 </div>
                 <div className="flex items-center space-x-3 text-lg">
                   <FaFacebookF className="text-green-600 dark:text-green-400" />
-                  <a href="#" className="text-blue-700 dark:text-blue-400 hover:underline">
+                  <a
+                    href="#"
+                    className="text-blue-700 dark:text-blue-400 hover:underline"
+                  >
                     Ayala Land Official
                   </a>
                 </div>
@@ -56,20 +71,29 @@ export default function ContactPage() {
                 </p>
                 <ul className="mt-3 space-y-1 text-gray-700 dark:text-gray-300">
                   <li>
-                    <strong>Sales:</strong> 
-                    <a href="tel:+639651983796" className="text-blue-700 dark:text-blue-400 hover:underline">
+                    <strong>Sales:</strong>
+                    <a
+                      href="tel:+639651983796"
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
+                    >
                       (+63) 965 198 3796
                     </a>
                   </li>
                   <li>
-                    <strong>Leasing:</strong> 
-                    <a href="tel:+639651983796" className="text-blue-700 dark:text-blue-400 hover:underline">
+                    <strong>Leasing:</strong>
+                    <a
+                      href="tel:+639651983796"
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
+                    >
                       (+63) 965 198 3796
                     </a>
                   </li>
                   <li>
-                    <strong>Customer Care:</strong> 
-                    <a href="tel:0286466136" className="text-blue-700 dark:text-blue-400 hover:underline">
+                    <strong>Customer Care:</strong>
+                    <a
+                      href="tel:0286466136"
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
+                    >
                       02-8646-6136
                     </a>
                   </li>
@@ -77,7 +101,7 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <Contact/>
+            <Contact />
           </div>
         </div>
       </div>

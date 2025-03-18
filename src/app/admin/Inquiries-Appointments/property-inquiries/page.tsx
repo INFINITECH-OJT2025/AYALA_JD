@@ -11,9 +11,23 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Archive, Trash, User, Undo, ImageIcon, Inbox } from "lucide-react";
+import {
+  Mail,
+  Archive,
+  Trash,
+  User,
+  Undo,
+  ImageIcon,
+  Inbox,
+} from "lucide-react";
 import { toast } from "sonner";
 
 export default function AdminPropertyInquiries() {
@@ -24,7 +38,9 @@ export default function AdminPropertyInquiries() {
   const [replyMessage, setReplyMessage] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedInquiryId, setSelectedInquiryId] = useState<number | null>(null);
+  const [selectedInquiryId, setSelectedInquiryId] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     const getInquiries = async () => {
@@ -37,115 +53,109 @@ export default function AdminPropertyInquiries() {
         setLoading(false);
       }
     };
-  
+
     getInquiries(); // Initial fetch
-  
+
     const interval = setInterval(getInquiries, 5000); // ✅ Auto-refresh every 5 seconds
-  
+
     return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
-  
 
   const filteredInquiries = inquiries.filter((inquiry) =>
     filterStatus === "all" ? true : inquiry.status === filterStatus
   );
 
-
   // ✅ Handle archiving an inquiry
-const handleArchive = async (id: number) => {
-  try {
-    await archiveInquiry(id);
-    setInquiries((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, status: "archived" } : i))
-    );
+  const handleArchive = async (id: number) => {
+    try {
+      await archiveInquiry(id);
+      setInquiries((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, status: "archived" } : i))
+      );
 
-    // ✅ Show Sonner toast
-    toast.info("Inquiry Archived", {
-      description: "The inquiry has been moved to archived.",
-    });
-  } catch {
-    toast.error("Failed to archive inquiry", {
-      description: "There was an issue archiving the inquiry.",
-    });
-  }
-};
+      // ✅ Show Sonner toast
+      toast.info("Inquiry Archived", {
+        description: "The inquiry has been moved to archived.",
+      });
+    } catch {
+      toast.error("Failed to archive inquiry", {
+        description: "There was an issue archiving the inquiry.",
+      });
+    }
+  };
 
-// ✅ Handle unarchiving an inquiry
-const handleUnarchive = async (id: number) => {
-  try {
-    await unarchiveInquiry(id);
-    setInquiries((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, status: "active" } : i))
-    );
+  // ✅ Handle unarchiving an inquiry
+  const handleUnarchive = async (id: number) => {
+    try {
+      await unarchiveInquiry(id);
+      setInquiries((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, status: "active" } : i))
+      );
 
-    // ✅ Show Sonner toast
-    toast.success("Inquiry Unarchived", {
-      description: "The inquiry has been restored to active.",
-    });
-  } catch {
-    toast.error("Failed to unarchive inquiry", {
-      description: "There was an issue unarchiving the inquiry.",
-    });
-  }
-};
+      // ✅ Show Sonner toast
+      toast.success("Inquiry Unarchived", {
+        description: "The inquiry has been restored to active.",
+      });
+    } catch {
+      toast.error("Failed to unarchive inquiry", {
+        description: "There was an issue unarchiving the inquiry.",
+      });
+    }
+  };
 
+  // ✅ Handle replying to an inquiry
+  const handleReply = async () => {
+    if (!selectedInquiry) return;
+    try {
+      await replyInquiry(selectedInquiry.id, replyMessage);
 
-// ✅ Handle replying to an inquiry
-const handleReply = async () => {
-  if (!selectedInquiry) return;
-  try {
-    await replyInquiry(selectedInquiry.id, replyMessage);
+      // ✅ Update the status to "replied"
+      setInquiries((prev) =>
+        prev.map((i) =>
+          i.id === selectedInquiry.id ? { ...i, status: "replied" } : i
+        )
+      );
 
-    // ✅ Update the status to "replied"
-    setInquiries((prev) =>
-      prev.map((i) =>
-        i.id === selectedInquiry.id ? { ...i, status: "replied" } : i
-      )
-    );
+      // ✅ Show Sonner toast
+      toast.success("Reply Sent", {
+        description: `Your response has been sent to ${selectedInquiry.email}.`,
+      });
 
-    // ✅ Show Sonner toast
-    toast.success("Reply Sent", {
-      description: `Your response has been sent to ${selectedInquiry.email}.`,
-    });
+      setSelectedInquiry(null);
+      setReplyMessage("");
+    } catch {
+      toast.error("Failed to send reply", {
+        description: "There was an issue sending the reply.",
+      });
+    }
+  };
 
-    setSelectedInquiry(null);
-    setReplyMessage("");
-  } catch {
-    toast.error("Failed to send reply", {
-      description: "There was an issue sending the reply.",
-    });
-  }
-};
+  const confirmDelete = (id: number) => {
+    setSelectedInquiryId(id);
+    setIsDeleteDialogOpen(true);
+  };
 
-const confirmDelete = (id: number) => {
-  setSelectedInquiryId(id);
-  setIsDeleteDialogOpen(true);
-};
+  // ✅ Handle deleting an inquiry
+  const handleDelete = async () => {
+    if (!selectedInquiryId) return;
 
-// ✅ Handle deleting an inquiry
-const handleDelete = async () => {
-  if (!selectedInquiryId) return;
+    try {
+      await deleteInquiry(selectedInquiryId);
+      setInquiries((prev) => prev.filter((i) => i.id !== selectedInquiryId));
 
-  try {
-    await deleteInquiry(selectedInquiryId);
-    setInquiries((prev) => prev.filter((i) => i.id !== selectedInquiryId));
-
-    // ✅ Show Sonner toast
-    toast.success("Inquiry Deleted", {
-      description: "The inquiry has been removed successfully.",
-    });
-  } catch {
-    toast.error("Failed to delete inquiry", {
-      description: "There was an issue deleting the inquiry.",
-    });
-  } finally {
-    setIsDeleteDialogOpen(false);
-    setSelectedInquiryId(null);
-  }
-};
-
-
-
+      // ✅ Show Sonner toast
+      toast.success("Inquiry Deleted", {
+        description: "The inquiry has been removed successfully.",
+      });
+    } catch {
+      toast.error("Failed to delete inquiry", {
+        description: "There was an issue deleting the inquiry.",
+      });
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setSelectedInquiryId(null);
+    }
+  };
 
   const columns: ColumnDef<any>[] = [
     { accessorKey: "property.property_name", header: "Property Name" },
@@ -184,7 +194,11 @@ const handleDelete = async () => {
             </Button>
           )}
 
-          <Button size="sm" variant="destructive" onClick={() => confirmDelete(row.original.id)}>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => confirmDelete(row.original.id)}
+          >
             <Trash className="w-4 h-4" /> Delete
           </Button>
         </div>
@@ -198,38 +212,57 @@ const handleDelete = async () => {
         Property Inquiries
       </h2>
       <div className="flex space-x-2 mb-4">
-        <Button variant={filterStatus === "all" ? "default" : "outline"} onClick={() => setFilterStatus("all")}>
+        <Button
+          variant={filterStatus === "all" ? "default" : "outline"}
+          onClick={() => setFilterStatus("all")}
+        >
           All
         </Button>
-        <Button variant={filterStatus === "active" ? "default" : "outline"} onClick={() => setFilterStatus("active")}>
+        <Button
+          variant={filterStatus === "active" ? "default" : "outline"}
+          onClick={() => setFilterStatus("active")}
+        >
           Active
         </Button>
-        <Button variant={filterStatus === "archived" ? "default" : "outline"} onClick={() => setFilterStatus("archived")}>
+        <Button
+          variant={filterStatus === "archived" ? "default" : "outline"}
+          onClick={() => setFilterStatus("archived")}
+        >
           Archived
         </Button>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center">
-          <p className="text-gray-500 dark:text-gray-300">Loading inquiries...</p>
+          <p className="text-gray-500 dark:text-gray-300">
+            Loading inquiries...
+          </p>
         </div>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
-        
         <div className="overflow-x-auto">
           <DataTable columns={columns} data={filteredInquiries} />
         </div>
       )}
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={() => setIsDeleteDialogOpen(false)}>
+      <Dialog
+        open={isDeleteDialogOpen}
+        onOpenChange={() => setIsDeleteDialogOpen(false)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Deletion</DialogTitle>
-            <p>Are you sure you want to delete this inquiry? This action cannot be undone.</p>
+            <p>
+              Are you sure you want to delete this inquiry? This action cannot
+              be undone.
+            </p>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button variant="destructive" onClick={handleDelete}>
@@ -241,41 +274,48 @@ const handleDelete = async () => {
 
       {/* Reply Dialog */}
       {selectedInquiry && (
-        <Dialog open={!!selectedInquiry} onOpenChange={() => setSelectedInquiry(null)}>
+        <Dialog
+          open={!!selectedInquiry}
+          onOpenChange={() => setSelectedInquiry(null)}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Reply to Inquiry</DialogTitle>
             </DialogHeader>
 
             <div className="mb-2 p-3 border rounded bg-gray-100 dark:bg-gray-800">
-                <h3 className="font-semibold text-gray-700 dark:text-gray-200 flex items-center">
-                    <ImageIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-300" />
-                    Property Details:
-                </h3>
+              <h3 className="font-semibold text-gray-700 dark:text-gray-200 flex items-center">
+                <ImageIcon className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-300" />
+                Property Details:
+              </h3>
 
-                {selectedInquiry.property?.property_image ? (
-                  (() => {
-                    // Ensure property_image is an array (if it's a string, split it)
-                    const images = Array.isArray(selectedInquiry.property.property_image)
-                      ? selectedInquiry.property.property_image
-                      : selectedInquiry.property.property_image.split(",");
+              {selectedInquiry.property?.property_image ? (
+                (() => {
+                  // Ensure property_image is an array (if it's a string, split it)
+                  const images = Array.isArray(
+                    selectedInquiry.property.property_image
+                  )
+                    ? selectedInquiry.property.property_image
+                    : selectedInquiry.property.property_image.split(",");
 
-                    return (
-                      <img
-                        src={images[0]} // ✅ Display only the first image
-                        alt="Property"
-                        className="w-full h-40 object-cover rounded-md mt-2"
-                      />
-                    );
-                  })()
-                ) : (
-                  <p className="text-gray-500 dark:text-gray-400 mt-2">No image available</p>
-                )}
-
-                <p className="text-gray-700 dark:text-gray-300 mt-1">
-                    <b>Property Name: </b>
-                    {selectedInquiry.property?.property_name || "Unknown Property"}
+                  return (
+                    <img
+                      src={images[0]} // ✅ Display only the first image
+                      alt="Property"
+                      className="w-full h-40 object-cover rounded-md mt-2"
+                    />
+                  );
+                })()
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400 mt-2">
+                  No image available
                 </p>
+              )}
+
+              <p className="text-gray-700 dark:text-gray-300 mt-1">
+                <b>Property Name: </b>
+                {selectedInquiry.property?.property_name || "Unknown Property"}
+              </p>
             </div>
 
             <div className="mb-2 p-3 border rounded bg-gray-100 dark:bg-gray-800">
@@ -299,7 +339,10 @@ const handleDelete = async () => {
               />
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setSelectedInquiry(null)}>
+              <Button
+                variant="outline"
+                onClick={() => setSelectedInquiry(null)}
+              >
                 Cancel
               </Button>
               <Button onClick={handleReply} variant="success">

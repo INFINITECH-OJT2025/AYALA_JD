@@ -32,11 +32,20 @@ export function Hero() {
       {/* Hero Content */}
       <div className="relative z-10 text-center px-4 sm:px-6">
         <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold pt-6 sm:pt-10 bg-gradient-to-r from-yellow-400 via-green-500 to-yellow-500 text-transparent bg-clip-text">
-          Find Your <span className="text-white drop-shadow-lg">Dream Property</span> with <span className="text-blue-400">Ayala Land</span>
+          Find Your{" "}
+          <span className="text-white drop-shadow-lg">Dream Property</span> with{" "}
+          <span className="text-blue-400">Ayala Land</span>
         </h1>
         <p className="mt-2 sm:mt-4 text-sm sm:text-lg md:text-xl text-gray-200">
-          Discover <span className="text-yellow-300 font-semibold">premium properties</span> for sale and lease with 
-          <span className="text-green-300 font-semibold"> exclusive investment opportunities.</span>
+          Discover{" "}
+          <span className="text-yellow-300 font-semibold">
+            premium properties
+          </span>{" "}
+          for sale and lease with
+          <span className="text-green-300 font-semibold">
+            {" "}
+            exclusive investment opportunities.
+          </span>
         </p>
       </div>
     </section>

@@ -24,7 +24,6 @@ export default function useFetchNotifications() {
       console.error("Error fetching notifications:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchNotifications(); // Initial fetch

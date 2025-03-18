@@ -38,8 +38,8 @@ export default function PropertyImages({ property }: { property: any }) {
             <button
               className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
               onClick={() =>
-                setCurrentImageIndex((prev) =>
-                  (prev + 1) % property.property_image.length
+                setCurrentImageIndex(
+                  (prev) => (prev + 1) % property.property_image.length
                 )
               }
             >
@@ -47,7 +47,9 @@ export default function PropertyImages({ property }: { property: any }) {
             </button>
           </>
         ) : (
-          <p className="text-center text-gray-500 dark:text-gray-400">No images available</p>
+          <p className="text-center text-gray-500 dark:text-gray-400">
+            No images available
+          </p>
         )}
       </div>
 

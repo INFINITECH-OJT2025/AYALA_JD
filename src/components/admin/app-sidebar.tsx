@@ -54,7 +54,10 @@ const data = {
       isActive: true,
       items: [
         { title: "Dashboard", url: "/admin/overview/dashboard" },
-        { title: "Listed Properties", url: "/admin/overview/listed-properties" },
+        {
+          title: "Listed Properties",
+          url: "/admin/overview/listed-properties",
+        },
         { title: "Job Applications", url: "/admin/overview/job-applications" },
       ],
     },
@@ -63,9 +66,18 @@ const data = {
       url: "#",
       icon: Inbox,
       items: [
-        { title: "Property Inquiries", url: "/admin/Inquiries-Appointments/property-inquiries" },
-        { title: "Property Appointments", url: "/admin/Inquiries-Appointments/property-appointments" },
-        { title: "General Inquiries", url: "/admin/overview/inquiries-received" },
+        {
+          title: "Property Inquiries",
+          url: "/admin/Inquiries-Appointments/property-inquiries",
+        },
+        {
+          title: "Property Appointments",
+          url: "/admin/Inquiries-Appointments/property-appointments",
+        },
+        {
+          title: "General Inquiries",
+          url: "/admin/overview/inquiries-received",
+        },
       ],
     },
     {
