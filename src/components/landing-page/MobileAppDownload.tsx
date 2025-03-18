@@ -89,7 +89,7 @@ export function MobileAppDownload() {
         {/* QR Code & Mobile Image */}
         <div className="flex flex-col items-center">
           <p className="text-gray-600 dark:text-gray-300 text-sm">Scan the QR code to install</p>
-          <Image src="/qr.png.png" alt="Mobile App Mockup" width={300} height={300} className="mt-6" />
+          <Image src="/qr.png" alt="Mobile App Mockup" width={300} height={300} className="mt-6" />
         </div>
       </div>
     </section>
