@@ -1,5 +1,5 @@
 import { Footer } from "@/components/landing-page/Footer";
-import MobileAppDownload from "@/components/landing-page/MobileAppDownload";
+import {MobileAppDownload} from "@/components/landing-page/MobileAppDownload";
 import { Navbar } from "@/components/landing-page/Navbar";
 
 export default function DownloadPage() {

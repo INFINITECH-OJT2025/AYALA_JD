@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Download, Smartphone, Star } from "lucide-react";
 
-export default function MobileAppDownload() {
+export function MobileAppDownload() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
 
