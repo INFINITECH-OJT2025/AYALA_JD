@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import LayoutClient from "./layout-client"; // ✅ Import client logic separately
+import LayoutClient from "./layout-client";
+import { Toaster } from "sonner"; // ✅ Import from Sonner
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,7 +28,8 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <LayoutClient>{children}</LayoutClient> {/* ✅ Client-side logic */}
+        <Toaster position="top-right" richColors /> {/* ✅ Fixed */}
+        <LayoutClient>{children}</LayoutClient>
       </body>
     </html>
   );

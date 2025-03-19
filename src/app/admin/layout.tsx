@@ -72,7 +72,6 @@ export default function AdminLayout({
         </div>
 
         {/* Add Toaster for global notifications */}
-        <Toaster richColors position="top-right" />
       </SidebarProvider>
     </ThemeProvider>
   );

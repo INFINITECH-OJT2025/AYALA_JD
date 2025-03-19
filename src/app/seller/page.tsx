@@ -45,7 +45,6 @@ export default function AdminLayout({
           </div>
 
           {/* Dashboard Content Goes Here */}
-          <div className="p-4 flex-1">{children}</div>
         </SidebarInset>
       </div>
     </SidebarProvider>
