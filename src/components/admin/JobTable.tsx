@@ -47,6 +47,10 @@ export default function JobTable() {
     };
 
     getJobs(); // Initial fetch
+
+    const interval = setInterval(getJobs, 5000); // ✅ Fetch new data every 5 seconds
+
+    return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
 
   const confirmDelete = (id: number) => {

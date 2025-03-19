@@ -148,6 +148,12 @@ export default function PropertyList() {
     };
 
     loadProperties();
+
+    const interval = setInterval(() => {
+      loadProperties();
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const confirmDelete = (id: number) => {

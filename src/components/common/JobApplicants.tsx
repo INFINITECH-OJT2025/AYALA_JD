@@ -50,6 +50,10 @@ export default function JobApplicants() {
     };
 
     getApplicants(); // Initial fetch
+
+    const interval = setInterval(getApplicants, 5000); // ✅ Auto-refresh every 5 seconds
+
+    return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
 
   // Handle Approval / Rejection Dialog Submission

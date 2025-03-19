@@ -48,10 +48,13 @@ export default function AdminAppointments() {
         setLoading(false);
       }
     };
-  
-    getAppointments(); // ✅ Fetch only once on mount
-  }, []); // ✅ No interval, no unnecessary reloads
-  
+
+    getAppointments(); // Initial fetch
+
+    const interval = setInterval(getAppointments, 5000); // ✅ Auto-refresh every 5 seconds
+
+    return () => clearInterval(interval); // ✅ Cleanup on unmount
+  }, []);
 
   useEffect(() => {
     if (filter === "all") {

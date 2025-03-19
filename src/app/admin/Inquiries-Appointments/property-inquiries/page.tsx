@@ -55,6 +55,10 @@ export default function AdminPropertyInquiries() {
     };
 
     getInquiries(); // Initial fetch
+
+    const interval = setInterval(getInquiries, 5000); // ✅ Auto-refresh every 5 seconds
+
+    return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
 
   const filteredInquiries = inquiries.filter((inquiry) =>

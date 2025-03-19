@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sun, Moon, Monitor } from "lucide-react";
+import { Menu, X, Sun, Moon, Monitor, Wrench, Calculator, LayoutGrid } from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
 import { useTheme } from "next-themes";
@@ -81,51 +81,57 @@ export function Navbar() {
             {/* Theme Toggle */}
             {mounted && (
               <DropdownMenu>
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="w-10 h-10">
-                      {theme === "dark" ? (
-                        <Moon size={20} />
-                      ) : theme === "light" ? (
-                        <Sun size={20} />
-                      ) : (
-                        <Monitor size={20} />
-                      )}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setTheme("light")}>
-                      <Sun size={16} className="mr-2" /> Light Mode
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("dark")}>
-                      <Moon size={16} className="mr-2" /> Dark Mode
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setTheme("system")}>
-                      <Monitor size={16} className="mr-2" /> System Default
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="w-10 h-10">
+                    {theme === "dark" ? (
+                      <Moon size={20} />
+                    ) : theme === "light" ? (
+                      <Sun size={20} />
+                    ) : (
+                      <Monitor size={20} />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setTheme("light")}>
-                    <Sun className="w-4 h-4 mr-2" /> Light
+                    <Sun size={16} className="mr-2" /> Light Mode
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    <Moon className="w-4 h-4 mr-2" /> Dark
+                    <Moon size={16} className="mr-2" /> Dark Mode
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("system")}>
-                    <Monitor className="w-4 h-4 mr-2" /> System
+                    <Monitor size={16} className="mr-2" /> System Default
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
 
-            {/* Loan Calculator Button (Fixed Width) */}
-            <Button
-              className="text-gray-200 dark:text-gray-80 bg-blue-700 hover:bg-blue-800 dark:bg-blue-400 dark:hover:bg-blue-500 transition px-4 min-w-[160px]"
-              asChild
-            >
-              <Link href="/landing/loancalculator">Loan Calculator</Link>
-            </Button>
+            {/* Tools Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="text-gray-200 dark:text-gray-80 font-semibold bg-blue-700 hover:bg-blue-800 dark:bg-blue-400 dark:hover:bg-blue-500 transition px-4 min-w-[160px] flex items-center gap-2">
+                  <Wrench className="w-5 h-5" /> Tools
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/landing/loancalculator"
+                    className="flex items-center gap-2"
+                  >
+                    <Calculator className="w-5 h-5" /> Loan Calculator
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    href="/landing/roomplanner"
+                    className="flex items-center gap-2"
+                  >
+                    <LayoutGrid className="w-5 h-5" /> Room Planner
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Mobile Menu Button */}
