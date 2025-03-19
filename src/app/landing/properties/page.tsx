@@ -46,10 +46,6 @@ export default function FeaturedProperties() {
     };
 
     loadProperties(); // Initial fetch
-
-    const interval = setInterval(loadProperties, 5000); // ✅ Fetch new data every 5 seconds
-
-    return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
 
   const togglePropertySelection = (property: Property) => {

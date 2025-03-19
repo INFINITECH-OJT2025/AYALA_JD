@@ -18,8 +18,6 @@ const useFetchPropertyInquiryNotifications = () => {
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 5000); // ✅ Auto-refresh every 5 sec
-    return () => clearInterval(interval);
   }, []);
 
   return { notifications, fetchNotifications };

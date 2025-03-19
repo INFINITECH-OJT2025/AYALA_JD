@@ -41,7 +41,6 @@ export default function Notification() {
           notif.id === id ? { ...notif, is_read: "read" } : notif
         )
       );
-      setTimeout(fetchNotifications, 5000);
       toast.success("Notification marked as read.");
     } catch (error) {
       console.error("Error marking notification as read:", error);

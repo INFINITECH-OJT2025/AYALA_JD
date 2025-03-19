@@ -17,10 +17,9 @@ const useFetchJobApplicationNotifications = () => {
   };
 
   useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 5000); // ✅ Auto-refresh every 5 sec
-    return () => clearInterval(interval);
+    fetchNotifications(); // ✅ Fetch only once on mount
   }, []);
+  
 
   return { notifications, fetchNotifications };
 };

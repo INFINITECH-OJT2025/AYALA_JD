@@ -81,14 +81,10 @@ export default function PropertyDetails() {
 
   useEffect(() => {
     if (property?.property_image?.length) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex(
-          (prev) => (prev + 1) % property.property_image.length
-        );
-      }, 5000);
-      return () => clearInterval(interval);
+      setCurrentImageIndex(0); // Reset to the first image when property changes
     }
   }, [property]);
+  
 
   if (!property)
     return (

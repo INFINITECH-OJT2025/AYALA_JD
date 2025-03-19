@@ -27,11 +27,6 @@ export default function useFetchNotifications() {
 
   useEffect(() => {
     fetchNotifications(); // Initial fetch
-
-    // ✅ Poll for new notifications every 5 seconds
-    const interval = setInterval(fetchNotifications, 5000);
-
-    return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
   return { notifications, fetchNotifications };

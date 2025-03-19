@@ -62,9 +62,6 @@ export default function AdminServices() {
     };
 
     getServices(); // Initial fetch
-    const interval = setInterval(getServices, 5000); // ✅ Auto-refresh every 5 seconds
-
-    return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
 
   // ✅ Reset Form

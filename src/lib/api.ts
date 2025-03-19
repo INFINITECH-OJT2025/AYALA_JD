@@ -437,7 +437,7 @@ export const archiveInquiry = async (id: number) => {
   const res = await fetch(
     `http://127.0.0.1:8000/api/property-inquiries/${id}/archive`,
     {
-      method: "PUT",
+      method: "POST",
     }
   );
 
@@ -450,7 +450,7 @@ export const unarchiveInquiry = async (id: number) => {
   const res = await fetch(
     `http://127.0.0.1:8000/api/property-inquiries/${id}/unarchive`,
     {
-      method: "PUT",
+      method: "POST",
     }
   );
 
@@ -495,7 +495,7 @@ export const archiveAppointment = async (id: number) => {
   const res = await fetch(
     `http://127.0.0.1:8000/api/appointments/${id}/archive`,
     {
-      method: "PUT",
+      method: "POST",
     }
   );
 
@@ -507,7 +507,7 @@ export const unarchiveAppointment = async (id: number) => {
   const res = await fetch(
     `http://127.0.0.1:8000/api/appointments/${id}/unarchive`,
     {
-      method: "PUT",
+      method: "POST",
     }
   );
 

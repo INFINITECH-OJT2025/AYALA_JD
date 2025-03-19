@@ -179,7 +179,7 @@ function useToast() {
         listeners.splice(index, 1);
       }
     };
-  }, [state]);
+  }, []); // ✅ Run only on mount/unmount
 
   return {
     ...state,
@@ -187,5 +187,6 @@ function useToast() {
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   };
 }
+
 
 export { useToast, toast };
