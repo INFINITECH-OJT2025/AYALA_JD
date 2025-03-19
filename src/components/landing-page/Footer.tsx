@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { SubscribeNewsletter } from "../common/SubscribeNewsletter";
 
 export function Footer() {
   return (
@@ -76,25 +77,7 @@ export function Footer() {
         </div>
 
         {/* Newsletter Subscription */}
-        <div>
-          <h4 className="text-lg font-semibold text-white mb-4">
-            Stay Updated
-          </h4>
-          <p className="text-sm mb-3">
-            Subscribe to our newsletter for the latest updates on new
-            developments and promotions.
-          </p>
-          <div className="flex items-center bg-white rounded-lg overflow-hidden">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              className="border-0 rounded-none px-4"
-            />
-            <Button className="bg-blue-600 text-white px-4 rounded-none">
-              Subscribe
-            </Button>
-          </div>
-        </div>
+        <SubscribeNewsletter/>
       </div>
 
       {/* Social Media Links */}

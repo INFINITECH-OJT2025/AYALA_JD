@@ -55,9 +55,6 @@ export default function AdminNews() {
     };
 
     getNews(); // Initial fetch
-    const interval = setInterval(getNews, 5000); // ✅ Auto-refresh every 5 seconds
-
-    return () => clearInterval(interval); // ✅ Cleanup on unmount
   }, []);
 
   const resetForm = () => {

@@ -845,3 +845,25 @@ export async function deleteAboutUsContent() {
     return null;
   }
 }
+
+export async function subscribeToNewsletter(email: string) {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!res.ok) throw new Error("Subscription failed");
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error subscribing:", error);
+
+    // ✅ Explicitly cast error to an Error type
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+
+    return { success: false, message: errorMessage };
+  }
+}
+

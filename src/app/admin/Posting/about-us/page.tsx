@@ -275,5 +275,6 @@ export default function AdminAboutUs() {
         </form>
       </Form>
     </div>
+
   );
 }
