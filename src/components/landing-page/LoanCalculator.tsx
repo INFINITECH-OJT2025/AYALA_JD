@@ -16,7 +16,6 @@ import { DownloadPDF } from "@/components/DownloadPDF";
 
 export function LoanCalculator() {
   const [loanAmount, setLoanAmount] = useState<number>(100000);
-  const [downPayment, setDownPayment] = useState<number>(0);
   const [years, setYears] = useState<number>(2);
   const [months, setMonths] = useState<number>(3);
   const [interestRate, setInterestRate] = useState<number>(1);
@@ -25,33 +24,39 @@ export function LoanCalculator() {
   const pdfRef = useRef<HTMLDivElement>(null); // ✅ Properly initialized ref
 
   const formatNumber = (num: number) =>
-    num.toLocaleString(undefined, {
+    num.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
   const formatDuration = (value: number, unit: string) =>
-    `${value} ${unit}${value === 1 ? "" : "s"}`;
+    value === 0 ? `0 ${unit}` : `${value} ${unit}${value === 1 ? "" : "s"}`;
 
   const calculateLoan = () => {
-    const principal = loanAmount - downPayment;
+    const principal = loanAmount; // No down payment deduction
     const totalMonths = years * 12 + months;
     const monthlyInterestRate = interestRate / 100 / 12;
-
+  
     let monthlyPay = 0;
-    let totalAmount = principal;
-
+    let totalAmount = 0;
+  
     if (monthlyInterestRate > 0) {
+      // Loan amortization formula
       monthlyPay =
-        (principal * monthlyInterestRate) /
-        (1 - Math.pow(1 + monthlyInterestRate, -totalMonths));
-      totalAmount = monthlyPay * totalMonths;
+        (principal * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalMonths)) /
+        (Math.pow(1 + monthlyInterestRate, totalMonths) - 1);
+  
+      totalAmount = monthlyPay * totalMonths; // Total amount with interest
     } else {
       monthlyPay = principal / totalMonths;
+      totalAmount = principal; // No interest applied
     }
-
+  
     setMonthlyPayment(parseFloat(monthlyPay.toFixed(2)));
     setTotalLoanAmount(parseFloat(totalAmount.toFixed(2)));
   };
+  
+  
+  
 
   return (
     <div className="max-w-4xl mx-auto p-2 mb-10 bg-white dark:bg-gray-900 shadow-md rounded-lg">
@@ -74,18 +79,13 @@ export function LoanCalculator() {
             Loan Amount
           </label>
           <Input
-            value={loanAmount}
-            onChange={(e) => setLoanAmount(Number(e.target.value))}
-            className="dark:bg-gray-800 dark:text-white dark:border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="text-sm text-gray-700 dark:text-gray-300">
-            Down Payment
-          </label>
-          <Input
-            value={downPayment}
-            onChange={(e) => setDownPayment(Number(e.target.value))}
+            value={loanAmount.toLocaleString()}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/,/g, ""); // Remove existing commas
+              if (!isNaN(Number(rawValue))) {
+                setLoanAmount(Number(rawValue)); // Store numeric value
+              }
+            }}
             className="dark:bg-gray-800 dark:text-white dark:border-gray-600"
           />
         </div>
@@ -98,9 +98,9 @@ export function LoanCalculator() {
               <SelectValue>{formatDuration(years, "Year")}</SelectValue>
             </SelectTrigger>
             <SelectContent className="dark:bg-gray-800 dark:text-white">
-              {[...Array(30).keys()].map((y) => (
-                <SelectItem key={y} value={String(y + 1)}>
-                  {formatDuration(y + 1, "Year")}
+              {[...Array(31).keys()].map((y) => (
+                <SelectItem key={y} value={String(y)}>
+                  {formatDuration(y, "Year")}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -128,8 +128,13 @@ export function LoanCalculator() {
             Interest Rate (%)
           </label>
           <Input
-            value={interestRate}
-            onChange={(e) => setInterestRate(Number(e.target.value))}
+            value={interestRate.toLocaleString()}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/,/g, ""); // Remove existing commas
+              if (!isNaN(Number(rawValue))) {
+                setInterestRate(Number(rawValue)); // Store numeric value
+              }
+            }}
             className="dark:bg-gray-800 dark:text-white dark:border-gray-600"
           />
         </div>

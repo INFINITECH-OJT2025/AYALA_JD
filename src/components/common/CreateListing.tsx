@@ -443,6 +443,7 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="type_of_listing"
+                  rules={{ required: "You must select one listing type" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -458,15 +459,10 @@ export default function CreateListingDialog({
                               <FormItem className="flex items-end gap-2">
                                 <FormControl>
                                   <Checkbox
-                                    checked={field.value?.includes(option)}
-                                    onCheckedChange={(checked) => {
-                                      const newValue = checked
-                                        ? [...(field.value || []), option] // Add selected option
-                                        : field.value.filter(
-                                            (item: string) => item !== option
-                                          ); // Remove unchecked
-                                      field.onChange(newValue);
-                                    }}
+                                    checked={field.value === option} // ✅ Ensures only one selection
+                                    onCheckedChange={() =>
+                                      field.onChange(option)
+                                    } // ✅ Selecting another unchecks previous
                                   />
                                 </FormControl>
                                 <FormLabel>{option}</FormLabel>

@@ -81,17 +81,19 @@ export default function FeaturedProperties() {
 
   const filteredProperties = properties.filter((property) => {
     const matchesSearch =
-      property.property_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchQuery.toLowerCase());
-
+      property.property_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      property.type_of_listing.some((type) =>
+        type.toLowerCase().includes(searchQuery.toLowerCase())
+      ); // ✅ Properly checks each item in the array
+  
     const priceCategory = getPriceRange(formatPrice(property.price));
     const matchesPrice = priceFilter ? priceCategory === priceFilter : true;
-
+  
     return matchesSearch && matchesPrice;
   });
-
+  
+  
   return (
     <>
       <Navbar />

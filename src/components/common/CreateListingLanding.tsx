@@ -47,6 +47,8 @@ import {
   Combine,
   PencilLine,
   Banknote,
+  X,
+  Plus,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -62,6 +64,22 @@ export default function CreateListingLand({
 }: CreateListingDialogProps) {
   const form = useForm();
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [otherDetails, setOtherDetails] = useState<string[]>([]);
+  const unitStatus = form.watch("unit_status"); // ✅ Watch selected value
+
+  const addDetailField = () => {
+    setOtherDetails([...otherDetails, ""]);
+  };
+
+  const removeDetailField = (index: number) => {
+    setOtherDetails(otherDetails.filter((_, i) => i !== index));
+  };
+
+  const updateDetailValue = (index: number, value: string) => {
+    const updatedDetails = [...otherDetails];
+    updatedDetails[index] = value;
+    setOtherDetails(updatedDetails);
+  };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -285,31 +303,36 @@ export default function CreateListingLand({
 
                 <FormField
                   control={form.control}
-                  name="unit_status"
-                  rules={{ required: "Unit Status is required" }}
+                  name="type_of_listing"
+                  rules={{ required: "You must select one listing type" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <AirVent className="inline-block mr-2" />
-                        Unit Status <span className="text-red-500">*</span>
+                        <List className="inline-block mr-2" /> Listing Type{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Unit Status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Bare">Bare</SelectItem>
-                          <SelectItem value="Semi-Furnished">
-                            Semi-Furnished
-                          </SelectItem>
-                          <SelectItem value="Fully-Furnished">
-                            Fully-Furnished
-                          </SelectItem>
-                          <SelectItem value="Interiored">Interiored</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {listingOptions.map((option) => (
+                          <FormField
+                            key={option}
+                            control={form.control}
+                            name="type_of_listing"
+                            render={({ field }) => (
+                              <FormItem className="flex items-end gap-2">
+                                <FormControl>
+                                  <Checkbox
+                                    checked={field.value === option} // ✅ Only one can be selected
+                                    onCheckedChange={() =>
+                                      field.onChange(option)
+                                    } // ✅ Selecting another unchecks previous
+                                  />
+                                </FormControl>
+                                <FormLabel>{option}</FormLabel>
+                              </FormItem>
+                            )}
+                          />
+                        ))}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -406,28 +429,34 @@ export default function CreateListingLand({
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                 <FormField
                   control={form.control}
-                  name="parking"
-                  rules={{ required: "Parking selection is required" }}
+                  name="unit_status"
+                  rules={{ required: "Unit Status is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <Car className="inline-block mr-2" /> Parking{" "}
-                        <span className="text-red-500">*</span>
+                        <AirVent className="inline-block mr-2" />
+                        Unit Status <span className="text-red-500">*</span>
                       </FormLabel>
                       <Select onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select Parking Availability" />
+                            <SelectValue placeholder="Unit Status" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="with">With Parking</SelectItem>
-                          <SelectItem value="without">
-                            Without Parking
+                          <SelectItem value="Bare">Bare</SelectItem>
+                          <SelectItem value="Semi-Furnished">
+                            Semi-Furnished
                           </SelectItem>
+                          <SelectItem value="Fully-Furnished">
+                            Fully-Furnished
+                          </SelectItem>
+                          <SelectItem value="Interiored">Interiored</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
+
+                      {/* ✅ Conditionally show extra input fields */}
                     </FormItem>
                   )}
                 />
@@ -465,46 +494,65 @@ export default function CreateListingLand({
 
                 <FormField
                   control={form.control}
-                  name="type_of_listing"
-                  rules={{ required: "At least one listing type is required" }}
+                  name="parking"
+                  rules={{ required: "Parking selection is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <List className="inline-block mr-2" /> Listing Type{" "}
+                        <Car className="inline-block mr-2" /> Parking{" "}
                         <span className="text-red-500">*</span>
                       </FormLabel>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        {listingOptions.map((option) => (
-                          <FormField
-                            key={option}
-                            control={form.control}
-                            name="type_of_listing"
-                            render={({ field }) => (
-                              <FormItem className="flex items-end gap-2">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value?.includes(option)}
-                                    onCheckedChange={(checked) => {
-                                      const newValue = checked
-                                        ? [...(field.value || []), option] // Add selected option
-                                        : field.value.filter(
-                                            (item: string) => item !== option
-                                          ); // Remove unchecked
-                                      field.onChange(newValue);
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel>{option}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                        ))}
-                      </div>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Parking Availability" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="with">With Parking</SelectItem>
+                          <SelectItem value="without">
+                            Without Parking
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
+              {(unitStatus === "Semi-Furnished" ||
+                unitStatus === "Fully-Furnished") && (
+                <div className="mt-4">
+                  <FormLabel>Add Other Details</FormLabel>
+                  {otherDetails.map((detail, index) => (
+                    <div key={index} className="flex items-center gap-2 mt-2">
+                      <Input
+                        type="text"
+                        placeholder="Enter detail"
+                        value={detail}
+                        onChange={(e) =>
+                          updateDetailValue(index, e.target.value)
+                        }
+                      />
+                      <button
+                        type="button"
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => removeDetailField(index)}
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="mt-2 flex items-center text-blue-500 hover:text-blue-700"
+                    onClick={addDetailField}
+                  >
+                    <Plus className="w-5 h-5 mr-1" /> Add More
+                  </button>
+                </div>
+              )}
 
               <FormField
                 control={form.control}
