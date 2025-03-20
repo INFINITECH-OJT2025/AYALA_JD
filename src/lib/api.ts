@@ -297,17 +297,24 @@ export const updateJob = async (id: number, updatedData: any) => {
 
 // job application area
 
-export const submitApplication = async (formData: FormData) => {
+export async function submitApplication(formData: FormData) {
   const res = await fetch("http://127.0.0.1:8000/api/job-applications", {
     method: "POST",
     body: formData,
+    headers: {
+      "Accept": "application/json", // ✅ Ensure Laravel API returns JSON
+    },
+    credentials: "include", // ✅ Ensures Laravel accepts the request properly
   });
 
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || "Failed to submit application");
+  if (!res.ok) {
+    const errorData = await res.json(); // ✅ Get error response from Laravel
+    throw new Error(errorData.message || "Failed to submit application");
+  }
 
-  return data;
-};
+  return await res.json();
+}
+
 
 export const fetchApplicants = async () => {
   const res = await fetch("http://127.0.0.1:8000/api/job-applicants");

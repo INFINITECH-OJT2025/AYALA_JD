@@ -45,16 +45,18 @@ export default function ApplicationModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const formData = new FormData();
-    formData.append("id", job.id);
+    formData.append("job_title", job.title); // ✅ Send job title instead of job ID
     Object.entries(form).forEach(([key, value]) => {
       if (value) formData.append(key, value as string | Blob);
     });
-
+  
     try {
       await submitApplication(formData);
       toast.success(`Application submitted for ${job.title}! 🎉`);
+      
+      // ✅ Reset form after success
       setForm({
         first_name: "",
         last_name: "",
@@ -64,12 +66,18 @@ export default function ApplicationModal({
         resume: null,
       });
       onClose();
-    } catch (error) {
-      toast.error("Failed to submit application. Please try again.");
+    } catch (error: any) {
+      // ✅ Check if error is due to duplicate application
+      if (error.message.includes("already applied for this job")) {
+        toast.error("You've already applied for this job. Please check other opportunities.");
+      } else {
+        toast.error("Failed to submit application. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>

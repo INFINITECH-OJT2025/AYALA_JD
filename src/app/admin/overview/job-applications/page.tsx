@@ -17,6 +17,7 @@ import { XCircle } from "lucide-react";
 import JobApplicants from "@/components/common/JobApplicants";
 import { toast } from "sonner";
 
+
 export default function JobForm() {
   const [form, setForm] = useState({
     title: "",
@@ -26,11 +27,12 @@ export default function JobForm() {
     salary: "",
     deadline: "",
     description: "",
-    slots: "", // ✅ Added slots field
+    slots: "",
   });
 
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false); // ✅ Loading state
 
   const [categories, setCategories] = useState([
     "Real Estate Agent",
@@ -40,16 +42,17 @@ export default function JobForm() {
   ]);
   const [newCategory, setNewCategory] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  // ✅ Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ✅ Handle dropdown selection
   const handleSelectChange = (name: string, value: string) => {
     setForm({ ...form, [name]: value });
   };
 
+  // ✅ Handle image upload
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -58,11 +61,13 @@ export default function JobForm() {
     }
   };
 
+  // ✅ Remove image preview
   const handleRemoveImage = () => {
     setImage(null);
     setImagePreview(null);
   };
 
+  // ✅ Add a new category
   const handleNewCategory = () => {
     if (newCategory && !categories.includes(newCategory)) {
       setCategories([...categories, newCategory]);
@@ -71,39 +76,56 @@ export default function JobForm() {
     }
   };
 
+  // ✅ Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
     if (image) formData.append("image", image);
 
     try {
-      await createJob(formData);
+      const response = await createJob(formData);
 
-      // ✅ Show Sonner success toast
-      toast.success("Job Created", {
-        description: "The job listing has been successfully created.",
-      });
+      if (response.success) {
+        toast.success("Job Created", {
+          description: "The job listing has been successfully created.",
+        });
 
-      // ✅ Reset form
-      setForm({
-        title: "",
-        location: "",
-        type: "Full-time",
-        category: "",
-        salary: "",
-        deadline: "",
-        description: "",
-        slots: "",
-      });
-      setImage(null);
-    } catch (error) {
-      console.error("Error creating job:", error);
-
-      // ✅ Show Sonner error toast
-      toast.error("Job Creation Failed", {
-        description: "There was an issue creating the job. Please try again.",
-      });
+        // ✅ Reset form
+        setForm({
+          title: "",
+          location: "",
+          type: "Full-time",
+          category: "",
+          salary: "",
+          deadline: "",
+          description: "",
+          slots: "",
+        });
+        setImage(null);
+        setImagePreview(null);
+      }
+    } catch (error: any) {
+      try {
+        const errorData = await error.response.json(); // ✅ Parse Laravel error response
+        if (errorData.message === "A job with this title and location already exists.") {
+          toast.error("Duplicate Job", {
+            description: "This job already exists. Please modify the details.",
+          });
+        } else {
+          toast.error("Job Creation Failed", {
+            description: "There was an issue creating the job. Please try again.",
+          });
+        }
+      } catch {
+        toast.error("Job Creation Failed", {
+          description: "This job already exists. Please modify the details.",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

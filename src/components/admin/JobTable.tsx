@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@radix-ui/react-select";
 import { toast } from "sonner";
-
+import { format } from "date-fns";
 export default function JobTable() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,6 +130,14 @@ export default function JobTable() {
     { accessorKey: "location", header: "Location" },
     { accessorKey: "type", header: "Type" },
     { accessorKey: "slots", header: "Slots" },
+    {
+      accessorKey: "deadline",
+      header: "Deadline",
+      cell: ({ row }) => {
+        const rawDate = row.original.deadline;
+        return rawDate ? format(new Date(rawDate), "MMMM d, yyyy") : "No deadline"; 
+      },
+    },
     { accessorKey: "category", header: "Category" },
     {
       id: "actions",

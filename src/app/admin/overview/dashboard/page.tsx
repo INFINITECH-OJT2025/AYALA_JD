@@ -10,7 +10,7 @@ export default function AdminDashboard() {
     <div className="space-y-0">
       <PropertyStats />
       <JobApplicationsDashboard />
-      <JobApplicationsTable />
+      {/* <JobApplicationsTable /> */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
         {/* ✅ Latest Inquiries Table */}
         <div className="flex flex-col">

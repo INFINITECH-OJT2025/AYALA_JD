@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Edit, Trash, Plus, Upload, Star } from "lucide-react";
+import { Edit, Trash, Plus, Upload, Star, Circle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -144,7 +144,7 @@ export default function AdminNews() {
       header: "Featured",
       cell: ({ row }: { row: any }) =>
         row.original.is_featured ? (
-          <Star className="text-yellow-500 w-5 h-5" />
+          <Circle className="text-yellow-500 w-5 h-5" />
         ) : (
           <span className="text-gray-500">-</span>
         ),

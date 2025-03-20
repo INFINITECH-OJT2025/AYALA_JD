@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Briefcase, MapPin, Clock, Loader2, FileText } from "lucide-react";
+import {
+  Briefcase,
+  MapPin,
+  Clock,
+  Loader2,
+  FileText,
+  CalendarDays,
+} from "lucide-react";
 import { Navbar } from "@/components/landing-page/Navbar";
 import { Footer } from "@/components/landing-page/Footer";
 import ApplicationModal from "@/components/common/ApplicationModal";
@@ -20,6 +27,7 @@ import {
 } from "@/components/ui/command";
 import { FaMoneyBill } from "react-icons/fa";
 import { ChevronsUpDown } from "lucide-react";
+import { format } from "date-fns"; // ✅ Import date formatting
 
 const JobListings = () => {
   const [jobs, setJobs] = useState<any[]>([]);
@@ -30,13 +38,44 @@ const JobListings = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
+  interface Job {
+    id: number;
+    title: string;
+    location: string;
+    type?: string;
+    category?: string;
+    salary?: string;
+    deadline?: string | null;
+    description?: string;
+    image_url?: string;
+    slots?: number;
+  }
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const res = await fetch("http://127.0.0.1:8000/api/jobs/all");
-        const data = await res.json();
-        setJobs(data);
-        setSelectedJob(data.length > 0 ? data[0] : null); // ✅ Default to first job
+        const data: Job[] = await res.json(); // ✅ Explicitly define data type
+
+        // ✅ Get today's date without time
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // ✅ Filter jobs:
+        // 1. Show expired jobs (disabled)
+        // 2. Remove jobs after 7 days of expiration
+        const filteredJobs = data.filter((job: Job) => {
+          if (!job.deadline) return true; // ✅ Keep jobs without a deadline
+
+          const deadlineDate = new Date(job.deadline);
+          const expiryDate = new Date(deadlineDate);
+          expiryDate.setDate(expiryDate.getDate() + 7); // ✅ Expired +7 days
+
+          return expiryDate >= today; // ✅ Remove jobs after 7 days
+        });
+
+        setJobs(filteredJobs);
+        setSelectedJob(filteredJobs.length > 0 ? filteredJobs[0] : null); // ✅ Default to first job
       } catch (err) {
         console.error("Error fetching jobs:", err);
         setError("Failed to load job listings.");
@@ -104,25 +143,30 @@ const JobListings = () => {
                       />
                       <CommandList>
                         <CommandEmpty>No jobs found.</CommandEmpty>
-                        {jobs
-                          .filter((job) =>
-                            job.title
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
-                          )
-                          .map((job) => (
+                        {jobs.map((job) => {
+                          const isExpired =
+                            job.deadline && new Date(job.deadline) < new Date();
+
+                          return (
                             <CommandItem
                               key={job.id}
                               value={job.title}
                               onSelect={() => {
-                                setSelectedJob(job);
-                                setOpen(false);
+                                if (!isExpired) {
+                                  setSelectedJob(job);
+                                  setOpen(false);
+                                }
                               }}
-                              className="cursor-pointer"
+                              className={`cursor-pointer ${
+                                isExpired
+                                  ? "opacity-50 pointer-events-none"
+                                  : ""
+                              }`}
                             >
-                              {job.title}
+                              {job.title} {isExpired && "(Expired)"}
                             </CommandItem>
-                          ))}
+                          );
+                        })}
                       </CommandList>
                     </Command>
                   </PopoverContent>
@@ -139,10 +183,17 @@ const JobListings = () => {
                   </span>
                 </div>
 
-                {/* Job Location */}
                 <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
-                  <MapPin className="w-4 h-4 mr-2 text-blue-600" />
-                  {selectedJob?.location}
+                  <CalendarDays className="w-4 h-4 mr-2 text-red-500" />{" "}
+                  {/* ✅ New Icon & Color */}
+                  <span className="font-medium">Deadline:</span>{" "}
+                  {/* ✅ Added Label */}
+                  <span className="ml-1">
+                    {selectedJob?.deadline
+                      ? format(new Date(selectedJob.deadline), "MMMM d, yyyy") // ✅ Format the date
+                      : "No deadline"}{" "}
+                    {/* ✅ Fallback for missing deadline */}
+                  </span>
                 </div>
 
                 {/* Job Type */}
@@ -159,10 +210,29 @@ const JobListings = () => {
 
                 {/* Apply Button Fixed at Bottom */}
                 <Button
-                  className="w-full bg-blue-600 text-white text-lg py-3 rounded-lg font-semibold hover:bg-blue-700 transition mt-4"
-                  onClick={() => setIsModalOpen(true)}
+                  className={`w-full text-white text-lg py-3 rounded-lg font-semibold transition mt-4 ${
+                    selectedJob?.deadline &&
+                    new Date(selectedJob.deadline) < new Date()
+                      ? "bg-red-400 cursor-not-allowed" // ✅ Disabled if expired
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                  onClick={() => {
+                    if (
+                      selectedJob?.deadline &&
+                      new Date(selectedJob.deadline) >= new Date()
+                    ) {
+                      setIsModalOpen(true);
+                    }
+                  }}
+                  disabled={
+                    selectedJob?.deadline &&
+                    new Date(selectedJob.deadline) < new Date()
+                  } // ✅ Disable expired jobs
                 >
-                  APPLY NOW
+                  {selectedJob?.deadline &&
+                  new Date(selectedJob.deadline) < new Date()
+                    ? "Expired"
+                    : "APPLY NOW"}
                 </Button>
               </div>
             </div>

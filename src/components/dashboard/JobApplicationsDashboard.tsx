@@ -36,7 +36,7 @@ export default function JobApplicationsDashboard() {
 
   const cards = [
     {
-      title: "Total Applications",
+      title: "Total Job Applications",
       key: "total",
       color: "text-blue-600 dark:text-blue-400",
       icon: <Briefcase className="text-blue-500 w-10 h-10" />,
