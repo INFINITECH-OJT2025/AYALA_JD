@@ -63,14 +63,14 @@ export default function ComparisonModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            🏡 Compare Properties
-          </DialogTitle>
-        </DialogHeader>
-
-        <div className="grid grid-cols-3 gap-4">
+       <DialogContent className="max-w-5xl w-full max-h-[80vh] overflow-y-auto">
+       <DialogHeader className="sticky top-0 bg-white dark:bg-gray-800 z-10 p-4 border-b flex justify-between items-center">
+      <DialogTitle className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+        🏡 Compare Properties
+      </DialogTitle>
+    </DialogHeader>
+    <div className="flex-1 overflow-y-auto p-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {propertySlots.map((property, index) =>
             property ? (
               // ✅ Property card (clickable, removable)
@@ -78,15 +78,15 @@ export default function ComparisonModal({
                 key={property.id}
                 href={`/landing/property/${property.id}`}
                 className="border rounded-lg p-4 shadow-lg bg-white dark:bg-gray-800 block hover:shadow-xl hover:scale-105 transition-transform duration-300"
-              >
+          >
                 <div className="relative">
                   <Image
                     src={property.property_image?.[0] || "/placeholder.jpg"}
                     alt={property.property_name}
                     width={300}
                     height={200}
-                    className="rounded-md object-cover w-full h-48"
-                  />
+                    className="rounded-md object-cover w-full h-40 md:h-48"
+                    />
                   <button
                     className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                     onClick={(e) => {
@@ -98,15 +98,15 @@ export default function ComparisonModal({
                   </button>
                 </div>
 
-                <h3 className="mt-2 text-lg font-bold flex items-center">
-                  <Home className="w-5 h-5 mr-2" /> {property.property_name}
+                <h3 className="mt-2 text-sm md:text-lg font-bold flex items-center">
+                <Home className="w-4 h-4 mr-2" /> {property.property_name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
-                  <MapPin className="w-4 h-4 mr-1" /> {property.location}
-                </p>
-                <p className="text-green-600 dark:text-green-400 font-semibold text-lg">
-                  ₱{Number(property.price).toLocaleString()}
-                </p>
+                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 flex items-center">
+              <MapPin className="w-4 h-4 mr-1" /> {property.location}
+            </p>
+            <p className="text-green-600 dark:text-green-400 font-semibold text-sm md:text-lg">
+              ₱{Number(property.price).toLocaleString()}
+            </p>
 
                 <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
                   <p className="flex items-center">
@@ -207,16 +207,15 @@ export default function ComparisonModal({
               <div
                 key={`placeholder-${index}`}
                 className="border rounded-lg p-6 shadow-lg bg-gray-100 dark:bg-gray-800 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400"
-              >
-                <button onClick={handleClose}>
-                  {" "}
-                  {/* ✅ Close modal only when clicked */}
-                  <PlusCircle className="w-12 h-12 mb-2 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition" />
-                </button>
-                <p className="text-sm font-medium">Add Properties to Compare</p>
+          >
+               <button onClick={handleClose}>
+              <PlusCircle className="w-10 h-10 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition" />
+            </button>
+            <p className="text-sm font-medium">Add Properties to Compare</p>
               </div>
             )
           )}
+        </div>
         </div>
       </DialogContent>
     </Dialog>

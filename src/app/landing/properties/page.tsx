@@ -140,29 +140,29 @@ export default function FeaturedProperties() {
 
           {selectedProperties.length > 0 && (
             <div
-              className="fixed top-20 right-5 w-[45%] 
-            bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg flex items-center 
-            justify-between z-50 border border-gray-300 dark:border-gray-600 
-            outline outline-2 outline-gray-300 dark:outline-gray-500"
+              className="fixed top-20 md:right-5 md:w-[45%] w-[95%] 
+                bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg 
+                flex flex-wrap items-center justify-between 
+                z-50 border border-gray-300 dark:border-gray-600 
+                outline outline-2 outline-gray-300 dark:outline-gray-500 
+                md:translate-x-0 left-1/2 transform -translate-x-1/2"
             >
               {/* ✅ Label on the left */}
-              <div className="mr-auto">
+              <div className="w-full md:w-auto text-center md:text-left mb-2 md:mb-0">
                 <span className="font-bold text-gray-800 dark:text-gray-100">
                   COMPARE PROPERTIES:
                 </span>
               </div>
 
               {/* ✅ Selected properties (max 3) and button stay at the right */}
-              <div className="flex gap-2 items-center">
+              <div className="flex flex-wrap gap-2 items-center justify-center md:justify-end w-full md:w-auto">
                 {selectedProperties.slice(0, 3).map((property) => (
                   <span
                     key={property.id}
                     className="bg-green-600 text-gray-100 px-3 py-1 rounded flex items-center max-w-[120px] truncate"
-                    title={property.property_name} // ✅ Tooltip on hover
+                    title={property.property_name}
                   >
-                    <span className="truncate max-w-[80px]">
-                      {property.property_name}
-                    </span>
+                    <span className="truncate max-w-[100px]">{property.property_name}</span>
                     <button
                       className="ml-2 text-sm font-extrabold text-red-600"
                       onClick={() => togglePropertySelection(property)}
@@ -181,6 +181,7 @@ export default function FeaturedProperties() {
               </div>
             </div>
           )}
+
 
           <ComparisonModal
             isOpen={isComparisonOpen}
