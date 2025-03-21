@@ -131,7 +131,7 @@ export default function HistorySection({
       <Button
         type="button"
         onClick={addHistoryItem}
-        className="bg-blue-600 text-white"
+        className="px-4 py-2 flex items-center gap-2"
       >
         + Add More History
       </Button>

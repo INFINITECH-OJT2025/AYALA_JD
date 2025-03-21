@@ -175,28 +175,31 @@ export default function AdminPropertyInquiries() {
           >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
-
+    
           {row.original.status === "archived" ? (
             <Button
               size="sm"
               variant="outline"
+              className="w-24 justify-center" // Fixed width
               onClick={() => handleUnarchive(row.original.id)}
             >
-              <Inbox className="w-4 h-4 text-gray-600" /> Unarchive
+              <Inbox className="w-4 h-4 text-green-600" /> Unarchive
             </Button>
           ) : (
             <Button
               size="sm"
               variant="outline"
+              className="w-24 justify-center" // Fixed width
               onClick={() => handleArchive(row.original.id)}
             >
               <Archive className="w-4 h-4 text-gray-600" /> Archive
             </Button>
           )}
-
+    
           <Button
             size="sm"
             variant="destructive"
+            className="w-24 justify-center" // Fixed width for consistency
             onClick={() => confirmDelete(row.original.id)}
           >
             <Trash className="w-4 h-4" /> Delete
@@ -204,6 +207,7 @@ export default function AdminPropertyInquiries() {
         </div>
       ),
     },
+    
   ];
 
   return (

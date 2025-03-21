@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Edit, Trash, Plus, Upload, Star, Circle } from "lucide-react";
+import { Edit, Trash, Plus, Upload, Star, Circle, StarOff } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -54,7 +54,7 @@ export default function AdminNews() {
       }
     };
 
-    getNews(); // Initial fetch
+    getNews();
   }, []);
 
   const resetForm = () => {
@@ -144,11 +144,12 @@ export default function AdminNews() {
       header: "Featured",
       cell: ({ row }: { row: any }) =>
         row.original.is_featured ? (
-          <Circle className="text-yellow-500 w-5 h-5" />
+          <Star className="text-yellow-500 w-5 h-5" /> // ⭐ Star icon for featured
         ) : (
-          <span className="text-gray-500">-</span>
+          <StarOff className="text-gray-400 w-5 h-5" /> // ❌ Faded star for not featured
         ),
     },
+    
     { accessorKey: "status", header: "Status" },
     {
       header: "Actions",
@@ -291,23 +292,6 @@ export default function AdminNews() {
                 Feature this post
               </label>
             </div>
-
-            {/* Status Dropdown */}
-            <Select
-              value={formData.status}
-              onValueChange={(value) =>
-                setFormData({ ...formData, status: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="draft">Draft</SelectItem>
-                <SelectItem value="published">Published</SelectItem>
-              </SelectContent>
-            </Select>
-
             {/* Image Upload */}
             <div>
               <label className="text-gray-700 dark:text-gray-300 flex items-center">

@@ -24,6 +24,7 @@ import {
 } from "@radix-ui/react-select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; 
 export default function JobTable() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,7 +136,31 @@ export default function JobTable() {
       header: "Deadline",
       cell: ({ row }) => {
         const rawDate = row.original.deadline;
-        return rawDate ? format(new Date(rawDate), "MMMM d, yyyy") : "No deadline"; 
+        if (!rawDate) return "No deadline"; // ✅ Handle missing deadline
+    
+        const deadlineDate = new Date(rawDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // ✅ Remove time for accurate comparison
+        deadlineDate.setHours(0, 0, 0, 0); // ✅ Remove time from deadline for accurate check
+    
+        const isExpired = deadlineDate <= today; // ✅ Expired if today or earlier
+    
+        return (
+          <Tooltip>
+            <TooltipTrigger>
+              <span className={isExpired ? "text-red-600 font-semibold" : ""}>
+                {format(deadlineDate, "MMMM d, yyyy")}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span>
+                {isExpired
+                  ? "This job listing has expired."
+                  : `Expires on ${format(deadlineDate, "MMMM d, yyyy")}`}
+              </span>
+            </TooltipContent>
+          </Tooltip>
+        );
       },
     },
     { accessorKey: "category", header: "Category" },

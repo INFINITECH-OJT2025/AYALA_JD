@@ -162,38 +162,13 @@ export default function AdminAppointments() {
     { accessorKey: "first_name", header: "First Name" },
     { accessorKey: "email", header: "Email" },
     { accessorKey: "phone", header: "Phone" },
-    { accessorKey: "status", header: "Status" },
-
     {
-      accessorKey: "date",
-      header: "Date",
-      cell: ({ row }) =>
-        row.original.date
-          ? new Date(row.original.date).toLocaleDateString("en-US", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })
-          : "Not specified",
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => (
+        <div className="w-24">{row.original.status}</div>
+      ),
     },
-
-    // ✅ Format Time
-    {
-      accessorKey: "time",
-      header: "Time",
-      cell: ({ row }) =>
-        row.original.time
-          ? new Date(`1970-01-01T${row.original.time}`).toLocaleTimeString(
-              "en-US",
-              {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              }
-            )
-          : "Not specified",
-    },
-
     {
       header: "Actions",
       cell: ({ row }) => (
@@ -205,27 +180,31 @@ export default function AdminAppointments() {
           >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
-          {/* Archive / Unarchive Button */}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() =>
-              handleToggleArchive(
-                row.original.id,
-                row.original.status === "archived"
-              )
-            }
-          >
-            {row.original.status === "archived" ? (
-              <>
-                <Inbox className="w-4 h-4 text-green-600" /> Unarchive
-              </>
-            ) : (
-              <>
-                <Archive className="w-4 h-4 text-gray-600" /> Archive
-              </>
-            )}
-          </Button>
+  
+          {/* ✅ Fixed Width for Archive/Unarchive Button ONLY */}
+          <div className="w-32">
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full flex items-center justify-center whitespace-nowrap"
+              onClick={() =>
+                handleToggleArchive(row.original.id, row.original.status === "archived")
+              }
+            >
+              {row.original.status === "archived" ? (
+                <>
+                  <Inbox className="w-4 h-4 text-green-600" />
+                  <span>Unarchive</span>
+                </>
+              ) : (
+                <>
+                  <Archive className="w-4 h-4 text-gray-600" />
+                  <span>Archive</span>
+                </>
+              )}
+            </Button>
+          </div>
+  
           <Button
             size="sm"
             variant="destructive"
@@ -237,6 +216,8 @@ export default function AdminAppointments() {
       ),
     },
   ];
+  
+  
 
   return (
     <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">

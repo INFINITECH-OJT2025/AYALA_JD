@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   fetchApplicants,
-  approveApplicant,
+  scheduleApplicant,
   rejectApplicant,
   deleteApplicant,
 } from "@/lib/api";
@@ -17,9 +17,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Eye, Check, X, Trash } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Eye, CalendarCheck, X, Trash, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 export default function JobApplicants() {
@@ -27,16 +27,16 @@ export default function JobApplicants() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedApplicant, setSelectedApplicant] = useState<any | null>(null);
-  const [actionType, setActionType] = useState<"approve" | "reject" | null>(
-    null
-  );
+  const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
   const [message, setMessage] = useState("");
-  const [filter, setFilter] = useState("all");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isRejectionDialogOpen, setIsRejectionDialogOpen] = useState(false);
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+  const [scheduleTime, setScheduleTime] = useState<string>("09:00"); // Default time
   const [selectedApplicantId, setSelectedApplicantId] = useState<number | null>(
     null
   );
-  // Fetch all applicants
+
   useEffect(() => {
     const getApplicants = async () => {
       try {
@@ -49,37 +49,72 @@ export default function JobApplicants() {
       }
     };
 
-    getApplicants(); // Initial fetch
-
-    const interval = setInterval(getApplicants, 5000); // ✅ Auto-refresh every 5 seconds
-
-    return () => clearInterval(interval); // ✅ Cleanup on unmount
+    getApplicants();
+    const interval = setInterval(getApplicants, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Handle Approval / Rejection Dialog Submission
-  const handleActionSubmit = async () => {
+  const handleScheduleSubmit = async () => {
+    if (!selectedApplicant || !scheduleDate || !scheduleTime) return;
+  
+    try {
+      const validDate = new Date(scheduleDate);
+      if (isNaN(validDate.getTime())) {
+        console.error("Invalid schedule date");
+        return;
+      }
+  
+      const [hours, minutes] = scheduleTime.split(":").map(Number);
+      if (isNaN(hours) || isNaN(minutes)) {
+        console.error("Invalid schedule time");
+        return;
+      }
+  
+      validDate.setHours(hours, minutes, 0, 0);
+  
+      // ✅ Pass validDate directly if `scheduleApplicant` expects a Date
+      await scheduleApplicant(selectedApplicant.id, validDate, message);
+  
+      toast.success("Interview Scheduled", {
+        description: `An interview has been scheduled for ${selectedApplicant.email} on ${validDate.toLocaleString()}.`,
+      });
+  
+      setIsScheduleDialogOpen(false);
+      setSelectedApplicant(null);
+      setScheduleDate(null);
+      setScheduleTime("09:00");
+      setMessage("");
+    } catch (error) {
+      console.error("Scheduling failed:", error);
+      toast.error("Failed to schedule interview", {
+        description: "There was an issue scheduling the interview. Please try again.",
+      });
+    }
+  };
+  
+
+  
+  
+  
+  
+
+  const handleRejectionSubmit = async () => {
     if (!selectedApplicant) return;
 
     try {
-      if (actionType === "approve") {
-        await approveApplicant(selectedApplicant.id, message);
-        toast.success("Applicant Approved", {
-          description: `An approval email has been sent to ${selectedApplicant.email}.`,
-        });
-      } else if (actionType === "reject") {
-        await rejectApplicant(selectedApplicant.id, message);
-        toast.error("Applicant Rejected", {
-          description: `A rejection email has been sent to ${selectedApplicant.email}.`,
-        });
-      }
+      await rejectApplicant(selectedApplicant.id, message);
+      toast.error("Applicant Rejected", {
+        description: `A rejection email has been sent to ${selectedApplicant.email}.`,
+      });
 
+      setIsRejectionDialogOpen(false);
       setSelectedApplicant(null);
-      setActionType(null);
       setMessage("");
     } catch (error) {
-      console.error("Email failed:", error);
-      toast.error("Failed to send email", {
-        description: "There was an issue sending the email. Please try again.",
+      console.error("Rejection failed:", error);
+      toast.error("Failed to reject applicant", {
+        description:
+          "There was an issue rejecting the applicant. Please try again.",
       });
     }
   };
@@ -89,7 +124,6 @@ export default function JobApplicants() {
     setIsDeleteDialogOpen(true);
   };
 
-  // Handle Applicant Deletion
   const handleDelete = async () => {
     if (!selectedApplicantId) return;
 
@@ -97,14 +131,11 @@ export default function JobApplicants() {
       await deleteApplicant(selectedApplicantId);
       setApplicants((prev) => prev.filter((a) => a.id !== selectedApplicantId));
 
-      // ✅ Show Sonner toast notification
       toast.success("Applicant Deleted", {
-        description: "The applicant has been removed successfully.",
+        description: "The applicant and their appointment have been removed.",
       });
     } catch (error) {
       console.error("Error deleting applicant:", error);
-
-      // ✅ Show error toast
       toast.error("Failed to delete applicant", {
         description:
           "There was an issue deleting the applicant. Please try again.",
@@ -115,19 +146,13 @@ export default function JobApplicants() {
     }
   };
 
-  // Filter applicants based on selected status
-  const filteredApplicants = applicants.filter((applicant) =>
-    filter === "all" ? true : applicant.status === filter
-  );
-
-  // Define table columns
   const columns: ColumnDef<any>[] = [
     { accessorKey: "first_name", header: "First Name" },
     { accessorKey: "last_name", header: "Last Name" },
     { accessorKey: "email", header: "Email" },
     { accessorKey: "phone", header: "Phone No." },
     { accessorKey: "address", header: "Address" },
-    { accessorKey: "status", header: "Status" }, // ✅ Show application status
+    { accessorKey: "status", header: "Status" },
     {
       accessorKey: "resume_path",
       header: "Resume",
@@ -143,50 +168,41 @@ export default function JobApplicants() {
     },
     {
       header: "Actions",
-      cell: ({ row }) => {
-        const status = row.original.status; // Get the applicant's status
-
-        return (
-          <div className="flex space-x-2">
-            {/* Approve Button */}
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                setSelectedApplicant(row.original);
-                setActionType("approve");
-              }}
-              disabled={status === "approved"} // ✅ Disable if already approved
-            >
-              <Check className="w-4 h-4 text-green-600" />{" "}
-              {status === "approved" ? "Approved" : "Approve"}
-            </Button>
-
-            {/* Reject Button */}
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={() => {
-                setSelectedApplicant(row.original);
-                setActionType("reject");
-              }}
-              disabled={status === "rejected"} // ✅ Disable if already rejected
-            >
-              <X className="w-4 h-4" />{" "}
-              {status === "rejected" ? "Rejected" : "Reject"}
-            </Button>
-
-            {/* Delete Button */}
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={() => confirmDelete(row.original.id)}
-            >
-              <Trash className="w-4 h-4" /> Delete
-            </Button>
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
+          <Button
+            size="sm"
+            variant="success"
+            onClick={() => {
+              setSelectedApplicant(row.original);
+              setIsScheduleDialogOpen(true);
+            }}
+          >
+            <CalendarCheck className="w-4 h-4" /> Schedule
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => {
+              setSelectedApplicant(row.original);
+              setIsRejectionDialogOpen(true);
+              setIsScheduleDialogOpen(false); // Ensure the schedule modal doesn't open
+            }}
+          >
+            <X className="w-4 h-4" /> Reject
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => {
+              setSelectedApplicantId(row.original.id);
+              setIsDeleteDialogOpen(true);
+            }}
+          >
+            <Trash className="w-4 h-4" />
+          </Button>
+        </div>
+      ),
     },
   ];
 
@@ -196,99 +212,157 @@ export default function JobApplicants() {
         Job Applicants
       </h2>
 
-      {/* Filter Buttons */}
-      <div className="flex justify-center md:justify-start space-x-4 mb-4">
-        <Button
-          variant={filter === "all" ? "default" : "outline"}
-          onClick={() => setFilter("all")}
-        >
-          All
-        </Button>
-        <Button
-          variant={filter === "approved" ? "default" : "outline"}
-          onClick={() => setFilter("approved")}
-        >
-          Approved
-        </Button>
-        <Button
-          variant={filter === "rejected" ? "default" : "outline"}
-          onClick={() => setFilter("rejected")}
-        >
-          Rejected
-        </Button>
-      </div>
-
-      {/* Table */}
       {loading ? (
-        <div className="flex justify-center items-center">
-          <p className="text-gray-500 dark:text-gray-300">
-            Loading applicants...
-          </p>
-        </div>
+        <p className="text-gray-500 dark:text-gray-300 text-center">
+          Loading applicants...
+        </p>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
         <div className="overflow-x-auto">
-          <DataTable columns={columns} data={filteredApplicants} />
+          <DataTable columns={columns} data={applicants} />
         </div>
       )}
 
-      {/* Approval/Rejection Dialog */}
-      {selectedApplicant && actionType && (
-        <Dialog
-          open={!!selectedApplicant}
-          onOpenChange={() => setSelectedApplicant(null)}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {actionType === "approve"
-                  ? "Approve Applicant"
-                  : "Reject Applicant"}
-              </DialogTitle>
-            </DialogHeader>
-            <div>
-              <p className="mb-2">
-                Send a message to <b>{selectedApplicant.email}</b>:
-              </p>
-              <Textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Enter your message here..."
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => setSelectedApplicant(null)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleActionSubmit}
-                variant={actionType === "approve" ? "success" : "destructive"}
-              >
-                {actionType === "approve"
-                  ? "Send Approval Email"
-                  : "Send Rejection Email"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
       <Dialog
-        open={isDeleteDialogOpen}
-        onOpenChange={() => setIsDeleteDialogOpen(false)}
+        open={isScheduleDialogOpen}
+        onOpenChange={setIsScheduleDialogOpen}
+      >
+        <DialogContent className="max-w-lg w-full mx-auto !h-auto">
+          <DialogHeader className="text-center">
+            <DialogTitle>
+              {selectedApplicant?.status === "replied"
+                ? "Scheduled Interview Details"
+                : "Schedule Interview"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <p className="text-start">
+            Interview for <b>{selectedApplicant?.email || "this applicant"}</b>:
+          </p>
+
+          {selectedApplicant?.status === "replied" ? (
+            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mt-3">
+              <p>
+                <b>Scheduled Date:</b>{" "}
+                {new Date(selectedApplicant.schedule_date).toLocaleString()}
+              </p>
+              <p className="mt-2">
+                <b>Message:</b>{" "}
+                {selectedApplicant.message || "No additional details"}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="flex flex-col items-center space-y-4">
+                <div className="w-full flex justify-center">
+                  <div className="min-h-[320px] max-h-[320px] flex items-center">
+                    <Calendar
+                      selected={scheduleDate || undefined}
+                      onSelect={(date: Date | undefined) =>
+                        setScheduleDate(date || null)
+                      }
+                      mode="single"
+                      required
+                      disabled={(date) =>
+                        date < new Date(new Date().setHours(0, 0, 0, 0))
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* ✅ Time Selection */}
+              <div>
+                <p className="text-start">Select Time:</p>
+                <div className="relative">
+                  <Clock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    size={20}
+                  />
+                  <input
+                    type="time"
+                    className="w-full p-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={scheduleTime}
+                    onChange={(e) => setScheduleTime(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <p className="text-start">Additional Details:</p>
+                <Textarea
+                  className="w-full min-h-[100px] resize-none"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Enter any additional details..."
+                />
+              </div>
+            </>
+          )}
+
+          <DialogFooter className="flex justify-center space-x-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsScheduleDialogOpen(false)}
+            >
+              Close
+            </Button>
+            {selectedApplicant?.status !== "replied" && (
+              <Button
+                onClick={handleScheduleSubmit}
+                variant="success"
+                disabled={!scheduleDate}
+              >
+                Schedule Interview
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={isRejectionDialogOpen}
+        onOpenChange={setIsRejectionDialogOpen}
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
-            <p>
-              Are you sure you want to delete this applicant? This action cannot
-              be undone.
-            </p>
+            <DialogTitle>Reject Applicant</DialogTitle>
           </DialogHeader>
+          <div>
+            <p className="mb-2">
+              Enter a rejection message for <b>{selectedApplicant?.email}</b>:
+            </p>
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Enter rejection reason..."
+            />
+          </div>
           <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsRejectionDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleRejectionSubmit} variant="destructive">
+              Reject Applicant
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md w-full">
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+          </DialogHeader>
+          <p>
+            Are you sure you want to delete this applicant? This action cannot
+            be undone.
+          </p>
+          <DialogFooter className="flex justify-end space-x-4">
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}

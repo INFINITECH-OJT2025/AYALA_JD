@@ -152,16 +152,12 @@ const JobListings = () => {
                               key={job.id}
                               value={job.title}
                               onSelect={() => {
-                                if (!isExpired) {
-                                  setSelectedJob(job);
-                                  setOpen(false);
-                                }
+                                setSelectedJob(job); // ✅ Allow selecting expired jobs
+                                setOpen(false);
                               }}
                               className={`cursor-pointer ${
-                                isExpired
-                                  ? "opacity-50 pointer-events-none"
-                                  : ""
-                              }`}
+                                isExpired ? "opacity-50" : ""
+                              }`} // ✅ Just faded, not disabled
                             >
                               {job.title} {isExpired && "(Expired)"}
                             </CommandItem>

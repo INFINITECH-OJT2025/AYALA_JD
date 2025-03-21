@@ -874,3 +874,30 @@ export async function subscribeToNewsletter(email: string) {
   }
 }
 
+// application schedule
+
+export async function scheduleApplicant(id: number, date: Date, message: string) {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    throw new Error("Invalid date provided");
+  }
+
+  // ✅ Convert Date object to a proper MySQL DateTime format (YYYY-MM-DD HH:MM:SS)
+  const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
+    date.getDate()
+  ).padStart(2, "0")} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:00`;
+  
+  const response = await fetch(`http://localhost:8000/api/applicants/${id}/schedule`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ schedule_datetime: formattedDate, message }), // ✅ Ensure correct field name
+  });
+  
+
+  if (!response.ok) throw new Error("Failed to schedule appointment");
+
+  return response.json();
+}
+
+
+
+

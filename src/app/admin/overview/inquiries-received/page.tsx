@@ -176,15 +176,17 @@ export default function AdminInquiries() {
           <Button
             size="sm"
             variant="outline"
+            className="w-24 flex items-center justify-center"
             onClick={() => setSelectedInquiry(row.original)}
           >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
-
+    
           {/* Archive / Unarchive Button */}
           <Button
             size="sm"
             variant="outline"
+            className="w-32 flex items-center justify-center whitespace-nowrap"
             onClick={() =>
               handleToggleArchive(
                 row.original.id,
@@ -194,26 +196,30 @@ export default function AdminInquiries() {
           >
             {row.original.status === "archived" ? (
               <>
-                <Inbox className="w-4 h-4 text-green-600" /> Unarchive
+                <Inbox className="w-4 h-4 text-green-600" />
+                <span className="ml-1">Unarchive</span>
               </>
             ) : (
               <>
-                <Archive className="w-4 h-4 text-gray-600" /> Archive
+                <Archive className="w-4 h-4 text-gray-600" />
+                <span className="ml-1">Archive</span>
               </>
             )}
           </Button>
-
+    
           {/* Delete Button */}
           <Button
             size="sm"
             variant="destructive"
+            className="w-24 flex items-center justify-center"
             onClick={() => confirmDelete(row.original.id)}
           >
             <Trash className="w-4 h-4" /> Delete
           </Button>
         </div>
       ),
-    },
+    }
+    
   ];
 
   return (

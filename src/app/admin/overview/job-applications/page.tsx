@@ -284,7 +284,8 @@ export default function JobForm() {
 
             <Button
               type="submit"
-              className="w-full bg-black dark:bg-white text-white dark:text-black"
+              variant="success"
+              className="w-full"
             >
               Create Job
             </Button>

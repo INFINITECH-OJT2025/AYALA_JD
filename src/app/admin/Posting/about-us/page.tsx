@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import AdminHistory from "@/components/common/HistorySection"; // ✅ Import History Section
+import { Save } from "lucide-react";
 
 interface HistoryItem {
   title: string;
@@ -267,14 +268,15 @@ export default function AdminAboutUs() {
           <div className="flex justify-end">
             <Button
               type="submit"
-              className="bg-green-600 text-white px-6 py-3 text-lg font-semibold rounded-lg shadow-md hover:bg-green-700"
+              variant="success"
+              className="px-5 py-2 text-base font-medium flex items-center gap-2"
             >
+              <Save className="w-5 h-5" />
               Save Changes
             </Button>
           </div>
         </form>
       </Form>
     </div>
-
   );
 }
