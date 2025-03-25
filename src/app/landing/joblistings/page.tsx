@@ -28,7 +28,7 @@ import {
 import { FaMoneyBill } from "react-icons/fa";
 import { ChevronsUpDown } from "lucide-react";
 import { format } from "date-fns"; // ✅ Import date formatting
-
+import { useSearchParams } from "next/navigation"; // ✅ Import Next.js hook
 const JobListings = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
@@ -37,6 +37,8 @@ const JobListings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("jobId"); // ✅ Get job ID from URL
 
   interface Job {
     id: number;
@@ -51,41 +53,47 @@ const JobListings = () => {
     slots?: number;
   }
 
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const res = await fetch("http://127.0.0.1:8000/api/jobs/all");
-        const data: Job[] = await res.json(); // ✅ Explicitly define data type
+  
+useEffect(() => {
+  const fetchJobs = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/jobs/all");
+      const data: Job[] = await res.json();
 
-        // ✅ Get today's date without time
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-        // ✅ Filter jobs:
-        // 1. Show expired jobs (disabled)
-        // 2. Remove jobs after 7 days of expiration
-        const filteredJobs = data.filter((job: Job) => {
-          if (!job.deadline) return true; // ✅ Keep jobs without a deadline
+      // ✅ Filter out jobs that expired more than 7 days ago
+      const filteredJobs = data.filter((job: Job) => {
+        if (!job.deadline) return true;
 
-          const deadlineDate = new Date(job.deadline);
-          const expiryDate = new Date(deadlineDate);
-          expiryDate.setDate(expiryDate.getDate() + 7); // ✅ Expired +7 days
+        const deadlineDate = new Date(job.deadline);
+        const expiryDate = new Date(deadlineDate);
+        expiryDate.setDate(expiryDate.getDate() + 7);
 
-          return expiryDate >= today; // ✅ Remove jobs after 7 days
-        });
+        return expiryDate >= today;
+      });
 
-        setJobs(filteredJobs);
-        setSelectedJob(filteredJobs.length > 0 ? filteredJobs[0] : null); // ✅ Default to first job
-      } catch (err) {
-        console.error("Error fetching jobs:", err);
-        setError("Failed to load job listings.");
-      } finally {
-        setLoading(false);
-      }
-    };
+      setJobs(filteredJobs);
 
-    fetchJobs();
-  }, []);
+      // ✅ Set the job from URL if exists, otherwise default to first non-expired job
+      const selectedFromUrl = filteredJobs.find((job) => job.id.toString() === jobId);
+      const nonExpiredJobs = filteredJobs.filter(
+        (job) => !job.deadline || new Date(job.deadline) >= today
+      );
+
+      setSelectedJob(selectedFromUrl || nonExpiredJobs[0] || null);
+    } catch (err) {
+      console.error("Error fetching jobs:", err);
+      setError("Failed to load job listings.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchJobs();
+}, [jobId]); // ✅ Re-run effect when jobId changes
+  
 
   return (
     <>

@@ -28,12 +28,13 @@ export function NewsUpdates() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   useEffect(() => {
     const getNews = async () => {
       try {
-        const data: NewsItem[] = await fetchPublishedNews(); // ✅ Ensure data matches NewsItem type
-        setNews(data.filter((n: NewsItem) => n.is_featured)); // ✅ Explicitly define 'n' type
+        const data: NewsItem[] = await fetchPublishedNews();
+        setNews(data.filter((n: NewsItem) => n.is_featured));
       } catch (err) {
         setError("Failed to load news.");
       } finally {
@@ -42,6 +43,15 @@ export function NewsUpdates() {
     };
     getNews();
   }, []);
+
+  // ✅ Extract unique categories from news data
+  const categories = ["All", ...new Set(news.map((item) => item.category))];
+
+  // ✅ Filter news based on the selected category
+  const filteredNews =
+    selectedCategory === "All"
+      ? news
+      : news.filter((article) => article.category === selectedCategory);
 
   return (
     <section className="py-12 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
@@ -53,15 +63,32 @@ export function NewsUpdates() {
           Stay updated with our latest featured news and announcements.
         </p>
 
+        {/* ✅ Category Filter */}
+        <div className="flex flex-wrap justify-center gap-3 mb-6">
+          {categories.map((category) => (
+            <Button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-md transition-all ${
+                selectedCategory === category
+                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white" // ✅ Active state for both themes
+                  : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+              }`}
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
+
         {loading ? (
           <p className="text-center text-gray-500 dark:text-gray-300">
             Loading news...
           </p>
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
-        ) : news.length > 0 ? (
+        ) : filteredNews.length > 0 ? (
           <div className="grid md:grid-cols-3 gap-6">
-            {news.map((article) => (
+            {filteredNews.map((article) => (
               <Card
                 key={article.id}
                 className="p-6 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
@@ -109,7 +136,7 @@ export function NewsUpdates() {
           </div>
         ) : (
           <p className="text-center text-gray-600 dark:text-gray-300">
-            No featured news available.
+            No news available in this category.
           </p>
         )}
       </div>

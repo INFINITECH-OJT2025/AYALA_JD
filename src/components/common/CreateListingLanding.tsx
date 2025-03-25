@@ -92,8 +92,11 @@ export default function CreateListingLand({
     setSelectedImages(selectedImages.filter((_, i) => i !== index));
   };
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (data: any) => {
     console.log("Submitting Data:", data);
+    setLoading(true);
 
     const formData = new FormData();
 
@@ -139,6 +142,8 @@ export default function CreateListingLand({
         description:
           "There was an error submitting your property. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -650,8 +655,8 @@ export default function CreateListingLand({
               </div>
               <div className="flex justify-end gap-2">
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit" variant="default">
-                  Publish Property
+                <Button type="submit" variant="success" disabled={loading}>
+                  {loading ? "Submitting..." : "Submit Property"}
                 </Button>
               </div>
             </form>

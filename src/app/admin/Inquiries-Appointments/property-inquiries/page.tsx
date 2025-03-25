@@ -105,6 +105,7 @@ export default function AdminPropertyInquiries() {
 
   // ✅ Handle replying to an inquiry
   const handleReply = async () => {
+    setLoading(true);
     if (!selectedInquiry) return;
     try {
       await replyInquiry(selectedInquiry.id, replyMessage);
@@ -127,6 +128,8 @@ export default function AdminPropertyInquiries() {
       toast.error("Failed to send reply", {
         description: "There was an issue sending the reply.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -349,8 +352,8 @@ export default function AdminPropertyInquiries() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleReply} variant="success">
-                Send Reply
+              <Button onClick={handleReply} variant="success" disabled={loading}>
+                {loading ? "Sending..." : "Send Reply"}
               </Button>
             </div>
           </DialogContent>

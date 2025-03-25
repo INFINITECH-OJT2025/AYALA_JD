@@ -309,8 +309,8 @@ export default function AdminInquiries() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleReply} variant="success">
-                Send Reply
+              <Button onClick={handleReply} variant="success" disabled={loading}>
+                {loading ? "Sending..." : "Send Reply"}
               </Button>
             </div>
           </DialogContent>

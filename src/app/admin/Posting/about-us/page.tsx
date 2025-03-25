@@ -75,34 +75,43 @@ export default function AdminAboutUs() {
   };
 
   const handleSubmit = async (values: any) => {
-    const formData = new FormData();
-    formData.append("hero_title", values.hero_title);
-    formData.append("hero_subtitle", values.hero_subtitle);
-    formData.append("mission_title", values.mission_title);
-    formData.append("mission_description", values.mission_description);
-    formData.append("vision_title", values.vision_title);
-    formData.append("vision_description", values.vision_description);
-
-    if (values.hero_image instanceof File) {
-      formData.append("hero_image", values.hero_image);
-    }
-
-    // ✅ Include history data in form submission
-    history.forEach((item, index) => {
-      formData.append(`history[${index}][title]`, item.title);
-      formData.append(`history[${index}][description]`, item.description);
-      if (item.image instanceof File) {
-        formData.append(`history[${index}][image]`, item.image);
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("hero_title", values.hero_title);
+      formData.append("hero_subtitle", values.hero_subtitle);
+      formData.append("mission_title", values.mission_title);
+      formData.append("mission_description", values.mission_description);
+      formData.append("vision_title", values.vision_title);
+      formData.append("vision_description", values.vision_description);
+  
+      if (values.hero_image instanceof File) {
+        formData.append("hero_image", values.hero_image);
       }
-    });
-
-    const response = await updateAboutUsContent(formData);
-    if (response) {
-      toast.success("About Us updated successfully!");
-    } else {
-      toast.error("Failed to update About Us.");
+  
+      // ✅ Include history data in form submission
+      history.forEach((item, index) => {
+        formData.append(`history[${index}][title]`, item.title);
+        formData.append(`history[${index}][description]`, item.description);
+        if (item.image instanceof File) {
+          formData.append(`history[${index}][image]`, item.image);
+        }
+      });
+  
+      const response = await updateAboutUsContent(formData);
+      if (response) {
+        toast.success("About Us updated successfully!");
+      } else {
+        toast.error("Failed to update About Us.");
+      }
+    } catch (error) {
+      console.error("Error updating About Us:", error);
+      toast.error("An error occurred while updating About Us.");
+    } finally {
+      setLoading(false); // ✅ Ensure loading is reset after request
     }
   };
+  
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
 
@@ -270,9 +279,10 @@ export default function AdminAboutUs() {
               type="submit"
               variant="success"
               className="px-5 py-2 text-base font-medium flex items-center gap-2"
+              disabled={loading}
             >
-              <Save className="w-5 h-5" />
-              Save Changes
+              <Save className="w-5 h-5"/>
+              {loading ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </form>

@@ -55,30 +55,33 @@ export default function JobApplicants() {
   }, []);
 
   const handleScheduleSubmit = async () => {
+    setLoading(true);
     if (!selectedApplicant || !scheduleDate || !scheduleTime) return;
-  
+
     try {
       const validDate = new Date(scheduleDate);
       if (isNaN(validDate.getTime())) {
         console.error("Invalid schedule date");
         return;
       }
-  
+
       const [hours, minutes] = scheduleTime.split(":").map(Number);
       if (isNaN(hours) || isNaN(minutes)) {
         console.error("Invalid schedule time");
         return;
       }
-  
+
       validDate.setHours(hours, minutes, 0, 0);
-  
+
       // ✅ Pass validDate directly if `scheduleApplicant` expects a Date
       await scheduleApplicant(selectedApplicant.id, validDate, message);
-  
+
       toast.success("Interview Scheduled", {
-        description: `An interview has been scheduled for ${selectedApplicant.email} on ${validDate.toLocaleString()}.`,
+        description: `An interview has been scheduled for ${
+          selectedApplicant.email
+        } on ${validDate.toLocaleString()}.`,
       });
-  
+
       setIsScheduleDialogOpen(false);
       setSelectedApplicant(null);
       setScheduleDate(null);
@@ -87,18 +90,16 @@ export default function JobApplicants() {
     } catch (error) {
       console.error("Scheduling failed:", error);
       toast.error("Failed to schedule interview", {
-        description: "There was an issue scheduling the interview. Please try again.",
+        description:
+          "There was an issue scheduling the interview. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
-  
-
-  
-  
-  
-  
 
   const handleRejectionSubmit = async () => {
+    setLoading(true);
     if (!selectedApplicant) return;
 
     try {
@@ -116,6 +117,8 @@ export default function JobApplicants() {
         description:
           "There was an issue rejecting the applicant. Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,6 +156,7 @@ export default function JobApplicants() {
     { accessorKey: "phone", header: "Phone No." },
     { accessorKey: "address", header: "Address" },
     { accessorKey: "status", header: "Status" },
+    { accessorKey: "job_title", header: "Position" },
     {
       accessorKey: "resume_path",
       header: "Resume",
@@ -177,6 +181,7 @@ export default function JobApplicants() {
               setSelectedApplicant(row.original);
               setIsScheduleDialogOpen(true);
             }}
+            disabled={row.original.status === "rejected"} // Disable if status is 'replied'
           >
             <CalendarCheck className="w-4 h-4" /> Schedule
           </Button>
@@ -188,6 +193,7 @@ export default function JobApplicants() {
               setIsRejectionDialogOpen(true);
               setIsScheduleDialogOpen(false); // Ensure the schedule modal doesn't open
             }}
+            disabled={row.original.status === "replied"} // Disable if status is 'rejected'
           >
             <X className="w-4 h-4" /> Reject
           </Button>
@@ -312,9 +318,10 @@ export default function JobApplicants() {
               <Button
                 onClick={handleScheduleSubmit}
                 variant="success"
-                disabled={!scheduleDate}
+                disabled={!scheduleDate || loading} // ✅ Disable button while loading
               >
-                Schedule Interview
+                {loading ? "Scheduling..." : "Schedule Interview"}{" "}
+                {/* ✅ Show loading text */}
               </Button>
             )}
           </DialogFooter>
@@ -329,25 +336,40 @@ export default function JobApplicants() {
           <DialogHeader>
             <DialogTitle>Reject Applicant</DialogTitle>
           </DialogHeader>
-          <div>
-            <p className="mb-2">
-              Enter a rejection message for <b>{selectedApplicant?.email}</b>:
-            </p>
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter rejection reason..."
-            />
-          </div>
+
+          {selectedApplicant?.status === "rejected" ? (
+            // ✅ Show this message if the applicant is already rejected
+            <div className="p-4 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 rounded-md">
+              <p>
+                <b>This applicant is already rejected.</b>
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p className="mb-2">
+                Enter a rejection message for <b>{selectedApplicant?.email}</b>:
+              </p>
+              <Textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Enter rejection reason..."
+              />
+            </div>
+          )}
+
           <DialogFooter>
             <Button
               variant="outline"
               onClick={() => setIsRejectionDialogOpen(false)}
             >
-              Cancel
+              Close
             </Button>
-            <Button onClick={handleRejectionSubmit} variant="destructive">
-              Reject Applicant
+            <Button
+              onClick={handleRejectionSubmit}
+              variant="destructive"
+              disabled={loading || selectedApplicant?.status === "rejected"} // ✅ Disable if rejected
+            >
+              {loading ? "Rejecting..." : "Reject Application"}
             </Button>
           </DialogFooter>
         </DialogContent>

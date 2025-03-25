@@ -71,6 +71,7 @@ export default function AdminAppointments() {
   }, [filter, appointments]);
 
   const handleReply = async () => {
+    setLoading(true);
     if (!selectedAppointment) return;
     try {
       await replyAppointment(selectedAppointment.id, replyMessage);
@@ -95,6 +96,8 @@ export default function AdminAppointments() {
       toast.error("Failed to send reply", {
         description: "There was an issue sending the reply.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -393,8 +396,8 @@ export default function AdminAppointments() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleReply} variant="success">
-                Send Reply
+              <Button onClick={handleReply} variant="success" disabled={loading}>
+               {loading ? "Sending..." : "Send Reply"}
               </Button>
             </div>
           </DialogContent>

@@ -130,7 +130,7 @@ export default function Contact() {
           disabled={loading}
           className="w-full bg-green-700 dark:bg-green-600 hover:bg-green-800 dark:hover:bg-green-700 text-white mt-4"
         >
-          {loading ? "Sending..." : "SEND INQUIRY"}
+          {loading ? "Sending..." : "Send Inquiry"}
         </Button>
       </form>
     </div>

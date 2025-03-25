@@ -72,8 +72,11 @@ export default function CreateListingDialog({
     setSelectedImages(selectedImages.filter((_, i) => i !== index));
   };
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (data: any) => {
     console.log("Submitting Data:", data);
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("status", "approved"); // ✅ Auto-approve for admin
@@ -116,6 +119,8 @@ export default function CreateListingDialog({
       toast.error("Failed to create property", {
         description: "Please try again.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -570,8 +575,8 @@ export default function CreateListingDialog({
                 </div>
               </div>
               <div className="flex justify-end gap-2">
-                <Button type="submit" variant="default">
-                  Publish Property
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Publishing..." : "Publish Property"}
                 </Button>
               </div>
             </form>

@@ -21,21 +21,50 @@ export function Careers() {
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  interface Job {
+    id: number;
+    title: string;
+    location: string;
+    type?: string;
+    category?: string;
+    salary?: string;
+    deadline?: string | null;
+    description?: string;
+    image_url?: string;
+    slots?: number;
+    created_at: string; 
+  }
+
   useEffect(() => {
     const getJobs = async () => {
       try {
-        const data = await fetchFeaturedJobs();
-        setJobs(data);
+        const data: Job[] = await fetchFeaturedJobs(); // ✅ Ensure data is typed as Job[]
+  
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+  
+        // ✅ Filter out expired jobs
+        const filteredJobs = data
+          .filter((job: Job) => {
+            if (!job.deadline) return true; // ✅ Keep jobs without a deadline
+            return new Date(job.deadline) >= today; // ✅ Only show non-expired jobs
+          })
+          .sort((a, b) => 
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          ); // ✅ Sort by most recent `created_at` first
+  
+        setJobs(filteredJobs);
       } catch (err) {
         setError("Failed to load featured jobs.");
       } finally {
         setLoading(false);
       }
     };
-
+  
     getJobs();
   }, []);
-
+  
+  
   const router = useRouter();
 
   return (
@@ -106,7 +135,9 @@ export function Careers() {
                 <CardFooter className="mt-auto">
                   <Button
                     className="w-full bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition"
-                    onClick={() => router.push("/landing/joblistings")}
+                    onClick={() =>
+                      router.push(`/landing/joblistings?jobId=${job.id}`)
+                    } // ✅ Pass job ID
                   >
                     Apply Now
                   </Button>

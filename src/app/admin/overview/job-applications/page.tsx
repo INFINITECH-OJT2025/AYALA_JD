@@ -17,7 +17,6 @@ import { XCircle } from "lucide-react";
 import JobApplicants from "@/components/common/JobApplicants";
 import { toast } from "sonner";
 
-
 export default function JobForm() {
   const [form, setForm] = useState({
     title: "",
@@ -43,7 +42,9 @@ export default function JobForm() {
   const [newCategory, setNewCategory] = useState("");
 
   // ✅ Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -110,13 +111,17 @@ export default function JobForm() {
     } catch (error: any) {
       try {
         const errorData = await error.response.json(); // ✅ Parse Laravel error response
-        if (errorData.message === "A job with this title and location already exists.") {
+        if (
+          errorData.message ===
+          "A job with this title and location already exists."
+        ) {
           toast.error("Duplicate Job", {
             description: "This job already exists. Please modify the details.",
           });
         } else {
           toast.error("Job Creation Failed", {
-            description: "There was an issue creating the job. Please try again.",
+            description:
+              "There was an issue creating the job. Please try again.",
           });
         }
       } catch {
@@ -286,8 +291,9 @@ export default function JobForm() {
               type="submit"
               variant="success"
               className="w-full"
+              disabled={loading}
             >
-              Create Job
+              {loading ? "Creating..." : "Create Job"}
             </Button>
           </form>
         </div>

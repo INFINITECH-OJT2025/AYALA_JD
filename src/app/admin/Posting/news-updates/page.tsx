@@ -70,6 +70,7 @@ export default function AdminNews() {
   };
 
   const handleSave = async () => {
+    setLoading(true);
     try {
       const form = new FormData();
       form.append("title", formData.title);
@@ -102,6 +103,8 @@ export default function AdminNews() {
       toast.error("Failed to save news", {
         description: "An error occurred while saving the news post.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -308,8 +311,8 @@ export default function AdminNews() {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} className="bg-green-600 text-white">
-                Save
+              <Button onClick={handleSave} className="bg-green-600 text-white" disabled={loading}>
+                {loading ? "Saving..." : "Save"}
               </Button>
             </DialogFooter>
           </DialogContent>

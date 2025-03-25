@@ -77,6 +77,7 @@ export default function AdminServices() {
 
   // ✅ Handle Save
   const handleSave = async () => {
+    setLoading(true);
     try {
       const form = new FormData();
       form.append("title", formData.title);
@@ -107,6 +108,8 @@ export default function AdminServices() {
       toast.error("Failed to save service", {
         description: "An error occurred while saving the service.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -303,8 +306,8 @@ export default function AdminServices() {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} className="bg-green-600 text-white">
-                Save
+              <Button onClick={handleSave} className="bg-green-600 text-white" disabled={loading}>
+                {loading ? "Saving..." : "Save"}
               </Button>
             </DialogFooter>
           </DialogContent>
