@@ -898,6 +898,73 @@ export async function scheduleApplicant(id: number, date: Date, message: string)
   return response.json();
 }
 
+const API_BASE_URL = "http://localhost:8000/api"; // Change this if your Laravel backend URL is different
+
+/**
+ * Fetch reschedule details for an applicant.
+ * @param id - Applicant ID
+ * @param email - Applicant Email (for verification)
+ */
+export async function fetchRescheduleDetails(id: string, email: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/reschedule/${id}?email=${encodeURIComponent(email)}`);
+
+    // Get the raw text response before parsing
+    const text = await response.text();
+    console.log("Raw API Response:", text);
+
+    return JSON.parse(text); // Manually parse JSON
+  } catch (error) {
+    console.error("Error fetching reschedule details:", error);
+    throw error;
+  }
+}
+
+/**
+ * Submit a reschedule request.
+ * @param formData - Form data containing applicant ID, email, new schedule, message, and optional file
+ */
+export async function submitReschedule(formData: FormData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/reschedule`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit reschedule request.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error submitting reschedule request:", error);
+    throw error;
+  }
+}
+
+export async function updateRescheduleStatus(id: number, status: "approved" | "rejected") {
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/reschedule/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update schedule status.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating schedule status:", error);
+    throw error;
+  }
+}
+
+
+
 
 
 

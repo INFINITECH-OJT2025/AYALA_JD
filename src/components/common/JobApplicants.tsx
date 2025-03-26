@@ -6,6 +6,7 @@ import {
   scheduleApplicant,
   rejectApplicant,
   deleteApplicant,
+  updateRescheduleStatus,
 } from "@/lib/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
@@ -21,12 +22,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
 import { Eye, CalendarCheck, X, Trash, Clock } from "lucide-react";
 import { toast } from "sonner";
+import useFetchSchedule from "@/hooks/useFetchSchedule";
+import { Badge } from "../ui/badge";
 
 export default function JobApplicants() {
+  const [selectedApplicant, setSelectedApplicant] = useState<any | null>(null);
+  const { scheduleRequest } = useFetchSchedule(selectedApplicant?.id || null);
+  const [actionType, setActionType] = useState(""); // Track action type
   const [applicants, setApplicants] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedApplicant, setSelectedApplicant] = useState<any | null>(null);
   const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
   const [message, setMessage] = useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -36,6 +41,31 @@ export default function JobApplicants() {
   const [selectedApplicantId, setSelectedApplicantId] = useState<number | null>(
     null
   );
+
+  const handleRescheduleApproval = async (status: "approved" | "rejected") => {
+    console.log("Current Schedule Request:", scheduleRequest);
+
+    if (!scheduleRequest?.id) {
+      console.error("Missing ID in scheduleRequest:", scheduleRequest);
+      toast.error("No valid schedule request found.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setActionType(status);
+
+      await updateRescheduleStatus(scheduleRequest.id, status);
+
+      toast.success(`Schedule request has been ${status}.`);
+      setIsScheduleDialogOpen(false);
+    } catch (error) {
+      toast.error("Error updating status.");
+    } finally {
+      setLoading(false);
+      setActionType("");
+    }
+  };
 
   useEffect(() => {
     const getApplicants = async () => {
@@ -257,6 +287,83 @@ export default function JobApplicants() {
                 <b>Message:</b>{" "}
                 {selectedApplicant.message || "No additional details"}
               </p>
+
+              {/* Fetch Scheduled Request Data only if status is "replied" */}
+              {scheduleRequest && (
+                <div className="bg-gray-200 dark:bg-gray-800 p-4 rounded-md mt-4">
+                  <p>
+                    <b>Requested Reschedule Date:</b>{" "}
+                    {scheduleRequest.new_schedule
+                      ? new Date(scheduleRequest.new_schedule).toLocaleString()
+                      : "No reschedule requested"}
+                  </p>
+                  <p className="mt-2">
+                    <b>Applicant's Message:</b>{" "}
+                    {scheduleRequest.applicant_message || "No message provided"}
+                  </p>
+                  {/* Reschedule Status with Badge */}
+                  <div className="mt-2 flex items-center">
+                    <b className="mr-2">Reschedule Status:</b>
+                    <Badge
+                      variant={
+                        scheduleRequest?.status === "approved"
+                          ? "default" // ✅ Green (Default for success)
+                          : scheduleRequest?.status === "pending"
+                          ? "secondary" // ✅ Yellow (Secondary for warning)
+                          : scheduleRequest?.status === "rejected"
+                          ? "destructive" // ✅ Red (Destructive for rejection)
+                          : "outline" // ✅ Gray (Outline for no status)
+                      }
+                    >
+                      {scheduleRequest?.status || "No status available"}
+                    </Badge>
+                  </div>
+
+                  {/* ✅ Display Proof File if Provided */}
+                  {scheduleRequest.file_path ? (
+                    <div className="mt-4">
+                      <p>
+                        <b>Proof of Request:</b>
+                      </p>
+                      <a
+                        href={scheduleRequest.file_path}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-500 underline"
+                      >
+                        View Attached File
+                      </a>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-gray-500">No proof provided.</p>
+                  )}
+
+                  {/* ✅ Buttons for Admin to Approve or Reject Reschedule Request */}
+                  {scheduleRequest.status === "pending" && (
+                    <div className="flex justify-end space-x-3 mt-4">
+                      <Button
+                        variant="success"
+                        onClick={() => handleRescheduleApproval("approved")}
+                        disabled={loading} // ✅ Disable while processing
+                      >
+                        {loading && actionType === "approve"
+                          ? "Approving..."
+                          : "Approve"}
+                      </Button>
+
+                      <Button
+                        variant="destructive"
+                        onClick={() => handleRescheduleApproval("rejected")}
+                        disabled={loading} // ✅ Disable while processing
+                      >
+                        {loading && actionType === "reject"
+                          ? "Rejecting..."
+                          : "Reject"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <>
@@ -270,15 +377,18 @@ export default function JobApplicants() {
                       }
                       mode="single"
                       required
-                      disabled={(date) =>
-                        date < new Date(new Date().setHours(0, 0, 0, 0))
+                      disabled={
+                        (date) =>
+                          date < new Date(new Date().setHours(0, 0, 0, 0)) || // Disable past dates
+                          date.getDay() === 0 || // Disable Sundays
+                          date.getDay() === 6 // Disable Saturdays
                       }
                     />
                   </div>
                 </div>
               </div>
 
-              {/* ✅ Time Selection */}
+              {/* Time Selection */}
               <div>
                 <p className="text-start">Select Time:</p>
                 <div className="relative">
@@ -290,7 +400,20 @@ export default function JobApplicants() {
                     type="time"
                     className="w-full p-2 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={scheduleTime}
-                    onChange={(e) => setScheduleTime(e.target.value)}
+                    onChange={(e) => {
+                      const selectedTime = e.target.value;
+                      if (selectedTime >= "08:00" && selectedTime <= "17:00") {
+                        setScheduleTime(selectedTime);
+                      } else {
+                        setScheduleTime(""); // Reset input if invalid
+                        toast.error(
+                          "Please select a time between 08:00 AM and 05:00 PM."
+                        );
+                      }
+                    }}
+                    min="08:00"
+                    max="17:00"
+                    required
                   />
                 </div>
               </div>
@@ -318,10 +441,10 @@ export default function JobApplicants() {
               <Button
                 onClick={handleScheduleSubmit}
                 variant="success"
-                disabled={!scheduleDate || loading} // ✅ Disable button while loading
+                disabled={!scheduleDate || loading} // Disable button while loading
               >
                 {loading ? "Scheduling..." : "Schedule Interview"}{" "}
-                {/* ✅ Show loading text */}
+                {/* Show loading text */}
               </Button>
             )}
           </DialogFooter>
