@@ -11,7 +11,7 @@ export interface Property {
   floor_number: number;
   parking: string;
   description: string;
-  type_of_listing: string[]; // ✅ Updated to an array to match backend
+  type_of_listing: string; // ✅ Updated to an array to match backend
   other_details: string[]; // ✅ New field to store multiple inputs
   pool_area: boolean;
   guest_suite: boolean;

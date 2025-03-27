@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -52,6 +52,7 @@ import {
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import OtherDetails from "./OtherDetails";
 
 interface CreateListingDialogProps {
   isOpen: boolean;
@@ -67,26 +68,16 @@ export default function CreateListingLand({
   const [otherDetails, setOtherDetails] = useState<string[]>([]);
   const unitStatus = form.watch("unit_status"); // ✅ Watch selected value
 
-  const addDetailField = () => {
-    setOtherDetails([...otherDetails, ""]);
-  };
-
-  const removeDetailField = (index: number) => {
-    setOtherDetails(otherDetails.filter((_, i) => i !== index));
-  };
-
-  const updateDetailValue = (index: number, value: string) => {
-    const updatedDetails = [...otherDetails];
-    updatedDetails[index] = value;
-    setOtherDetails(updatedDetails);
-  };
-
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const filesArray = Array.from(event.target.files);
       setSelectedImages([...selectedImages, ...filesArray]);
     }
   };
+
+  useEffect(() => {
+    form.setValue("other_details", otherDetails);
+  }, [otherDetails, form]);
 
   const removeImage = (index: number) => {
     setSelectedImages(selectedImages.filter((_, i) => i !== index));
@@ -99,25 +90,26 @@ export default function CreateListingLand({
     setLoading(true);
 
     const formData = new FormData();
+    formData.append("type_of_listing", data.type_of_listing);
 
-    // ✅ Convert type_of_listing to JSON string before sending
-    formData.append("type_of_listing", JSON.stringify(data.type_of_listing));
-
-    // ✅ Convert features to JSON string before sending
     const selectedFeatures = Object.keys(data.features).filter(
       (key) => data.features[key] === true
     );
     formData.append("features", JSON.stringify(selectedFeatures));
 
-    // ✅ Append all other form fields
+    formData.append("other_details", JSON.stringify(data.other_details || []));
+
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== "features" && key !== "type_of_listing") {
+      if (
+        key !== "features" &&
+        key !== "type_of_listing" &&
+        key !== "other_details"
+      ) {
         formData.append(key, value as string);
       }
     });
 
-    // ✅ Attach Admin User ID (Hardcoded for Now)
-    formData.append("user_id", "1"); // Replace with actual admin ID dynamically
+    formData.append("user_id", "1");
 
     // ✅ Append images
     selectedImages.forEach((image) =>
@@ -128,16 +120,14 @@ export default function CreateListingLand({
       const response = await submitProperty(formData);
       console.log("Property submitted successfully", response);
 
-      // ✅ Success toast
       toast.success("Property Submitted!", {
         description: "Your property listing has been successfully submitted.",
       });
 
-      onClose(); // Close dialog after submission
+      onClose();
     } catch (error) {
       console.error("Error submitting property", error);
 
-      // ❌ Error toast
       toast.error("Submission Failed", {
         description:
           "There was an error submitting your property. Please try again.",
@@ -249,8 +239,15 @@ export default function CreateListingLand({
                           placeholder="Phone Number"
                           {...field}
                           value={field.value || ""}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                            if (value.length <= 11) {
+                              field.onChange(value);
+                            }
+                          }}
                         />
                       </FormControl>
+
                       <FormMessage />
                     </FormItem>
                   )}
@@ -309,7 +306,6 @@ export default function CreateListingLand({
                 <FormField
                   control={form.control}
                   name="type_of_listing"
-                  rules={{ required: "You must select one listing type" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -318,24 +314,20 @@ export default function CreateListingLand({
                       </FormLabel>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {listingOptions.map((option) => (
-                          <FormField
+                          <FormItem
                             key={option}
-                            control={form.control}
-                            name="type_of_listing"
-                            render={({ field }) => (
-                              <FormItem className="flex items-end gap-2">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value === option} // ✅ Only one can be selected
-                                    onCheckedChange={() =>
-                                      field.onChange(option)
-                                    } // ✅ Selecting another unchecks previous
-                                  />
-                                </FormControl>
-                                <FormLabel>{option}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
+                            className="flex items-end gap-2"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value === option} // ✅ Ensure only one is selected
+                                onCheckedChange={() => {
+                                  form.setValue("type_of_listing", option); // ✅ Store as a string directly
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel>{option}</FormLabel>
+                          </FormItem>
                         ))}
                       </div>
                       <FormMessage />
@@ -526,38 +518,11 @@ export default function CreateListingLand({
                 />
               </div>
 
-              {(unitStatus === "Semi-Furnished" ||
-                unitStatus === "Fully-Furnished") && (
-                <div className="mt-4">
-                  <FormLabel>Add Other Details</FormLabel>
-                  {otherDetails.map((detail, index) => (
-                    <div key={index} className="flex items-center gap-2 mt-2">
-                      <Input
-                        type="text"
-                        placeholder="Enter detail"
-                        value={detail}
-                        onChange={(e) =>
-                          updateDetailValue(index, e.target.value)
-                        }
-                      />
-                      <button
-                        type="button"
-                        className="text-red-500 hover:text-red-700"
-                        onClick={() => removeDetailField(index)}
-                      >
-                        <X className="w-5 h-5" />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="mt-2 flex items-center text-blue-500 hover:text-blue-700"
-                    onClick={addDetailField}
-                  >
-                    <Plus className="w-5 h-5 mr-1" /> Add More
-                  </button>
-                </div>
-              )}
+              <OtherDetails
+                unitStatus={unitStatus}
+                otherDetails={otherDetails}
+                setOtherDetails={setOtherDetails}
+              />
 
               <FormField
                 control={form.control}

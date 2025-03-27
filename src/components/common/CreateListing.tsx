@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -49,6 +49,8 @@ import {
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner"; // ✅ Import Sonner
+import OtherDetails from "./OtherDetails";
+
 interface CreateListingDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -60,6 +62,8 @@ export default function CreateListingDialog({
 }: CreateListingDialogProps) {
   const form = useForm();
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [otherDetails, setOtherDetails] = useState<string[]>([]);
+  const unitStatus = form.watch("unit_status"); // ✅ Watch selected value
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -67,6 +71,10 @@ export default function CreateListingDialog({
       setSelectedImages([...selectedImages, ...filesArray]);
     }
   };
+
+  useEffect(() => {
+    form.setValue("other_details", otherDetails);
+  }, [otherDetails, form]);
 
   const removeImage = (index: number) => {
     setSelectedImages(selectedImages.filter((_, i) => i !== index));
@@ -81,14 +89,21 @@ export default function CreateListingDialog({
     const formData = new FormData();
     formData.append("status", "approved"); // ✅ Auto-approve for admin
 
-    formData.append("type_of_listing", JSON.stringify(data.type_of_listing));
+    formData.append("type_of_listing", data.type_of_listing);
+
+    formData.append("other_details", JSON.stringify(data.other_details || []));
+
     const selectedFeatures = Object.keys(data.features).filter(
       (key) => data.features[key] === true
     );
     formData.append("features", JSON.stringify(selectedFeatures));
 
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== "features" && key !== "type_of_listing") {
+      if (
+        key !== "features" &&
+        key !== "type_of_listing" &&
+        key !== "other_details"
+      ) {
         formData.append(key, value as string);
       }
     });
@@ -221,6 +236,12 @@ export default function CreateListingDialog({
                           placeholder="Phone Number"
                           {...field}
                           value={field.value || ""}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                            if (value.length <= 11) {
+                              field.onChange(value);
+                            }
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -277,30 +298,31 @@ export default function CreateListingDialog({
 
                 <FormField
                   control={form.control}
-                  name="unit_status"
+                  name="type_of_listing"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <AirVent className="inline-block mr-2" />
-                        Unit Status
+                        <List className="inline-block mr-2" /> Listing Type{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Unit Status" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Bare">Bare</SelectItem>
-                          <SelectItem value="Semi-Furnished">
-                            Semi-Furnished
-                          </SelectItem>
-                          <SelectItem value="Fully-Furnished">
-                            Fully-Furnished
-                          </SelectItem>
-                          <SelectItem value="Interiored">Interiored</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {listingOptions.map((option) => (
+                          <FormItem
+                            key={option}
+                            className="flex items-end gap-2 "
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value === option} // ✅ Ensure only one is selected
+                                onCheckedChange={() => {
+                                  form.setValue("type_of_listing", option); // ✅ Store as a string directly
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel>{option}</FormLabel>
+                          </FormItem>
+                        ))}
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -392,6 +414,39 @@ export default function CreateListingDialog({
               <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
+                  name="unit_status"
+                  rules={{ required: "Unit Status is required" }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        <AirVent className="inline-block mr-2" />
+                        Unit Status <span className="text-red-500">*</span>
+                      </FormLabel>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Unit Status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Bare">Bare</SelectItem>
+                          <SelectItem value="Semi-Furnished">
+                            Semi-Furnished
+                          </SelectItem>
+                          <SelectItem value="Fully-Furnished">
+                            Fully-Furnished
+                          </SelectItem>
+                          <SelectItem value="Interiored">Interiored</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+
+                      {/* ✅ Conditionally show extra input fields */}
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="parking"
                   render={({ field }) => (
                     <FormItem>
@@ -444,43 +499,13 @@ export default function CreateListingDialog({
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="type_of_listing"
-                  rules={{ required: "You must select one listing type" }}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        <List className="inline-block mr-2" /> Listing Type
-                      </FormLabel>
-                      <div className="grid grid-cols-2 gap-2">
-                        {listingOptions.map((option) => (
-                          <FormField
-                            key={option}
-                            control={form.control}
-                            name="type_of_listing"
-                            render={({ field }) => (
-                              <FormItem className="flex items-end gap-2">
-                                <FormControl>
-                                  <Checkbox
-                                    checked={field.value === option} // ✅ Ensures only one selection
-                                    onCheckedChange={() =>
-                                      field.onChange(option)
-                                    } // ✅ Selecting another unchecks previous
-                                  />
-                                </FormControl>
-                                <FormLabel>{option}</FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                        ))}
-                      </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
+
+              <OtherDetails
+                unitStatus={unitStatus}
+                otherDetails={otherDetails}
+                setOtherDetails={setOtherDetails}
+              />
 
               <FormField
                 control={form.control}
@@ -575,7 +600,7 @@ export default function CreateListingDialog({
                 </div>
               </div>
               <div className="flex justify-end gap-2">
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button variant="success" type="submit" className="w-full" disabled={loading}>
                   {loading ? "Publishing..." : "Publish Property"}
                 </Button>
               </div>

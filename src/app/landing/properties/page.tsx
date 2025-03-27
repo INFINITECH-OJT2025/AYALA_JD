@@ -80,18 +80,19 @@ export default function FeaturedProperties() {
   };
 
   const filteredProperties = properties.filter((property) => {
+    const searchLower = searchQuery.toLowerCase();
+  
     const matchesSearch =
-      property.property_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      property.type_of_listing.some((type) =>
-        type.toLowerCase().includes(searchQuery.toLowerCase())
-      ); // ✅ Properly checks each item in the array
+      property.property_name.toLowerCase().includes(searchLower) ||
+      property.location.toLowerCase().includes(searchLower) ||
+      property.type_of_listing.toLowerCase().includes(searchLower); // ✅ Now works as a string
   
     const priceCategory = getPriceRange(formatPrice(property.price));
     const matchesPrice = priceFilter ? priceCategory === priceFilter : true;
   
     return matchesSearch && matchesPrice;
   });
+  
   
   
   return (
@@ -225,24 +226,19 @@ export default function FeaturedProperties() {
                           height={300}
                           className="w-full h-48 object-cover"
                         />
-                        <span
-                          className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
-                            Array.isArray(property.type_of_listing)
-                              ? property.type_of_listing.includes("For Sale") &&
-                                property.type_of_listing.includes("For Rent")
-                                ? "bg-gradient-to-r from-green-500 to-blue-500"
-                                : property.type_of_listing.includes("For Sale")
-                                ? "bg-green-500"
-                                : "bg-blue-500"
-                              : property.type_of_listing === "For Sale"
-                              ? "bg-green-500"
-                              : "bg-blue-500"
-                          }`}
-                        >
-                          {Array.isArray(property.type_of_listing)
-                            ? property.type_of_listing.join(" & ")
-                            : property.type_of_listing}
-                        </span>
+                       <span
+  className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
+    property.type_of_listing.includes("For Sale") &&
+    property.type_of_listing.includes("For Rent")
+      ? "bg-gradient-to-r from-green-500 to-blue-500"
+      : property.type_of_listing.includes("For Sale")
+      ? "bg-green-500"
+      : "bg-blue-500"
+  }`}
+>
+  {property.type_of_listing}
+</span>
+
 
                         <span className="absolute top-2 right-2 flex items-center bg-gray-800/80 text-white text-xs font-bold px-3 py-1 rounded">
                           <Eye className="w-4 h-4 mr-1" />

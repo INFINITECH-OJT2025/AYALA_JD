@@ -71,6 +71,7 @@ interface Property {
   floor_number: number;
   parking: boolean;
   description: string;
+  other_details: string[];
   pool_area: boolean;
   guest_suite: boolean;
   underground_parking: boolean;
@@ -371,26 +372,7 @@ export default function PropertyList() {
                       <TableCell className="whitespace-nowrap px-2">
                         {property.last_name}
                       </TableCell>
-                      <TableCell>
-                        {(() => {
-                          try {
-                            const listings =
-                              typeof property.type_of_listing === "string"
-                                ? JSON.parse(property.type_of_listing)
-                                : property.type_of_listing;
-
-                            return Array.isArray(listings)
-                              ? listings.join(", ")
-                              : property.type_of_listing;
-                          } catch (error) {
-                            console.error(
-                              "Error parsing type_of_listing:",
-                              error
-                            );
-                            return property.type_of_listing;
-                          }
-                        })()}
-                      </TableCell>
+                      <TableCell>{property.type_of_listing}</TableCell>
                       <TableCell>{property.property_name}</TableCell>
                       <TableCell>{property.unit_type}</TableCell>
                       <TableCell>{property.unit_status}</TableCell>
@@ -558,6 +540,18 @@ export default function PropertyList() {
                   <strong>Description:</strong>{" "}
                   {selectedProperty.description || "No description provided"}
                 </p>
+                <p className="text-gray-700 dark:text-gray-300 col-span-2">
+                  <strong>Other Details:</strong>
+                </p>
+                <ul className="text-gray-700 dark:text-gray-300 col-span-2 list-disc pl-5">
+                  {selectedProperty.other_details?.length ? (
+                    selectedProperty.other_details.map((detail, index) => (
+                      <li key={index}>{detail}</li>
+                    ))
+                  ) : (
+                    <li>No details provided</li>
+                  )}
+                </ul>
               </div>
 
               {/* Amenities */}
