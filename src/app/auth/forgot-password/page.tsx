@@ -1,5 +1,4 @@
-// app/(auth)/forgot-password/forgot-password-content.tsx
-"use client";
+export const dynamic = "force-dynamic";
 
 import { useSearchParams } from "next/navigation";
 import { ForgotPassword } from "@/components/auth/forgot-password";
