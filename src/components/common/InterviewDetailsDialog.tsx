@@ -71,14 +71,23 @@ const InterviewDetailsDialog = ({
           <div>
             <span className="font-semibold">📅 Scheduled Date & Time:</span>{" "}
             {schedule?.interview_date
-              ? new Date(schedule.interview_date).toLocaleString("en-US", {
-                  month: "long", // Full month name (e.g., March)
-                  day: "numeric", // Day without leading zero (e.g., 28)
-                  year: "numeric", // Full year (e.g., 2025)
-                  hour: "numeric",
-                  minute: "2-digit",
-                  hour12: true, // 12-hour format with AM/PM
-                })
+              ? `${new Date(schedule.interview_date).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  }
+                )} - ${new Date(schedule.interview_date).toLocaleTimeString(
+                  "en-US",
+                  {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                    timeZone: "UTC",
+                  }
+                )}`
               : "No schedule available"}
           </div>
 

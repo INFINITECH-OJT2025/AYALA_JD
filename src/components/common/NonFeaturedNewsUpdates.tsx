@@ -23,7 +23,7 @@ interface NewsItem {
   is_featured: boolean;
 }
 
-export function NewsUpdates() {
+export function NonFeaturedNewsUpdates() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -34,7 +34,12 @@ export function NewsUpdates() {
     const getNews = async () => {
       try {
         const data: NewsItem[] = await fetchPublishedNews();
-        setNews(data.filter((n: NewsItem) => n.is_featured));
+        // Remove filter is_featured & sort by latest to old
+        const sortedData = data.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setNews(sortedData);
       } catch (err) {
         setError("Failed to load news.");
       } finally {
@@ -44,26 +49,23 @@ export function NewsUpdates() {
     getNews();
   }, []);
 
-  // ✅ Extract unique categories from news data
   const categories = ["All", ...new Set(news.map((item) => item.category))];
 
-  // ✅ Filter news based on the selected category
   const filteredNews =
     selectedCategory === "All"
       ? news
       : news.filter((article) => article.category === selectedCategory);
 
   return (
-    <section className="py-12 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
+    <section className="py-4 px-6 lg:px-24 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
-          Featured News
+          Latest News
         </h2>
         <p className="text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
-          Stay updated with our latest featured news and announcements.
+          Stay informed with our latest news and updates.
         </p>
 
-        {/* ✅ Category Filter */}
         <div className="flex flex-wrap justify-center gap-3 mb-6">
           {categories.map((category) => (
             <Button
@@ -71,7 +73,7 @@ export function NewsUpdates() {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-md transition-all ${
                 selectedCategory === category
-                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white" // ✅ Active state for both themes
+                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
                   : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
               }`}
             >
@@ -107,9 +109,11 @@ export function NewsUpdates() {
                   />
                 )}
 
-                <CardHeader>
-                  <CardTitle className="text-lg">{article.title}</CardTitle>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                <CardHeader className="mb-2">
+                  <CardTitle className="text-lg font-semibold truncate">
+                    {article.title}
+                  </CardTitle>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                     {article.category} •{" "}
                     {new Date(article.created_at).toLocaleDateString("en-US", {
                       month: "long",
@@ -119,14 +123,12 @@ export function NewsUpdates() {
                   </p>
                 </CardHeader>
 
-                {/* ✅ Ensures content takes remaining space */}
                 <CardContent className="flex-grow">
                   <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
                     {article.content}
                   </p>
                 </CardContent>
 
-                {/* ✅ Button always at bottom */}
                 <div className="mt-auto">
                   <Button
                     className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
@@ -173,7 +175,6 @@ export function NewsUpdates() {
               />
             )}
 
-            {/* ✅ Scrollable Description */}
             <div className="flex-1 overflow-y-auto max-h-[40vh] p-2">
               <p className="text-gray-700 dark:text-gray-300 text-justify">
                 {selectedNews.content}

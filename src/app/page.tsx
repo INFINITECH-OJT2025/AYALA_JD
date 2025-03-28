@@ -5,7 +5,7 @@ import { FeaturedProperties } from "@/components/landing-page/Features";
 import { WhyChooseUs } from "@/components/landing-page/Whychooseus";
 import { LoanCalculator } from "@/components/landing-page/LoanCalculator";
 import { Services } from "@/components/landing-page/Services";
-import { Testimonials } from "@/components/landing-page/Testimonials";
+import Testimonials  from "@/components/landing-page/Testimonials";
 import { Careers } from "@/components/landing-page/Careers";
 import { NewsUpdates } from "@/components/landing-page/NewsUpdates";
 import { ContactForm } from "@/components/landing-page/ContactForm";
@@ -25,6 +25,7 @@ function page() {
       <Careers/>
       <NewsUpdates/>
       <ContactForm/>
+      <Testimonials/>
       <MobileAppDownload/>
       <Footer/>
     </>

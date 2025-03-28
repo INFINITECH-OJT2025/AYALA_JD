@@ -23,7 +23,7 @@ export default function Notification() {
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState("all"); // "all" or "unread"
   const [openMenu, setOpenMenu] = useState<number | null>(null);
-  const [upcomingInterviews, setUpcomingInterviews] = useState<Interview[]>([]);
+ const [upcomingInterviews, setUpcomingInterviews] = useState<Interview[]>([]);
   const router = useRouter();
 
   interface Interview {
