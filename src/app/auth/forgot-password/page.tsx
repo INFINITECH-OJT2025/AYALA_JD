@@ -1,8 +1,12 @@
 // src/app/(auth)/forgot-password/page.tsx
 
-"use client";
+import { Suspense } from "react";
 import ForgotPasswordPageContent from "./forgot-password-content";
 
 export default function ForgotPasswordPage() {
-    return <ForgotPasswordPageContent />;
+    return (
+        <Suspense>
+            <ForgotPasswordPageContent />
+        </Suspense>
+    );
 }
