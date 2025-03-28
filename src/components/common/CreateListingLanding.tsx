@@ -203,7 +203,13 @@ export default function CreateListingLand({
                 <FormField
                   control={form.control}
                   name="email"
-                  rules={{ required: "Email is required" }}
+                  rules={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // simple email regex
+                      message: "Invalid email format",
+                    },
+                  }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -218,7 +224,8 @@ export default function CreateListingLand({
                           value={field.value || ""}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage />{" "}
+                      {/* this will now show both 'required' or 'invalid format' automatically */}
                     </FormItem>
                   )}
                 />
@@ -306,11 +313,12 @@ export default function CreateListingLand({
                 <FormField
                   control={form.control}
                   name="type_of_listing"
+                  rules={{ required: "Listing Type is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <List className="inline-block mr-2" /> Listing Type{" "}
-                        <span className="text-red-500">*</span>
+                        <List className="inline-block mr-2" />
+                        Listing Type <span className="text-red-500">*</span>
                       </FormLabel>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {listingOptions.map((option) => (
@@ -320,13 +328,13 @@ export default function CreateListingLand({
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value === option} // ✅ Ensure only one is selected
+                                checked={field.value === option}
                                 onCheckedChange={() => {
-                                  form.setValue("type_of_listing", option); // ✅ Store as a string directly
+                                  form.setValue("type_of_listing", option);
                                 }}
                               />
                             </FormControl>
-                            <FormLabel>{option}</FormLabel>
+                            <FormLabel className="!mb-0">{option}</FormLabel>
                           </FormItem>
                         ))}
                       </div>

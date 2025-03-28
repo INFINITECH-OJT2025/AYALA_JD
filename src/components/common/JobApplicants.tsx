@@ -281,8 +281,21 @@ export default function JobApplicants() {
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md mt-3">
               <p>
                 <b>Scheduled Date:</b>{" "}
-                {new Date(selectedApplicant.schedule_date).toLocaleString()}
+                {selectedApplicant?.schedule_date
+                  ? new Date(selectedApplicant.schedule_date).toLocaleString(
+                      "en-US",
+                      {
+                        month: "long", // Full month name (e.g., March)
+                        day: "numeric", // Day without leading zero (e.g., 28)
+                        year: "numeric", // Full year (e.g., 2025)
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true, // Ensures AM/PM format
+                      }
+                    )
+                  : "No schedule available"}
               </p>
+
               <p className="mt-2">
                 <b>Message:</b>{" "}
                 {selectedApplicant.message || "No additional details"}
@@ -290,13 +303,25 @@ export default function JobApplicants() {
 
               {/* Fetch Scheduled Request Data only if status is "replied" */}
               {scheduleRequest && (
-                <div className="bg-gray-200 dark:bg-gray-800 p-4 rounded-md mt-4">
+                <div className="bg-gray-200 dark:bg-gray-800 p-2 rounded-md mt-4">
                   <p>
                     <b>Requested Reschedule Date:</b>{" "}
-                    {scheduleRequest.new_schedule
-                      ? new Date(scheduleRequest.new_schedule).toLocaleString()
+                    {scheduleRequest?.new_schedule
+                      ? new Date(scheduleRequest.new_schedule).toLocaleString(
+                          "en-US",
+                          {
+                            timeZone: "UTC",
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        )
                       : "No reschedule requested"}
                   </p>
+
                   <p className="mt-2">
                     <b>Applicant's Message:</b>{" "}
                     {scheduleRequest.applicant_message || "No message provided"}

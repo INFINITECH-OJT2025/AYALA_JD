@@ -73,11 +73,13 @@ export default function FeaturedProperties() {
   };
 
   const getPriceRange = (price: number) => {
+    if (price < 100_000) return "<100K";
     if (price <= 1_000_000) return "100K-1M";
     if (price <= 5_000_000) return "1M-5M";
     if (price <= 10_000_000) return "5M-10M";
     return "10M+";
-  };
+};
+
 
   const filteredProperties = properties.filter((property) => {
     const searchLower = searchQuery.toLowerCase();

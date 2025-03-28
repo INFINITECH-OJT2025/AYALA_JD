@@ -24,7 +24,11 @@ import {
 } from "@radix-ui/react-select";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; 
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 export default function JobTable() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,14 +141,14 @@ export default function JobTable() {
       cell: ({ row }) => {
         const rawDate = row.original.deadline;
         if (!rawDate) return "No deadline"; // ✅ Handle missing deadline
-    
+
         const deadlineDate = new Date(rawDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0); // ✅ Remove time for accurate comparison
         deadlineDate.setHours(0, 0, 0, 0); // ✅ Remove time from deadline for accurate check
-    
+
         const isExpired = deadlineDate <= today; // ✅ Expired if today or earlier
-    
+
         return (
           <Tooltip>
             <TooltipTrigger>
@@ -325,6 +329,7 @@ export default function JobTable() {
                   <Input
                     name="deadline"
                     type="date"
+                    min={new Date().toISOString().split("T")[0]} // ✅ disables past dates
                     value={editForm.deadline || ""}
                     onChange={handleEditChange}
                   />
@@ -394,7 +399,9 @@ export default function JobTable() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit">Update Job</Button>
+                <Button variant="success" type="submit">
+                  Update Job
+                </Button>
               </div>
             </form>
           </DialogContent>

@@ -18,6 +18,8 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
     message: "",
   });
 
+  const [emailError, setEmailError] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -26,6 +28,7 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const appointmentData = { ...form, property_id: propertyId }; // ✅ Include property_id
 
     try {
@@ -49,18 +52,17 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
       });
     } catch (error) {
       toast.error("Failed to book appointment. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form className="space-y-3" onSubmit={handleSubmit}>
       <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center space-x-2">
         <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-300" />
         <span>Book an On-Site Viewing</span>
       </h3>
-      <p className="text-gray-500 dark:text-gray-300 text-sm">
-        Select your preferred date and time.
-      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
@@ -81,16 +83,35 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
 
       <Input
         name="email"
+        type="email"
         placeholder="Email"
         value={form.email}
-        onChange={handleChange}
+        onChange={(e) => {
+          handleChange(e);
+          setEmailError(""); // Clear error when typing
+        }}
+        onBlur={() => {
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+            setEmailError("Please enter a valid email address.");
+          }
+        }}
         required
+        className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
       />
+      {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+
       <Input
         name="phone"
+        type="text"
         placeholder="Phone Number"
         value={form.phone}
-        onChange={handleChange}
+        onChange={(e) => {
+          const numericValue = e.target.value.replace(/\D/g, ""); // Only numbers
+          if (numericValue.length <= 11) {
+            setForm({ ...form, phone: numericValue });
+          }
+        }}
+        maxLength={11}
         required
       />
 
@@ -100,6 +121,7 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
             type="date"
             name="date"
             value={form.date}
+            min={new Date().toISOString().split("T")[0]} // Prevents past dates
             onChange={handleChange}
             required
           />
@@ -120,13 +142,24 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
         name="message"
         placeholder="Leave us a message..."
         value={form.message}
-        onChange={handleChange}
+        onChange={(e) => {
+          if (e.target.value.length <= 100) {
+            handleChange(e); // Restricts input to 100 characters
+          }
+        }}
+        className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
       />
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {form.message.length}/100 characters
+      </p>
+
       <Button
         type="submit"
-        className="w-full bg-green-700 dark:bg-green-600 hover:bg-green-800 dark:hover:bg-green-700 text-white"
+        variant="success"
+        className="w-full"
+        disabled={loading}
       >
-        BOOK APPOINTMENT
+        {loading ? "Submitting..." : "Book Appointment"}
       </Button>
     </form>
   );

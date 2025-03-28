@@ -161,11 +161,12 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="first_name"
+                  rules={{ required: "First Name is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <Contact className="inline-block mr-2" />
-                        First Name
+                        First Name <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -178,14 +179,16 @@ export default function CreateListingDialog({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="last_name"
+                  rules={{ required: "Last Name is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <Contact className="inline-block mr-2" />
-                        Last Name
+                        Last Name <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -202,11 +205,18 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="email"
+                  rules={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Please enter a valid email address",
+                    },
+                  }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <Mail className="inline-block mr-2" />
-                        Email
+                        Email <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -224,11 +234,12 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="phone_number"
+                  rules={{ required: "Phone Number is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <Phone className="inline-block mr-2" />
-                        Phone Number
+                        Phone Number <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -258,11 +269,12 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="property_name"
+                  rules={{ required: "Property Name is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <Home className="inline-block mr-2" />
-                        Property Name
+                        Property Name <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -275,14 +287,16 @@ export default function CreateListingDialog({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="location"
+                  rules={{ required: "Location is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <MapPin className="inline-block mr-2" />
-                        Location
+                        Location <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -299,6 +313,7 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="type_of_listing"
+                  rules={{ required: "Listing Type is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -309,13 +324,13 @@ export default function CreateListingDialog({
                         {listingOptions.map((option) => (
                           <FormItem
                             key={option}
-                            className="flex items-end gap-2 "
+                            className="flex items-end gap-2"
                           >
                             <FormControl>
                               <Checkbox
-                                checked={field.value === option} // ✅ Ensure only one is selected
+                                checked={field.value === option}
                                 onCheckedChange={() => {
-                                  form.setValue("type_of_listing", option); // ✅ Store as a string directly
+                                  form.setValue("type_of_listing", option);
                                 }}
                               />
                             </FormControl>
@@ -333,6 +348,7 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="price"
+                  rules={{ required: "Price is required" }}
                   render={({ field }) => {
                     const formatPrice = (value: string) => {
                       const numericValue = value.replace(/[^0-9.]/g, "");
@@ -345,7 +361,7 @@ export default function CreateListingDialog({
                       <FormItem>
                         <FormLabel>
                           <Banknote className="inline-block mr-2" />
-                          Price
+                          Price <span className="text-red-500">*</span>
                         </FormLabel>
 
                         <FormControl>
@@ -358,8 +374,7 @@ export default function CreateListingDialog({
                                 : ""
                             }
                             onChange={(e) => {
-                              // Update form state with unformatted numeric value
-                              const rawValue = e.target.value.replace(/,/g, ""); // Remove commas before saving
+                              const rawValue = e.target.value.replace(/,/g, "");
                               field.onChange(rawValue);
                             }}
                           />
@@ -373,11 +388,12 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="square_meter"
+                  rules={{ required: "Square Meter is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
                         <Grid2X2Check className="inline-block mr-2" /> Square
-                        Meter
+                        Meter <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -390,13 +406,16 @@ export default function CreateListingDialog({
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="floor_number"
+                  rules={{ required: "Floor Number is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <Building2 className="inline-block mr-2" /> Floor Number
+                        <Building2 className="inline-block mr-2" /> Floor Number{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -422,7 +441,10 @@ export default function CreateListingDialog({
                         <AirVent className="inline-block mr-2" />
                         Unit Status <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Unit Status" />
@@ -440,20 +462,24 @@ export default function CreateListingDialog({
                         </SelectContent>
                       </Select>
                       <FormMessage />
-
-                      {/* ✅ Conditionally show extra input fields */}
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   control={form.control}
                   name="parking"
+                  rules={{ required: "Parking option is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <Car className="inline-block mr-2" /> Parking
+                        <Car className="inline-block mr-2" /> Parking{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select Parking Availability" />
@@ -474,12 +500,17 @@ export default function CreateListingDialog({
                 <FormField
                   control={form.control}
                   name="unit_type"
+                  rules={{ required: "Unit Type is required" }}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
-                        <Combine className="inline-block mr-2" /> Unit Type
+                        <Combine className="inline-block mr-2" /> Unit Type{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select Unit Type" />
@@ -600,7 +631,12 @@ export default function CreateListingDialog({
                 </div>
               </div>
               <div className="flex justify-end gap-2">
-                <Button variant="success" type="submit" className="w-full" disabled={loading}>
+                <Button
+                  variant="success"
+                  type="submit"
+                  className="w-full"
+                  disabled={loading}
+                >
                   {loading ? "Publishing..." : "Publish Property"}
                 </Button>
               </div>

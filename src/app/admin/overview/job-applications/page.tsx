@@ -240,6 +240,7 @@ export default function JobForm() {
               <Input
                 name="deadline"
                 type="date"
+                min={new Date().toISOString().split("T")[0]} // ✅ disables past dates
                 value={form.deadline}
                 onChange={handleChange}
                 className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white border border-gray-300 dark:border-gray-700"

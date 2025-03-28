@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,8 +13,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SubscribeNewsletter } from "../common/SubscribeNewsletter";
-
+import { fetchContactDetails } from "@/lib/api";
+import { useEffect, useState } from "react";
 export function Footer() {
+  const [contact, setContact] = useState<{
+    location: string;
+    phones: { number: string }[];
+    email: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const loadContactDetails = async () => {
+      try {
+        const data = await fetchContactDetails();
+        setContact(data);
+      } catch (error) {
+        console.error("Failed to fetch contact details", error);
+      }
+    };
+    loadContactDetails();
+  }, []);
   return (
     <footer className="bg-gray-900 dark:bg-gray-800 text-gray-300 py-12">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-8">
@@ -65,19 +85,43 @@ export function Footer() {
         {/* Office Location & Contact */}
         <div>
           <h4 className="text-lg font-semibold text-white mb-4">Our Office</h4>
-          <p className="flex items-center gap-2">
-            <MapPin size={18} /> Makati City, Philippines
-          </p>
-          <p className="flex items-center gap-2 mt-2">
-            <Phone size={18} /> +63 123 456 7890
-          </p>
-          <p className="flex items-center gap-2 mt-2">
-            <Mail size={18} /> info@ayalaland.com
-          </p>
+
+          {/* Location */}
+          {contact?.location && (
+            <p className="flex items-center gap-2">
+              <MapPin size={18} /> {contact.location}
+            </p>
+          )}
+
+          {/* Phone Numbers */}
+          {contact?.phones?.map((phone, index) => (
+            <p key={index} className="flex items-center gap-2 mt-2">
+              <Phone size={18} />
+              <a
+                href={`tel:${phone.number}`}
+                className="text-blue-400 hover:underline"
+              >
+                {phone.number}
+              </a>
+            </p>
+          ))}
+
+          {/* Email */}
+          {contact?.email && (
+            <p className="flex items-center gap-2 mt-2">
+              <Mail size={18} />
+              <a
+                href={`mailto:${contact.email}`}
+                className="text-blue-400 hover:underline"
+              >
+                {contact.email}
+              </a>
+            </p>
+          )}
         </div>
 
         {/* Newsletter Subscription */}
-        <SubscribeNewsletter/>
+        <SubscribeNewsletter />
       </div>
 
       {/* Social Media Links */}

@@ -89,6 +89,7 @@ const data = {
         { title: "News Updates", url: "/admin/Posting/news-updates" },
         { title: "Services", url: "/admin/Posting/services" },
         { title: "About Us", url: "/admin/Posting/about-us" },
+        { title: "Contact Details", url: "/admin/Posting/contact-details" },
       ],
     },
   ],

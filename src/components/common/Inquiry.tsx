@@ -18,7 +18,8 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
     phone: "",
     message: "",
   });
-
+  const [emailError, setEmailError] = useState("");
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -27,6 +28,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     formData.append("property_id", propertyId.toString());
     Object.entries(form).forEach(([key, value]) => formData.append(key, value));
@@ -43,6 +45,8 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
       });
     } catch {
       toast.error("Failed to send inquiry. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,28 +100,58 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
             type="email"
             placeholder="Email"
             value={form.email}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e);
+              setEmailError(""); // Clear error when typing
+            }}
+            onBlur={() => {
+              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+                setEmailError("Please enter a valid email address.");
+              }
+            }}
             required
           />
+          {emailError && (
+            <p className="text-red-500 text-sm mt-1">{emailError}</p>
+          )}
           <Input
             name="phone"
+            type="text"
             placeholder="Phone Number"
             value={form.phone}
-            onChange={handleChange}
+            onChange={(e) => {
+              const numericValue = e.target.value.replace(/\D/g, ""); // allow numbers only
+              if (numericValue.length <= 11) {
+                setForm({ ...form, phone: numericValue });
+              }
+            }}
+            maxLength={11}
             required
           />
-          <Textarea
-            name="message"
-            placeholder="Leave us a message..."
-            value={form.message}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <Textarea
+              name="message"
+              placeholder="Leave us a message..."
+              value={form.message}
+              onChange={(e) => {
+                if (e.target.value.length <= 100) {
+                  setForm({ ...form, message: e.target.value });
+                }
+              }}
+              required
+            />
+            <div className="text-sm text-gray-500 mt-1 text-left">
+              {form.message.length} / 100 characters
+            </div>
+          </div>
+
           <Button
             type="submit"
-            className="w-full bg-green-700 dark:bg-green-600 hover:bg-green-800 dark:hover:bg-green-700 text-white"
+            variant="success"
+            className="w-full"
+            disabled={loading}
           >
-            SEND INQUIRY
+            {loading ? "Sending... " : "Send Inquiry"}
           </Button>
         </form>
       ) : (

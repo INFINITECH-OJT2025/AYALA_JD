@@ -16,18 +16,59 @@ import { motion } from "framer-motion";
 import useFetchAllNotifications from "@/hooks/useFetchAllNotifications";
 import { toast } from "sonner";
 
+
 export default function Notification() {
-  const { notifications: fetchedNotifications, fetchNotifications } =
-    useFetchAllNotifications();
+  const { notifications: fetchedNotifications, fetchNotifications } = useFetchAllNotifications();
   const [notifications, setNotifications] = useState(fetchedNotifications);
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState("all"); // "all" or "unread"
   const [openMenu, setOpenMenu] = useState<number | null>(null);
+  const [upcomingInterviews, setUpcomingInterviews] = useState<Interview[]>([]);
   const router = useRouter();
+
+  interface Interview {
+    applicant_id: number;
+    name: string;
+    email: string;
+    phone: string;
+    position: string;
+    final_schedule: string;
+  }
+  
+  const fetchUpcomingInterviews = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/upcoming-interviews");
+      const data = await response.json();
+      setUpcomingInterviews(data);
+    } catch (error) {
+      console.error("Error fetching upcoming interviews:", error);
+    }
+  };
+  
+  // ✅ Fetch interviews when component mounts
+  useEffect(() => {
+    fetchUpcomingInterviews();
+  }, []);
+  
+  // ✅ Notify the admin if there are upcoming interviews
+  useEffect(() => {
+    if (upcomingInterviews.length > 0) {
+      upcomingInterviews.forEach((interview) => {
+        toast.info(
+          `Upcoming Interview: ${interview.name} for ${interview.position} on ${new Date(interview.final_schedule).toLocaleString()}`
+        );
+      });
+    }
+  }, [upcomingInterviews]);
 
   // ✅ Sync fetched notifications when they change
   useEffect(() => {
-    setNotifications(fetchedNotifications);
+    setNotifications(
+      fetchedNotifications.map((notif) => ({
+        ...notif,
+        is_read: notif.is_read || "unread", // Ensure "is_read" is correctly set
+      }))
+    );
   }, [fetchedNotifications]);
 
   // ✅ Mark a single notification as read
@@ -36,15 +77,37 @@ export default function Notification() {
       await fetch(`http://127.0.0.1:8000/api/notifications/${id}/mark-read`, {
         method: "POST",
       });
+
       setNotifications((prev) =>
         prev.map((notif) =>
           notif.id === id ? { ...notif, is_read: "read" } : notif
         )
       );
+
+      // ✅ Force refresh to persist read status after reload
+      fetchNotifications();
+
       toast.success("Notification marked as read.");
     } catch (error) {
       console.error("Error marking notification as read:", error);
       toast.error("Failed to mark notification as read.");
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      await fetch("http://127.0.0.1:8000/api/notifications/mark-all-read", {
+        method: "POST",
+      });
+
+      setNotifications((prev) =>
+        prev.map((notif) => ({ ...notif, is_read: "read" }))
+      );
+
+      toast.success("All notifications marked as read.");
+    } catch (error) {
+      console.error("Error marking all as read:", error);
+      toast.error("Failed to mark all notifications as read.");
     }
   };
 
@@ -68,13 +131,26 @@ export default function Notification() {
         label: "Undo",
         onClick: async () => {
           try {
-            await fetch("http://127.0.0.1:8000/api/notifications/restore", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(deletedNotif),
-            });
+            const response = await fetch(
+              "http://127.0.0.1:8000/api/notifications/restore",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  message: deletedNotif.message, // ✅ Ensure message is sent
+                  type: deletedNotif.type, // ✅ Ensure type is sent
+                  is_read: deletedNotif.is_read || "unread", // ✅ Default to unread if missing
+                }),
+              }
+            );
 
-            fetchNotifications();
+            if (!response.ok) throw new Error("Failed to restore notification");
+
+            const restoredNotif = await response.json();
+
+            // ✅ Update UI immediately after restoring
+            setNotifications((prev) => [...prev, restoredNotif]);
+
             toast.success("Notification restored.");
           } catch (error) {
             console.error("Error restoring notification:", error);
@@ -114,8 +190,9 @@ export default function Notification() {
   };
 
   // ✅ Filter Notifications Based on Selection
+  // ✅ Fix unread filter to correctly check if the notification is unread
   const filteredNotifications = notifications.filter((n) =>
-    filter === "all" ? true : n.is_read === "unread"
+    filter === "all" ? true : n.is_read !== "read"
   );
 
   return (
@@ -127,9 +204,11 @@ export default function Notification() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <Bell className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-        {filteredNotifications.some((n) => !n.is_read) && (
+
+        {/* ✅ Show badge only if there are unread notifications */}
+        {notifications.filter((n) => n.is_read !== "read").length > 0 && (
           <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-            {filteredNotifications.filter((n) => !n.is_read).length}
+            {notifications.filter((n) => n.is_read !== "read").length}
           </span>
         )}
       </Button>
@@ -160,6 +239,19 @@ export default function Notification() {
             >
               Unread
             </Button>
+
+            {notifications.some((n) => n.is_read !== "read") && (
+              <div className="flex justify-end mb-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={markAllAsRead}
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800"
+                >
+                  Mark All as Read
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* ✅ Notification List */}

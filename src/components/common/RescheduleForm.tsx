@@ -66,9 +66,10 @@ const RescheduleForm: React.FC<RescheduleFormProps> = ({ id, email, data, setDat
     formattedDateTime.setSeconds(0);
   
     const formattedDateTimeString = formattedDateTime
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
+    .toLocaleString("sv-SE", { hour12: false })
+    .replace("T", " ")
+    .slice(0, 19);
+  
   
     const formData = new FormData();
     formData.append("applicant_id", id);

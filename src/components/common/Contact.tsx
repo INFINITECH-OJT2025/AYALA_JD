@@ -24,7 +24,18 @@ export default function Contact() {
     message: "",
   });
 
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleBlur = () => {
+    if (!form.email) {
+      setError("email is required");
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError("Invalid email");
+    } else {
+      setError("");
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,38 +108,57 @@ export default function Contact() {
           required
           className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
         />
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-          className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
-        />
+        <div>
+          <Input
+            name="email"
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            required
+            className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
+          />
+          {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+        </div>
+
         <Input
           name="phone"
           type="tel"
           placeholder="Phone Number"
           value={form.phone}
-          onChange={handleChange}
-          required
-          className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
-        />
-        <Textarea
-          name="message"
-          placeholder="Leave us a message..."
-          value={form.message}
-          onChange={handleChange}
+          onChange={(e) => {
+            const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+            if (numericValue.length <= 11) {
+              setForm({ ...form, phone: numericValue });
+            }
+          }}
           required
           className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
         />
 
+        <Textarea
+          name="message"
+          placeholder="Leave us a message..."
+          value={form.message}
+          onChange={(e) => {
+            if (e.target.value.length <= 250) {
+              handleChange(e); // Allow input only if within 50 characters
+            }
+          }}
+          required
+          className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
+        />
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {form.message.length}/250 characters
+        </p>
+
         {/* Submit Button */}
         <Button
           type="submit"
+          variant="success"
           disabled={loading}
-          className="w-full bg-green-700 dark:bg-green-600 hover:bg-green-800 dark:hover:bg-green-700 text-white mt-4"
+          className="w-full mt-4"
         >
           {loading ? "Sending..." : "Send Inquiry"}
         </Button>

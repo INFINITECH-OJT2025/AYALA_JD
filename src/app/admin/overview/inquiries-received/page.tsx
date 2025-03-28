@@ -167,7 +167,6 @@ export default function AdminInquiries() {
     { accessorKey: "email", header: "Email" },
     { accessorKey: "phone", header: "Phone" },
     { accessorKey: "status", header: "Status" },
-    { accessorKey: "message", header: "Message" },
     {
       header: "Actions",
       cell: ({ row }) => (
@@ -181,7 +180,7 @@ export default function AdminInquiries() {
           >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
-    
+
           {/* Archive / Unarchive Button */}
           <Button
             size="sm"
@@ -206,7 +205,7 @@ export default function AdminInquiries() {
               </>
             )}
           </Button>
-    
+
           {/* Delete Button */}
           <Button
             size="sm"
@@ -218,8 +217,7 @@ export default function AdminInquiries() {
           </Button>
         </div>
       ),
-    }
-    
+    },
   ];
 
   return (
@@ -270,26 +268,28 @@ export default function AdminInquiries() {
           open={!!selectedInquiry}
           onOpenChange={() => setSelectedInquiry(null)}
         >
-          <DialogContent>
+          <DialogContent className="max-w-lg md:max-w-2xl">
+            {" "}
+            {/* Expands dialog for better readability */}
             <DialogHeader>
               <DialogTitle>Reply to Inquiry</DialogTitle>
             </DialogHeader>
-
-            {/* ✅ Display the Client's Message */}
+            {/* ✅ Display the Client's Message (Handles Long Text) */}
             <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md border border-gray-300 dark:border-gray-700 mb-4">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 mb-2">
                 <User className="w-5 h-5 text-gray-700 dark:text-gray-300" />{" "}
                 {/* Profile Icon */}
                 <h3 className="font-semibold text-gray-700 dark:text-gray-200">
                   Client Message:
                 </h3>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 mt-2">
-                {selectedInquiry?.message || "No message provided."}
-              </p>
-            </div>
 
-            {/* Reply Section */}
+              {/* ✅ Message Box - Prevents Layout Breaking */}
+              <div className="text-gray-600 dark:text-gray-300 p-2 bg-white dark:bg-gray-900 rounded-md border border-gray-300 dark:border-gray-700 max-h-60 overflow-auto">
+                {selectedInquiry?.message || "No message provided."}
+              </div>
+            </div>
+            {/* ✅ Reply Section */}
             <div>
               <p className="mb-2">
                 Sending reply to <b>{selectedInquiry.email}</b>:
@@ -298,10 +298,10 @@ export default function AdminInquiries() {
                 value={replyMessage}
                 onChange={(e) => setReplyMessage(e.target.value)}
                 placeholder="Type your reply message..."
+                className="min-h-[120px]" // Adjusts for better typing experience
               />
             </div>
-
-            {/* Buttons */}
+            {/* ✅ Buttons */}
             <div className="flex justify-end space-x-2">
               <Button
                 variant="outline"
@@ -309,7 +309,11 @@ export default function AdminInquiries() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleReply} variant="success" disabled={loading}>
+              <Button
+                onClick={handleReply}
+                variant="success"
+                disabled={loading}
+              >
                 {loading ? "Sending..." : "Send Reply"}
               </Button>
             </div>

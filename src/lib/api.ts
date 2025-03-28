@@ -964,6 +964,22 @@ export async function updateRescheduleStatus(id: number, status: "approved" | "r
 }
 
 
+export const fetchContactDetails = async () => {
+  const response = await fetch(`${API_URL}/contact-details`);
+  if (!response.ok) throw new Error("Failed to fetch contact details");
+  return response.json();
+};
+
+export const updateContactDetails = async (data: any) => {
+  const response = await fetch(`${API_URL}/contact-details`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error("Failed to update contact details");
+  return response.json();
+};
+
 
 
 

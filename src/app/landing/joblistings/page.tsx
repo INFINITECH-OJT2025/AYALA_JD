@@ -103,8 +103,7 @@ useEffect(() => {
         <div className="max-w-5xl mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-4">Careers</h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
-            Experience exceptional real estate services, tailored to meet your
-            needs and exceed expectations.
+            Join us and grow your skill while making an impact!
           </p>
 
           {loading ? (
@@ -118,7 +117,7 @@ useEffect(() => {
               {/* ✅ Left Side: Job Image */}
               <div>
                 <img
-                  src={selectedJob?.image_url || "/default.jpg"}
+                  src={selectedJob?.image_url || "/defaultJob.jpg"}
                   alt={selectedJob?.title}
                   className="w-full h-80 object-cover rounded-lg"
                 />

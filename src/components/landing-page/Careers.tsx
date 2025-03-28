@@ -89,7 +89,7 @@ export function Careers() {
               >
                 <CardHeader>
                   <img
-                    src={job.image_url || "/default.jpg"}
+                    src={job.image_url || "/defaultJob.jpg"}
                     alt={job.title}
                     className="w-full h-40 object-cover rounded-md mb-4"
                   />

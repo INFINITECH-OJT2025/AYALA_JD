@@ -70,7 +70,7 @@ export default function AboutUsPage() {
         {/* History Section */}
         <section className="bg-gray-200 dark:bg-gray-900 py-16 px-8 lg:px-24">
           <h2 className="text-4xl font-bold text-center text-green-700 dark:text-green-400">
-            Our History
+           OUR HISTORY
           </h2>
           <div className="mt-12 grid md:grid-cols-3 gap-8">
             {aboutUs?.history?.map((item: any, index: number) => (
