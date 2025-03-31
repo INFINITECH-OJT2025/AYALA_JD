@@ -4,7 +4,16 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sun, Moon, Monitor, Wrench, Calculator, LayoutGrid } from "lucide-react";
+import {
+  Menu,
+  X,
+  Sun,
+  Moon,
+  Monitor,
+  Wrench,
+  Calculator,
+  LayoutGrid,
+} from "lucide-react";
 import Image from "next/image";
 import clsx from "clsx";
 import { useTheme } from "next-themes";
@@ -45,17 +54,17 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="bg-white dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
+      <nav className="bg-[#119768] dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
         <div className="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-y-4 max-w-screen-xl">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo.png"
+              src="/logoTrans.png"
               alt="Ayala Land Logo"
               width={30}
               height={30}
             />
-            <span className="text-xl font-bold text-gray-800 dark:text-gray-100 whitespace-nowrap">
+            <span className="text-xl font-bold text-gray-100 whitespace-nowrap">
               AyalaLand
             </span>
           </Link>
@@ -67,9 +76,10 @@ export function Navbar() {
                 key={link.path}
                 href={link.path}
                 className={clsx(
-                  "hover:text-blue-600 dark:hover:text-green-400 transition text-lg font-semibold whitespace-nowrap",
-                  pathname === link.path &&
-                    "text-blue-600 dark:text-green-400 font-semibold"
+                  "hover:text-blue-400 dark:hover:text-green-400 transition text-lg font-semibold whitespace-nowrap",
+                  pathname === link.path
+                    ? "text-blue-400 dark:text-green-400"
+                    : "text-white"
                 )}
               >
                 {link.name}
@@ -83,7 +93,7 @@ export function Navbar() {
             {mounted && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="w-10 h-10">
+                  <Button variant="ghost" size="icon" className="w-10 h-10 text-white" >
                     {theme === "dark" ? (
                       <Moon size={20} />
                     ) : theme === "light" ? (
@@ -141,9 +151,9 @@ export function Navbar() {
             className="md:hidden focus:outline-none"
           >
             {isOpen ? (
-              <X size={28} className="text-gray-800 dark:text-gray-100" />
+              <X size={28} className="text-gray-100" />
             ) : (
-              <Menu size={28} className="text-gray-800 dark:text-gray-100" />
+              <Menu size={28} className="text-gray-100" />
             )}
           </button>
         </div>
