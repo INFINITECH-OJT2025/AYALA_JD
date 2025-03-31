@@ -54,7 +54,7 @@ export function NewsUpdates() {
       : news.filter((article) => article.category === selectedCategory);
 
   return (
-    <section className="py-12 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
+    <section className="py-12 px-6 lg:px-24 bg-white dark:bg-gray-900">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
           Featured News

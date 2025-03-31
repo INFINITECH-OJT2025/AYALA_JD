@@ -8,6 +8,8 @@ export default function ServicesPage() {
       <Navbar />
       <Services />
 
+      <hr className="border-t border-gray-300 dark:border-gray-700" />
+
       <Footer />
     </>
   );

@@ -4,6 +4,7 @@ import { Navbar } from "@/components/landing-page/Navbar";
 import { Footer } from "@/components/landing-page/Footer";
 import { fetchAboutUsContent } from "@/lib/api";
 import { NewsUpdates } from "@/components/landing-page/NewsUpdates";
+import { WhyChooseUs } from "@/components/landing-page/Whychooseus";
 
 export default function AboutUsPage() {
   const [aboutUs, setAboutUs] = useState<any>(null);
@@ -101,8 +102,10 @@ export default function AboutUsPage() {
           </div>
         </section>
 
+        <WhyChooseUs/>
         <NewsUpdates/>
       </div>
+      <hr className="border-t border-gray-300 dark:border-gray-700" />
       <Footer />
     </>
   );

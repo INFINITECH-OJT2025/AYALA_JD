@@ -50,8 +50,8 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
     }
   };
 
-  return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full h-[70vh] max-w-lg">
+  return  (
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-lg md:max-w-xl lg:max-w-2xl h-auto md:h-[70vh] flex flex-col">
       <div className="flex space-x-2 mb-4">
         <Button
           className={`px-4 py-2 rounded-md ${
@@ -74,89 +74,74 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
           Appointment
         </Button>
       </div>
-
-      {activeTab === "inquiry" ? (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center space-x-2">
-            <FaQuestion className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-            <span>Send Inquiry</span>
-          </h3>
-          <Input
-            name="last_name"
-            placeholder="Last Name"
-            value={form.last_name}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            name="first_name"
-            placeholder="First Name"
-            value={form.first_name}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            name="email"
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => {
-              handleChange(e);
-              setEmailError(""); // Clear error when typing
-            }}
-            onBlur={() => {
-              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-                setEmailError("Please enter a valid email address.");
-              }
-            }}
-            required
-          />
-          {emailError && (
-            <p className="text-red-500 text-sm mt-1">{emailError}</p>
-          )}
-          <Input
-            name="phone"
-            type="text"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={(e) => {
-              const numericValue = e.target.value.replace(/\D/g, ""); // allow numbers only
-              if (numericValue.length <= 11) {
-                setForm({ ...form, phone: numericValue });
-              }
-            }}
-            maxLength={11}
-            required
-          />
-          <div>
-            <Textarea
-              name="message"
-              placeholder="Leave us a message..."
-              value={form.message}
+  
+      {/* Scrollable Form Container */}
+      <div className="overflow-y-auto flex-1 pr-2 p-2">
+        {activeTab === "inquiry" ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center space-x-2">
+              <FaQuestion className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              <span>Send Inquiry</span>
+            </h3>
+            <Input name="last_name" placeholder="Last Name" value={form.last_name} onChange={handleChange} required />
+            <Input name="first_name" placeholder="First Name" value={form.first_name} onChange={handleChange} required />
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={form.email}
               onChange={(e) => {
-                if (e.target.value.length <= 100) {
-                  setForm({ ...form, message: e.target.value });
+                handleChange(e);
+                setEmailError(""); // Clear error when typing
+              }}
+              onBlur={() => {
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+                  setEmailError("Please enter a valid email address.");
                 }
               }}
               required
             />
-            <div className="text-sm text-gray-500 mt-1 text-left">
-              {form.message.length} / 100 characters
+            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+            <Input
+              name="phone"
+              type="text"
+              placeholder="Phone Number"
+              value={form.phone}
+              onChange={(e) => {
+                const numericValue = e.target.value.replace(/\D/g, ""); // allow numbers only
+                if (numericValue.length <= 11) {
+                  setForm({ ...form, phone: numericValue });
+                }
+              }}
+              maxLength={11}
+              required
+            />
+            <div>
+              <Textarea
+                name="message"
+                placeholder="Leave us a message..."
+                value={form.message}
+                onChange={(e) => {
+                  if (e.target.value.length <= 100) {
+                    setForm({ ...form, message: e.target.value });
+                  }
+                }}
+                required
+              />
+              <div className="text-sm text-gray-500 mt-1 text-left">
+                {form.message.length} / 100 characters
+              </div>
             </div>
-          </div>
-
-          <Button
-            type="submit"
-            variant="success"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? "Sending... " : "Send Inquiry"}
-          </Button>
-        </form>
-      ) : (
-        <Appointment propertyId={propertyId} />
-      )}
+  
+            <Button type="submit" variant="success" className="w-full" disabled={loading}>
+              {loading ? "Sending... " : "Send Inquiry"}
+            </Button>
+          </form>
+        ) : (
+          <Appointment propertyId={propertyId} />
+        )}
+      </div>
     </div>
   );
+  
 }

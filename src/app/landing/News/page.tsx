@@ -9,6 +9,7 @@ export default function Page() {
         <>
         <Navbar/>
         <NonFeaturedNewsUpdates/> 
+        <hr className="border-t border-gray-300 dark:border-gray-700" />
         <Footer/>
         </>
       {/* Other content */}

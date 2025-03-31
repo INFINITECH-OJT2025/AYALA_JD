@@ -94,7 +94,6 @@ export default function PropertyDetails() {
       setCurrentImageIndex(0); // Reset to the first image when property changes
     }
   }, [property]);
-  
 
   if (!property)
     return (
@@ -110,86 +109,88 @@ export default function PropertyDetails() {
         {/* Left Section: Property Images & Details */}
         <div className="col-span-7">
           <div className="relative">
-          {property.property_image?.length ? (
-        <>
-          {/* Thumbnail View */}
-          <img
-            src={property.property_image[currentImageIndex]}
-            alt={`Property ${currentImageIndex + 1}`}
-            className="w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] object-cover rounded-lg cursor-pointer"
-            onClick={() => openFullScreen(currentImageIndex)}
-          />
+            {property.property_image?.length ? (
+              <>
+                {/* Thumbnail View */}
+                <img
+                  src={property.property_image[currentImageIndex]}
+                  alt={`Property ${currentImageIndex + 1}`}
+                  className="w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] object-cover rounded-lg cursor-pointer"
+                  onClick={() => openFullScreen(currentImageIndex)}
+                />
 
-          {/* Navigation Buttons */}
-          <button
-            className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
-            onClick={() =>
-              setCurrentImageIndex((prev) =>
-                prev === 0 ? property.property_image.length - 1 : prev - 1
-              )
-            }
-          >
-            <ChevronLeft className="w-5 sm:w-6 h-5 sm:h-6" />
-          </button>
+                {/* Navigation Buttons */}
+                <button
+                  className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
+                  onClick={() =>
+                    setCurrentImageIndex((prev) =>
+                      prev === 0 ? property.property_image.length - 1 : prev - 1
+                    )
+                  }
+                >
+                  <ChevronLeft className="w-5 sm:w-6 h-5 sm:h-6" />
+                </button>
 
-          <button
-            className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
-            onClick={() =>
-              setCurrentImageIndex(
-                (prev) => (prev + 1) % property.property_image.length
-              )
-            }
-          >
-            <ChevronRight className="w-5 sm:w-6 h-5 sm:h-6" />
-          </button>
+                <button
+                  className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
+                  onClick={() =>
+                    setCurrentImageIndex(
+                      (prev) => (prev + 1) % property.property_image.length
+                    )
+                  }
+                >
+                  <ChevronRight className="w-5 sm:w-6 h-5 sm:h-6" />
+                </button>
 
-          {/* Full Screen Modal */}
-          {isFullScreen && (
-            <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
-              <img
-                src={property.property_image[currentImageIndex]}
-                alt={`Property ${currentImageIndex + 1}`}
-                className="max-w-full max-h-full object-contain"
-              />
+                {/* Full Screen Modal */}
+                {isFullScreen && (
+                  <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+                    <img
+                      src={property.property_image[currentImageIndex]}
+                      alt={`Property ${currentImageIndex + 1}`}
+                      className="max-w-full max-h-full object-contain"
+                    />
 
-              {/* Close Button */}
-              <button
-                className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black"
-                onClick={closeFullScreen}
-              >
-                <X className="w-6 h-6" />
-              </button>
+                    {/* Close Button */}
+                    <button
+                      className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black"
+                      onClick={closeFullScreen}
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
 
-              {/* Full Screen Navigation */}
-              <button
-                className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
-                onClick={() =>
-                  setCurrentImageIndex((prev) =>
-                    prev === 0 ? property.property_image.length - 1 : prev - 1
-                  )
-                }
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
+                    {/* Full Screen Navigation */}
+                    <button
+                      className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
+                      onClick={() =>
+                        setCurrentImageIndex((prev) =>
+                          prev === 0
+                            ? property.property_image.length - 1
+                            : prev - 1
+                        )
+                      }
+                    >
+                      <ChevronLeft className="w-6 h-6" />
+                    </button>
 
-              <button
-                className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
-                onClick={() =>
-                  setCurrentImageIndex(
-                    (prev) => (prev + 1) % property.property_image.length
-                  )
-                }
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <p className="text-center text-gray-500 dark:text-gray-400">
-          No images available
-        </p>
-      )}
+                    <button
+                      className="absolute top-1/2 right-4 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
+                      onClick={() =>
+                        setCurrentImageIndex(
+                          (prev) => (prev + 1) % property.property_image.length
+                        )
+                      }
+                    >
+                      <ChevronRight className="w-6 h-6" />
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-center text-gray-500 dark:text-gray-400">
+                No images available
+              </p>
+            )}
           </div>
 
           {/* Image Thumbnails */}
@@ -356,9 +357,9 @@ export default function PropertyDetails() {
         </div>
 
         {/* Right Section: Inquiry Form */}
-        <div className="lg:col-span-3">
+        <div className="col-span-7 md:col-span-5 lg:col-span-3">
           <Inquiry propertyId={parseInt(id as string, 10)} />
-          <div className="mt-12">
+          <div className="mt-4">
             <Nearby />
           </div>
         </div>

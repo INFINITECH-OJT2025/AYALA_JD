@@ -78,25 +78,22 @@ export default function FeaturedProperties() {
     if (price <= 5_000_000) return "1M-5M";
     if (price <= 10_000_000) return "5M-10M";
     return "10M+";
-};
-
+  };
 
   const filteredProperties = properties.filter((property) => {
     const searchLower = searchQuery.toLowerCase();
-  
+
     const matchesSearch =
       property.property_name.toLowerCase().includes(searchLower) ||
       property.location.toLowerCase().includes(searchLower) ||
       property.type_of_listing.toLowerCase().includes(searchLower); // ✅ Now works as a string
-  
+
     const priceCategory = getPriceRange(formatPrice(property.price));
     const matchesPrice = priceFilter ? priceCategory === priceFilter : true;
-  
+
     return matchesSearch && matchesPrice;
   });
-  
-  
-  
+
   return (
     <>
       <Navbar />
@@ -167,7 +164,9 @@ export default function FeaturedProperties() {
                     className="bg-green-600 text-gray-100 px-3 py-1 rounded flex items-center max-w-[120px] truncate"
                     title={property.property_name}
                   >
-                    <span className="truncate max-w-[100px]">{property.property_name}</span>
+                    <span className="truncate max-w-[100px]">
+                      {property.property_name}
+                    </span>
                     <button
                       className="ml-2 text-sm font-extrabold text-red-600"
                       onClick={() => togglePropertySelection(property)}
@@ -186,7 +185,6 @@ export default function FeaturedProperties() {
               </div>
             </div>
           )}
-
 
           <ComparisonModal
             isOpen={isComparisonOpen}
@@ -228,19 +226,18 @@ export default function FeaturedProperties() {
                           height={300}
                           className="w-full h-48 object-cover"
                         />
-                       <span
-  className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
-    property.type_of_listing.includes("For Sale") &&
-    property.type_of_listing.includes("For Rent")
-      ? "bg-gradient-to-r from-green-500 to-blue-500"
-      : property.type_of_listing.includes("For Sale")
-      ? "bg-green-500"
-      : "bg-blue-500"
-  }`}
->
-  {property.type_of_listing}
-</span>
-
+                        <span
+                          className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
+                            property.type_of_listing.includes("For Sale") &&
+                            property.type_of_listing.includes("For Rent")
+                              ? "bg-gradient-to-r from-green-500 to-blue-500"
+                              : property.type_of_listing.includes("For Sale")
+                              ? "bg-green-500"
+                              : "bg-blue-500"
+                          }`}
+                        >
+                          {property.type_of_listing}
+                        </span>
 
                         <span className="absolute top-2 right-2 flex items-center bg-gray-800/80 text-white text-xs font-bold px-3 py-1 rounded">
                           <Eye className="w-4 h-4 mr-1" />
@@ -304,7 +301,7 @@ export default function FeaturedProperties() {
           )}
         </div>
       </section>
-      <div className="border-t border-gray-300 dark:border-gray-700 my-4"></div>
+      <hr className="border-t border-gray-300 dark:border-gray-700" />
       <Footer />
     </>
   );

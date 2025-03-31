@@ -68,10 +68,10 @@ export function Careers() {
   const router = useRouter();
 
   return (
-    <section className="py-12 bg-gray-200 dark:bg-gray-800">
+    <section className="py-12 bg-gray-100 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-8">
-          Featured Careers
+          Careers
         </h2>
 
         {loading ? (

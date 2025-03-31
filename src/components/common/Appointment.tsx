@@ -96,7 +96,6 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
           }
         }}
         required
-        className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
       />
       {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
 
@@ -147,7 +146,6 @@ export default function Appointment({ propertyId }: { propertyId: number }) {
             handleChange(e); // Restricts input to 100 characters
           }
         }}
-        className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
       />
       <p className="text-sm text-gray-500 dark:text-gray-400">
         {form.message.length}/100 characters

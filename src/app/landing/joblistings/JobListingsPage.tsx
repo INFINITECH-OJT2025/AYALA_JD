@@ -53,47 +53,47 @@ const JobListings = () => {
     slots?: number;
   }
 
-  
-useEffect(() => {
-  const fetchJobs = async () => {
-    try {
-      const res = await fetch("http://127.0.0.1:8000/api/jobs/all");
-      const data: Job[] = await res.json();
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/jobs/all");
+        const data: Job[] = await res.json();
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-      // ✅ Filter out jobs that expired more than 7 days ago
-      const filteredJobs = data.filter((job: Job) => {
-        if (!job.deadline) return true;
+        // ✅ Filter out jobs that expired more than 7 days ago
+        const filteredJobs = data.filter((job: Job) => {
+          if (!job.deadline) return true;
 
-        const deadlineDate = new Date(job.deadline);
-        const expiryDate = new Date(deadlineDate);
-        expiryDate.setDate(expiryDate.getDate() + 7);
+          const deadlineDate = new Date(job.deadline);
+          const expiryDate = new Date(deadlineDate);
+          expiryDate.setDate(expiryDate.getDate() + 7);
 
-        return expiryDate >= today;
-      });
+          return expiryDate >= today;
+        });
 
-      setJobs(filteredJobs);
+        setJobs(filteredJobs);
 
-      // ✅ Set the job from URL if exists, otherwise default to first non-expired job
-      const selectedFromUrl = filteredJobs.find((job) => job.id.toString() === jobId);
-      const nonExpiredJobs = filteredJobs.filter(
-        (job) => !job.deadline || new Date(job.deadline) >= today
-      );
+        // ✅ Set the job from URL if exists, otherwise default to first non-expired job
+        const selectedFromUrl = filteredJobs.find(
+          (job) => job.id.toString() === jobId
+        );
+        const nonExpiredJobs = filteredJobs.filter(
+          (job) => !job.deadline || new Date(job.deadline) >= today
+        );
 
-      setSelectedJob(selectedFromUrl || nonExpiredJobs[0] || null);
-    } catch (err) {
-      console.error("Error fetching jobs:", err);
-      setError("Failed to load job listings.");
-    } finally {
-      setLoading(false);
-    }
-  };
+        setSelectedJob(selectedFromUrl || nonExpiredJobs[0] || null);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+        setError("Failed to load job listings.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchJobs();
-}, [jobId]); // ✅ Re-run effect when jobId changes
-  
+    fetchJobs();
+  }, [jobId]); // ✅ Re-run effect when jobId changes
 
   return (
     <>
@@ -256,6 +256,7 @@ useEffect(() => {
         </div>
       </section>
 
+      <hr className="border-t border-gray-300 dark:border-gray-700" />
       <Footer />
     </>
   );

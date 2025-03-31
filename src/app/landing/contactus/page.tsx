@@ -146,6 +146,7 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
+      <hr className="border-t border-gray-300 dark:border-gray-700" />
       <Footer />
     </>
   );
