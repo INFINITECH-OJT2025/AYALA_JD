@@ -24,7 +24,8 @@ import { Eye, CalendarCheck, X, Trash, Clock } from "lucide-react";
 import { toast } from "sonner";
 import useFetchSchedule from "@/hooks/useFetchSchedule";
 import { Badge } from "../ui/badge";
-
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 export default function JobApplicants() {
   const [selectedApplicant, setSelectedApplicant] = useState<any | null>(null);
   const { scheduleRequest } = useFetchSchedule(selectedApplicant?.id || null);
@@ -178,6 +179,67 @@ export default function JobApplicants() {
       setSelectedApplicantId(null);
     }
   };
+  const exportToPDF = (applicants: any[]) => {
+    const doc = new jsPDF(); // Portrait mode (default)
+
+    // Add Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("Job Applicants List - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Add Footer with page number
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text(
+        "AyalaLand",
+        160,
+        doc.internal.pageSize.height - 10
+      ); // Footer text
+    };
+
+    // Define Table Headers
+    const tableColumn = [
+      "First Name",
+      "Last Name",
+      "Email",
+      "Phone No.",
+      "Address",
+      "Status",
+      "Position",
+    ];
+
+    // Map applicants to table rows (horizontal format)
+    const tableRows = applicants.map((applicant) => [
+      applicant.first_name,
+      applicant.last_name,
+      applicant.email,
+      applicant.phone,
+      applicant.address,
+      applicant.status,
+      applicant.job_title,
+    ]);
+
+    // Add Header
+    addHeader();
+
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
+
+    // Add Footer with page number
+    addFooter(doc.internal.getNumberOfPages());
+
+    // Save PDF
+    doc.save("job_applicants_list.pdf");
+  };
 
   const columns: ColumnDef<any>[] = [
     { accessorKey: "first_name", header: "First Name" },
@@ -244,9 +306,14 @@ export default function JobApplicants() {
 
   return (
     <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
-        Job Applicants
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
+          Job Applicants
+        </h2>
+        <Button onClick={() => exportToPDF(applicants)} variant="default">
+          Export to PDF
+        </Button>
+      </div>
 
       {loading ? (
         <p className="text-gray-500 dark:text-gray-300 text-center">

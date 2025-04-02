@@ -29,6 +29,7 @@ export function NonFeaturedNewsUpdates() {
   const [error, setError] = useState("");
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const getNews = async () => {
@@ -58,7 +59,7 @@ export function NonFeaturedNewsUpdates() {
 
   return (
     <section className="py-4 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
           Latest News
         </h2>
@@ -66,22 +67,59 @@ export function NonFeaturedNewsUpdates() {
           Stay informed with our latest news and updates.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-md transition-all ${
-                selectedCategory === category
-                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              }`}
+        {/* Category Buttons - Responsive */}
+        <div className="mb-6">
+          {/* Mobile Dropdown */}
+          <div className="sm:hidden relative">
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white rounded-md flex justify-between items-center"
             >
-              {category}
-            </Button>
-          ))}
+              {selectedCategory || "Select Category"}
+              <span className="ml-2">{dropdownOpen ? "▲" : "▼"}</span>
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg z-10">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 ${
+                      selectedCategory === category
+                        ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                        : "text-gray-800 dark:text-gray-300"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Buttons */}
+          <div className="hidden sm:flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 text-sm sm:text-base rounded-md transition-all ${
+                  selectedCategory === category
+                    ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
         </div>
 
+        {/* Content Handling */}
         {loading ? (
           <p className="text-center text-gray-500 dark:text-gray-300">
             Loading news...
@@ -89,12 +127,13 @@ export function NonFeaturedNewsUpdates() {
         ) : error ? (
           <p className="text-center text-red-500">{error}</p>
         ) : filteredNews.length > 0 ? (
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {filteredNews.map((article) => (
               <Card
                 key={article.id}
                 className="p-6 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
               >
+                {/* Image */}
                 {article.image && (
                   <Image
                     src={
@@ -109,6 +148,7 @@ export function NonFeaturedNewsUpdates() {
                   />
                 )}
 
+                {/* Title and Metadata */}
                 <CardHeader className="mb-2">
                   <CardTitle className="text-lg font-semibold truncate">
                     {article.title}
@@ -123,12 +163,14 @@ export function NonFeaturedNewsUpdates() {
                   </p>
                 </CardHeader>
 
+                {/* Description */}
                 <CardContent className="flex-grow">
                   <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
                     {article.content}
                   </p>
                 </CardContent>
 
+                {/* Read More Button */}
                 <div className="mt-auto">
                   <Button
                     className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"

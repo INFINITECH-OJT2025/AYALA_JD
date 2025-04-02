@@ -21,6 +21,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Archive, Trash, Inbox, User } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function AdminInquiries() {
   const [inquiries, setInquiries] = useState<any[]>([]);
@@ -159,6 +161,67 @@ export default function AdminInquiries() {
     }
   };
 
+  const exportToPDF = (inquiries: any[]) => {
+    const doc = new jsPDF(); // Portrait mode (default)
+
+    // Add Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("General Inquiries List - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Add Footer with page number
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text(
+        "AyalaLand",
+        160,
+        doc.internal.pageSize.height - 10
+      ); // Footer text
+    };
+
+    // Define Table Headers
+    const tableColumn = [
+      "Inquiry Type",
+      "Last Name",
+      "First Name",
+      "Email",
+      "Phone",
+      "Status",
+    ];
+
+    // Map inquiries to table rows
+    const tableRows = inquiries.map((inquiry) => [
+      inquiry.inquiry_type,
+      inquiry.last_name,
+      inquiry.first_name,
+      inquiry.email,
+      inquiry.phone,
+      inquiry.status || "N/A", // Set status to "N/A" if not available
+    ]);
+
+    // Add Header
+    addHeader();
+
+    // Start Table
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
+
+    // Add Footer with page number
+    addFooter(doc.internal.getNumberOfPages());
+
+    // Save PDF
+    doc.save("general_inquiries_list.pdf");
+  };
+
   // ✅ Table Columns
   const columns: ColumnDef<any>[] = [
     { accessorKey: "inquiry_type", header: "Type" },
@@ -223,28 +286,37 @@ export default function AdminInquiries() {
   return (
     <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
-        Customer Inquiries
+        General Inquiries
       </h2>
 
-      {/* ✅ Filter Buttons */}
-      <div className="flex justify-center md:justify-start space-x-4 mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant={filter === "all" ? "default" : "outline"}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </Button>
+          <Button
+            variant={filter === "active" ? "default" : "outline"}
+            onClick={() => setFilter("active")}
+          >
+            Active
+          </Button>
+          <Button
+            variant={filter === "archived" ? "default" : "outline"}
+            onClick={() => setFilter("archived")}
+          >
+            Archived
+          </Button>
+        </div>
+
         <Button
-          variant={filter === "all" ? "default" : "outline"}
-          onClick={() => setFilter("all")}
+          onClick={() => exportToPDF(inquiries)}
+          className="ml-auto"
+          variant="default"
         >
-          All
-        </Button>
-        <Button
-          variant={filter === "active" ? "default" : "outline"}
-          onClick={() => setFilter("active")}
-        >
-          Active
-        </Button>
-        <Button
-          variant={filter === "archived" ? "default" : "outline"}
-          onClick={() => setFilter("archived")}
-        >
-          Archived
+          Export to PDF
         </Button>
       </div>
 

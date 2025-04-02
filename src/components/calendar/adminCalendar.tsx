@@ -25,7 +25,9 @@ interface EventDetails {
 const AdminCalendar = () => {
   const events = useAppointments();
   const [selectedEvent, setSelectedEvent] = useState<EventDetails | null>(null);
-  const [selectedApplicantId, setSelectedApplicantId] = useState<number | null>(null);
+  const [selectedApplicantId, setSelectedApplicantId] = useState<number | null>(
+    null
+  );
   const { schedule, applicant, loading } = useInterview(selectedApplicantId);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -56,23 +58,31 @@ const AdminCalendar = () => {
 
   return (
     <div>
-      <FullCalendar
-        plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,listWeek",
-        }}
-        events={events}
-        height="auto"
-        eventClick={handleEventClick}
-      />
+      <div className="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 p-4">
+        <FullCalendar
+          plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,listWeek",
+          }}
+          events={events}
+          height="auto"
+          eventClick={handleEventClick}
+          dayHeaderClassNames="bg-gray-100 dark:bg-gray-800 dark:text-gray-200"
+          dayCellClassNames="bg-white dark:bg-gray-900 dark:border-gray-700"
+          eventClassNames="bg-blue-500 text-white dark:bg-blue-400 dark:text-gray-900"
+        />
+      </div>
 
       {isMounted && (
         <>
           {/* General Event Details Dialog */}
-          <EventDetailsDialog event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+          <EventDetailsDialog
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+          />
 
           {/* Interview Details Dialog */}
           <InterviewDetailsDialog

@@ -29,6 +29,8 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 export default function JobTable() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,6 +131,69 @@ export default function JobTable() {
     }
   };
 
+  const exportToPDF = (jobs: any[]) => {
+    const doc = new jsPDF(); // Portrait mode (default)
+
+    // Add Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("Job Listings - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Add Footer with page number
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text(
+        "AyalaLand",
+        160,
+        doc.internal.pageSize.height - 10
+      ); // Footer text
+    };
+
+    // Define Table Headers
+    const tableColumn = [
+      "Title",
+      "Location",
+      "Type",
+      "Slots",
+      "Deadline",
+      "Category",
+    ];
+
+    // Map job listings to table rows
+    const tableRows = jobs.map((job) => [
+      job.title,
+      job.location,
+      job.type,
+      job.slots,
+      job.deadline
+        ? new Date(job.deadline).toLocaleDateString()
+        : "No deadline",
+      job.category,
+    ]);
+
+    // Add Header
+    addHeader();
+
+    // Start Table
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
+
+    // Add Footer with page number
+    addFooter(doc.internal.getNumberOfPages());
+
+    // Save PDF
+    doc.save("job_listings.pdf");
+  };
+
   // Table Columns
   const columns: ColumnDef<any>[] = [
     { accessorKey: "title", header: "Title" },
@@ -220,9 +285,19 @@ export default function JobTable() {
         </DialogContent>
       </Dialog>
 
-      <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
-        Job Listings
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
+          Job Listings
+        </h2>
+
+        <Button
+          onClick={() => exportToPDF(jobs)}
+          className="ml-auto"
+          variant="default"
+        >
+          Export to PDF
+        </Button>
+      </div>
 
       {loading ? (
         <div className="flex justify-center items-center">

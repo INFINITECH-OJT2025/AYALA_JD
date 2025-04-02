@@ -33,17 +33,7 @@ const data = {
     {
       name: "AYALA",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Infinitech",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      plan: "Admin",
     },
   ],
   navMain: [

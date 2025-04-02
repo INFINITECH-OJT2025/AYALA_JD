@@ -53,6 +53,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 interface Property {
   id: number;
@@ -276,20 +278,91 @@ export default function PropertyList() {
     setRejectionReason("");
   };
 
+  const exportToPDF = (properties: Property[]) => {
+    const doc = new jsPDF(); // Portrait mode
+
+    // Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("Property List - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Footer
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text("AyalaLand", 160, doc.internal.pageSize.height - 10); // Footer text
+    };
+
+    properties.forEach((property, index) => {
+      if (index > 0) doc.addPage(); // New page for each property
+
+      addHeader(); // Add header on each page
+
+      doc.setFontSize(14); // Slightly smaller font for ID
+      doc.text(`Property #${property.id}`, 14, 20); // ID as heading
+
+      doc.setFontSize(10); // Smaller font for property details
+      doc.text("Property Details", 14, 30);
+
+      const details = [
+        ["Property Name", property.property_name],
+        ["Owner Name", `${property.first_name} ${property.last_name}`],
+        ["Email", property.email],
+        ["Phone", property.phone_number],
+        ["Type of Listing", property.type_of_listing],
+        ["Unit Type", property.unit_type],
+        ["Unit Status", property.unit_status],
+        ["Price", property.price],
+        ["Square Meter", property.square_meter.toString()],
+        ["Floor Number", property.floor_number.toString()],
+        ["Parking", property.parking ? "Yes" : "No"],
+        ["Location", property.location],
+        ["Status", property.status],
+        ["Pool Area", property.pool_area ? "Yes" : "No"],
+        ["Guest Suite", property.guest_suite ? "Yes" : "No"],
+        ["Underground Parking", property.underground_parking ? "Yes" : "No"],
+        ["Pet Friendly", property.pet_friendly_facilities ? "Yes" : "No"],
+        ["Balcony", property.balcony_terrace ? "Yes" : "No"],
+        ["Club House", property.club_house ? "Yes" : "No"],
+        ["Gym", property.gym_fitness_center ? "Yes" : "No"],
+        ["Elevator", property.elevator ? "Yes" : "No"],
+        ["Concierge Services", property.concierge_services ? "Yes" : "No"],
+        ["Security", property.security ? "Yes" : "No"],
+      ];
+
+      details.forEach((detail, i) => {
+        doc.text(`${detail[0]}:`, 14, 40 + i * 8);
+        doc.text(detail[1], 80, 40 + i * 8);
+      });
+
+      addFooter(doc.internal.getNumberOfPages()); // Add footer on each page
+    });
+
+    doc.save("property_details.pdf");
+  };
+
   return (
     <div className="container mx-auto p-2 ">
       <h1 className="text-1xl font-bold mb-2">Property Listings</h1>
 
       <Card className="p-4">
         {/* Header Actions */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-3">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+          <div className="flex flex-wrap gap-3">
             {/* Create Listing Button */}
             <Button variant="success" onClick={() => setIsDialogOpen(true)}>
               <Plus className="w-5 h-5" />
               Create Listing
             </Button>
-
             {/* Filter Buttons */}
             <Button
               variant={filter === "all" ? "default" : "outline"}
@@ -321,14 +394,18 @@ export default function PropertyList() {
             </Button>
           </div>
 
-          {/* Search Input */}
-          <Input
-            type="text"
-            placeholder="Search by property name or location..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64"
-          />
+          <div className="flex justify-between gap-2">
+            <Input
+              type="text"
+              placeholder="Search by property name or location..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-64"
+            />
+            <Button onClick={() => exportToPDF(properties)} variant="default">
+              Export to PDF
+            </Button>
+          </div>
         </div>
 
         <CreateListingDialog
@@ -347,7 +424,7 @@ export default function PropertyList() {
               <Skeleton className="h-6 w-full" />
             </div>
           ) : (
-            <Table>
+            <Table className="min-w-full">
               <TableHeader>
                 <TableRow>
                   <TableHead>First Name</TableHead>
@@ -444,7 +521,7 @@ export default function PropertyList() {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex justify-between items-center mt-4 p-4">
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 p-4 gap-3">
             <Button
               variant="outline"
               onClick={() => handlePageChange(currentPage - 1)}

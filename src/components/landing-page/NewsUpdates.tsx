@@ -29,7 +29,8 @@ export function NewsUpdates() {
   const [error, setError] = useState("");
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  
   useEffect(() => {
     const getNews = async () => {
       try {
@@ -64,20 +65,55 @@ export function NewsUpdates() {
         </p>
 
         {/* ✅ Category Filter */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
-          {categories.map((category) => (
-            <Button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-md transition-all ${
-                selectedCategory === category
-                  ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white" // ✅ Active state for both themes
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-              }`}
+        <div className="mb-6">
+          {/* Mobile Dropdown */}
+          <div className="sm:hidden relative">
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white rounded-md flex justify-between items-center"
             >
-              {category}
-            </Button>
-          ))}
+              {selectedCategory || "Select Category"}
+              <span className="ml-2">{dropdownOpen ? "▲" : "▼"}</span>
+            </button>
+
+            {dropdownOpen && (
+              <div className="absolute w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg z-10">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => {
+                      setSelectedCategory(category);
+                      setDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 ${
+                      selectedCategory === category
+                        ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                        : "text-gray-800 dark:text-gray-300"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Buttons */}
+          <div className="hidden sm:flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <Button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-4 py-2 text-sm sm:text-base rounded-md transition-all ${
+                  selectedCategory === category
+                    ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                }`}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {loading ? (

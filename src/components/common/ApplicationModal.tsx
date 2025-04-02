@@ -121,7 +121,6 @@ export default function ApplicationModal({
               onChange={handleChange}
               onBlur={handleBlur}
               required
-              className="w-full dark:bg-gray-600 dark:text-white dark:border-gray-500"
             />
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
@@ -132,13 +131,7 @@ export default function ApplicationModal({
             onChange={(e) => {
               const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
               if (numericValue.length <= 11) {
-                // Limit to 11 digits
                 setForm({ ...form, phone: numericValue });
-              }
-            }}
-            onBlur={() => {
-              if (form.phone.length < 11) {
-                alert("Phone number must be exactly 11 digits!"); // Optional alert
               }
             }}
             maxLength={11} // Ensures max input length

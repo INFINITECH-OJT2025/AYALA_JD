@@ -41,14 +41,14 @@ const InterviewDetailsDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md p-6">
+      <DialogContent className="max-w-md p-6 bg-white dark:bg-gray-900 dark:text-gray-100">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">
             Interview Details
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-3 text-gray-700">
+        <div className="space-y-3 text-gray-700 dark:text-gray-300">
           {/* ✅ Applicant Info */}
           <div>
             <span className="font-semibold">👤 Applicant Name:</span>{" "}
@@ -98,7 +98,11 @@ const InterviewDetailsDialog = ({
         </div>
 
         <DialogFooter className="flex justify-end mt-4">
-          <Button variant="outline" onClick={onClose}>
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="border-gray-300 dark:border-gray-600"
+          >
             Close
           </Button>
         </DialogFooter>

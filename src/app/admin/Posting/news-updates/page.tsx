@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 export default function AdminNews() {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,6 +141,58 @@ export default function AdminNews() {
     }
   };
 
+  const exportToPDF = (news: any[]) => {
+    const doc = new jsPDF(); // Portrait mode (default)
+
+    // Add Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("News Posts List - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Add Footer with page number
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text(
+        "AyalaLand",
+        160,
+        doc.internal.pageSize.height - 10
+      ); // Footer text
+    };
+
+    // Define Table Headers
+    const tableColumn = ["Title", "Category", "Featured", "Status"];
+
+    // Map news posts to table rows (with featured handling)
+    const tableRows = news.map((post) => [
+      post.title,
+      post.category,
+      post.is_featured ? "YES" : "NO", // Display star if featured, otherwise faded star
+      post.status || "N/A", // Set status to "N/A" if not available
+    ]);
+
+    // Add Header
+    addHeader();
+
+    // Start Table
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
+
+    // Add Footer with page number
+    addFooter(doc.internal.getNumberOfPages());
+
+    // Save PDF
+    doc.save("news_posts_list.pdf");
+  };
+
   const columns = [
     { accessorKey: "title", header: "Title" },
     { accessorKey: "category", header: "Category" },
@@ -152,7 +206,7 @@ export default function AdminNews() {
           <StarOff className="text-gray-400 w-5 h-5" /> // ❌ Faded star for not featured
         ),
     },
-    
+
     { accessorKey: "status", header: "Status" },
     {
       header: "Actions",
@@ -219,16 +273,22 @@ export default function AdminNews() {
         </DialogContent>
       </Dialog>
 
-      <Button
-        className="mb-4 bg-blue-600 text-white"
-        onClick={() => {
-          setSelectedNews(null);
-          resetForm();
-          setIsDialogOpen(true);
-        }}
-      >
-        <Plus className="w-4 h-4 mr-2" /> Add News
-      </Button>
+      <div className="flex justify-between">
+        <Button
+          className="mb-4 bg-blue-600 text-white"
+          onClick={() => {
+            setSelectedNews(null);
+            resetForm();
+            setIsDialogOpen(true);
+          }}
+        >
+          <Plus className="w-4 h-4 mr-2" /> Add News
+        </Button>
+
+        <Button onClick={() => exportToPDF(news)} variant="default">
+          Export to PDF
+        </Button>
+      </div>
 
       {loading ? (
         <p>Loading...</p>
@@ -311,7 +371,11 @@ export default function AdminNews() {
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} className="bg-green-600 text-white" disabled={loading}>
+              <Button
+                onClick={handleSave}
+                className="bg-green-600 text-white"
+                disabled={loading}
+              >
                 {loading ? "Saving..." : "Save"}
               </Button>
             </DialogFooter>

@@ -21,6 +21,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, Archive, Trash, Inbox, User, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function AdminAppointments() {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -159,6 +161,67 @@ export default function AdminAppointments() {
     }
   };
 
+  const exportToPDF = (appointments: any[]) => {
+    const doc = new jsPDF(); // Portrait mode (default)
+
+    // Add Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("Property Appointments List - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Add Footer with page number
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text(
+        "AyalaLand",
+        160,
+        doc.internal.pageSize.height - 10
+      ); // Footer text
+    };
+
+    // Define Table Headers
+    const tableColumn = [
+      "Property Name",
+      "Last Name",
+      "First Name",
+      "Email",
+      "Phone",
+      "Status",
+    ];
+
+    // Map property appointments to table rows (horizontal format)
+    const tableRows = appointments.map((appointment) => [
+      appointment.property.property_name, // Accessing property name correctly
+      appointment.last_name,
+      appointment.first_name,
+      appointment.email,
+      appointment.phone,
+      appointment.status,
+    ]);
+
+    // Add Header
+    addHeader();
+
+    // Start Table
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
+
+    // Add Footer with page number
+    addFooter(doc.internal.getNumberOfPages());
+
+    // Save PDF
+    doc.save("property_appointments_list.pdf");
+  };
+
   const columns: ColumnDef<any>[] = [
     { accessorKey: "property.property_name", header: "Property Name" },
     { accessorKey: "last_name", header: "Last Name" },
@@ -168,9 +231,7 @@ export default function AdminAppointments() {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => (
-        <div className="w-24">{row.original.status}</div>
-      ),
+      cell: ({ row }) => <div className="w-24">{row.original.status}</div>,
     },
     {
       header: "Actions",
@@ -183,7 +244,7 @@ export default function AdminAppointments() {
           >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
-  
+
           {/* ✅ Fixed Width for Archive/Unarchive Button ONLY */}
           <div className="w-32">
             <Button
@@ -191,7 +252,10 @@ export default function AdminAppointments() {
               variant="outline"
               className="w-full flex items-center justify-center whitespace-nowrap"
               onClick={() =>
-                handleToggleArchive(row.original.id, row.original.status === "archived")
+                handleToggleArchive(
+                  row.original.id,
+                  row.original.status === "archived"
+                )
               }
             >
               {row.original.status === "archived" ? (
@@ -207,7 +271,7 @@ export default function AdminAppointments() {
               )}
             </Button>
           </div>
-  
+
           <Button
             size="sm"
             variant="destructive"
@@ -219,8 +283,6 @@ export default function AdminAppointments() {
       ),
     },
   ];
-  
-  
 
   return (
     <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
@@ -228,24 +290,35 @@ export default function AdminAppointments() {
         Property Appointments
       </h2>
 
-      <div className="flex justify-center md:justify-start space-x-4 mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant={filter === "all" ? "default" : "outline"}
+            onClick={() => setFilter("all")}
+          >
+            All
+          </Button>
+          <Button
+            variant={filter === "active" ? "default" : "outline"}
+            onClick={() => setFilter("active")}
+          >
+            Active
+          </Button>
+          <Button
+            variant={filter === "archived" ? "default" : "outline"}
+            onClick={() => setFilter("archived")}
+          >
+            Archived
+          </Button>
+        </div>
+
+        {/* Export to PDF button aligned to the far right */}
         <Button
-          variant={filter === "all" ? "default" : "outline"}
-          onClick={() => setFilter("all")}
+          onClick={() => exportToPDF(appointments)}
+          variant="default"
+          className="ml-auto"
         >
-          All
-        </Button>
-        <Button
-          variant={filter === "active" ? "default" : "outline"}
-          onClick={() => setFilter("active")}
-        >
-          Active
-        </Button>
-        <Button
-          variant={filter === "archived" ? "default" : "outline"}
-          onClick={() => setFilter("archived")}
-        >
-          Archived
+          Export to PDF
         </Button>
       </div>
 
@@ -396,8 +469,12 @@ export default function AdminAppointments() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleReply} variant="success" disabled={loading}>
-               {loading ? "Sending..." : "Send Reply"}
+              <Button
+                onClick={handleReply}
+                variant="success"
+                disabled={loading}
+              >
+                {loading ? "Sending..." : "Send Reply"}
               </Button>
             </div>
           </DialogContent>

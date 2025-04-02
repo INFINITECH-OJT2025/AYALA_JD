@@ -31,6 +31,8 @@ import {
   FaConciergeBell,
 } from "react-icons/fa";
 import Link from "next/link";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 
 interface ComparisonModalProps {
   isOpen: boolean;
@@ -51,6 +53,21 @@ export default function ComparisonModal({
     }
   }, [selectedProperties, isOpen, onClose]);
 
+  const exportToPDF = () => {
+    const modalContent = document.getElementById("comparison-modal");
+    if (!modalContent) return;
+
+    html2canvas(modalContent, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      pdf.save("property-comparison.pdf");
+    });
+  };
+
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation(); // ✅ Prevents closing on other clicks
     onClose(); // ✅ Close modal only when PlusCircle is clicked
@@ -63,13 +80,19 @@ export default function ComparisonModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl h-[90vh] overflow-hidden p-6 sm:p-8 md:p-10 mx-auto rounded-lg">
+      <DialogContent className="w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl h-[95vh] overflow-hidden p-6 sm:p-8 md:p-10 mx-auto rounded-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+          <DialogTitle className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 flex justify-between">
             🏡 Compare Properties
+            <button
+            onClick={exportToPDF}
+            className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-600"
+          >
+            Export as PDF
+          </button>
           </DialogTitle>
         </DialogHeader>
-        <div className="flex-1 overflow-y-auto p-4">
+        <div id="comparison-modal" className="flex-1 overflow-y-auto p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {propertySlots.map((property, index) =>
               property ? (

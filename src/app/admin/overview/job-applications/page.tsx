@@ -136,14 +136,14 @@ export default function JobForm() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-[40%_60%] gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-[30%_70%] gap-6">
         {/* Left Column: Job Form */}
         <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4 text-black dark:text-white text-center md:text-left">
             Create Job
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Select
                 onValueChange={(value) => handleSelectChange("type", value)}
               >
@@ -176,8 +176,7 @@ export default function JobForm() {
               className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white border border-gray-300 dark:border-gray-700"
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* ✅ Slots Input */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 name="slots"
                 placeholder="Available Slots"
@@ -188,7 +187,7 @@ export default function JobForm() {
                 required
                 className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white border border-gray-300 dark:border-gray-700"
               />
-              {/* ✅ Category Selection */}
+
               <Select
                 onValueChange={(value) => handleSelectChange("category", value)}
               >
@@ -204,8 +203,8 @@ export default function JobForm() {
                 </SelectContent>
               </Select>
             </div>
-            {/* Input for new category */}
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
               <Input
                 placeholder="Add New Category"
                 value={newCategory}
@@ -217,7 +216,7 @@ export default function JobForm() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 name="salary"
                 placeholder="Starting Salary (Optional)"
@@ -240,7 +239,7 @@ export default function JobForm() {
               <Input
                 name="deadline"
                 type="date"
-                min={new Date().toISOString().split("T")[0]} // ✅ disables past dates
+                min={new Date().toISOString().split("T")[0]}
                 value={form.deadline}
                 onChange={handleChange}
                 className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white border border-gray-300 dark:border-gray-700"
@@ -249,7 +248,7 @@ export default function JobForm() {
 
             <Textarea
               name="description"
-              placeholder="Job Description 50 characters"
+              placeholder="Job Description (Min 50 characters)"
               value={form.description}
               onChange={handleChange}
               maxLength={50}
@@ -262,13 +261,12 @@ export default function JobForm() {
                 Job Image
               </label>
 
-              {/* Image Preview with Remove Button */}
               {imagePreview && (
-                <div className="relative inline-block">
+                <div className="relative inline-block w-28 h-28 sm:w-32 sm:h-32">
                   <img
                     src={imagePreview}
                     alt="Selected Image"
-                    className="w-32 h-32 object-cover rounded-lg"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                   <button
                     type="button"
@@ -280,7 +278,6 @@ export default function JobForm() {
                 </div>
               )}
 
-              {/* File Input */}
               <Input
                 type="file"
                 onChange={handleImageChange}

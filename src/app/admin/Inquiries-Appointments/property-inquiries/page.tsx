@@ -29,6 +29,8 @@ import {
   Inbox,
 } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function AdminPropertyInquiries() {
   const [inquiries, setInquiries] = useState<any[]>([]);
@@ -160,6 +162,68 @@ export default function AdminPropertyInquiries() {
     }
   };
 
+  const exportToPDF = (inquiries: any[]) => {
+    const doc = new jsPDF(); // Portrait mode (default)
+
+    // Add Header
+    const addHeader = () => {
+      doc.setFontSize(12);
+      doc.text("Property Inquiries List - Export", 14, 10); // Title
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 160, 10); // Date
+      doc.setLineWidth(0.5);
+      doc.line(14, 15, 200, 15); // Horizontal line below header
+    };
+
+    // Add Footer with page number
+    const addFooter = (pageNumber: number) => {
+      const pageCount = doc.internal.getNumberOfPages();
+      doc.setFontSize(10);
+      doc.text(
+        `Page ${pageNumber} of ${pageCount}`,
+        14,
+        doc.internal.pageSize.height - 10
+      ); // Page number
+      doc.text(
+        "Company Name or Footer Text",
+        160,
+        doc.internal.pageSize.height - 10
+      ); // Footer text
+    };
+
+    // Define Table Headers
+    const tableColumn = [
+      "Property Name",
+      "Last Name",
+      "First Name",
+      "Email",
+      "Phone",
+      "Status",
+    ];
+
+    // Map property inquiries to table rows (horizontal format)
+    const tableRows = inquiries.map((inquiry) => [
+      inquiry.property.property_name, // Accessing property name correctly
+      inquiry.last_name,
+      inquiry.first_name,
+      inquiry.email,
+      inquiry.phone,
+      inquiry.status,
+    ]);
+
+    // Add Header
+    addHeader();
+
+    // Start Table
+
+    autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
+
+    // Add Footer with page number
+    addFooter(doc.internal.getNumberOfPages());
+
+    // Save PDF
+    doc.save("property_inquiries_list.pdf");
+  };
+
   const columns: ColumnDef<any>[] = [
     { accessorKey: "property.property_name", header: "Property Name" },
     { accessorKey: "last_name", header: "Last Name" },
@@ -178,7 +242,7 @@ export default function AdminPropertyInquiries() {
           >
             <Mail className="w-4 h-4 text-blue-600" /> Reply
           </Button>
-    
+
           {row.original.status === "archived" ? (
             <Button
               size="sm"
@@ -198,7 +262,7 @@ export default function AdminPropertyInquiries() {
               <Archive className="w-4 h-4 text-gray-600" /> Archive
             </Button>
           )}
-    
+
           <Button
             size="sm"
             variant="destructive"
@@ -210,7 +274,6 @@ export default function AdminPropertyInquiries() {
         </div>
       ),
     },
-    
   ];
 
   return (
@@ -218,25 +281,34 @@ export default function AdminPropertyInquiries() {
       <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
         Property Inquiries
       </h2>
-      <div className="flex space-x-2 mb-4">
-        <Button
-          variant={filterStatus === "all" ? "default" : "outline"}
-          onClick={() => setFilterStatus("all")}
-        >
-          All
-        </Button>
-        <Button
-          variant={filterStatus === "active" ? "default" : "outline"}
-          onClick={() => setFilterStatus("active")}
-        >
-          Active
-        </Button>
-        <Button
-          variant={filterStatus === "archived" ? "default" : "outline"}
-          onClick={() => setFilterStatus("archived")}
-        >
-          Archived
-        </Button>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant={filterStatus === "all" ? "default" : "outline"}
+            onClick={() => setFilterStatus("all")}
+          >
+            All
+          </Button>
+          <Button
+            variant={filterStatus === "active" ? "default" : "outline"}
+            onClick={() => setFilterStatus("active")}
+          >
+            Active
+          </Button>
+          <Button
+            variant={filterStatus === "archived" ? "default" : "outline"}
+            onClick={() => setFilterStatus("archived")}
+          >
+            Archived
+          </Button>
+        </div>
+
+        {/* Export to PDF button aligned to the far right */}
+        <div className="ml-auto">
+          <Button onClick={() => exportToPDF(inquiries)} variant="default">
+            Export to PDF
+          </Button>
+        </div>
       </div>
 
       {loading ? (
@@ -352,7 +424,11 @@ export default function AdminPropertyInquiries() {
               >
                 Cancel
               </Button>
-              <Button onClick={handleReply} variant="success" disabled={loading}>
+              <Button
+                onClick={handleReply}
+                variant="success"
+                disabled={loading}
+              >
                 {loading ? "Sending..." : "Send Reply"}
               </Button>
             </div>

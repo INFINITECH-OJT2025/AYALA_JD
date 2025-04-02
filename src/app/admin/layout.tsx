@@ -46,14 +46,14 @@ export default function AdminLayout({
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <SidebarProvider>
-        <div className="p-6 flex justify-center w-screen min-h-screen flex-1 rounded-xl bg-muted/50 dark:bg-gray-900">
+        <div className="p-6 flex justify-center w-screen min-h-screen flex-1 dark:bg-gray-900 rounded-xl">
           {/* Sidebar */}
           <AppSidebar />
 
           {/* Main Content Area */}
           <SidebarInset className="flex flex-col flex-1">
             {/* Header Section */}
-            <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+            <div className="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
               <div className="flex items-center gap-2">
                 <SidebarTrigger />
                 <Separator orientation="vertical" className="h-6" />
@@ -67,7 +67,7 @@ export default function AdminLayout({
             </div>
 
             {/* Dashboard Content Goes Here */}
-            <div className="p-4 flex-1">{children}</div>
+            <div className="p-4 flex-1 bg-white dark:bg-gray-900 rounded-md">{children}</div>
           </SidebarInset>
         </div>
 
