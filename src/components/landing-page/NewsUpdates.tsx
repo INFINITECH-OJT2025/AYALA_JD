@@ -30,7 +30,7 @@ export function NewsUpdates() {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  
+
   useEffect(() => {
     const getNews = async () => {
       try {
@@ -96,6 +96,16 @@ export function NewsUpdates() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* ✅ "See All News" button */}
+          <div className="mt-2 mb-2 flex justify-center">
+            <a
+              href="/landing/News"
+              className="px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-blue-700 transition"
+            >
+              See All News
+            </a>
           </div>
 
           {/* Desktop Buttons */}
@@ -168,7 +178,7 @@ export function NewsUpdates() {
                     className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
                     onClick={() => setSelectedNews(article)}
                   >
-                    Read More
+                    View Full Details
                   </Button>
                 </div>
               </Card>

@@ -101,7 +101,7 @@ const JobListings = () => {
 
       <section className="py-6 bg-gray-100 dark:bg-gray-900">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-4">Careers</h2>
+          <h2 className="text-4xl font-bold text-center mb-4">Join Our Team</h2>
           <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
             Join us and grow your skill while making an impact!
           </p>

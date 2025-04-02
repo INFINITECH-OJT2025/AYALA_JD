@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Edit, Trash, Plus, Upload, Star, Circle, StarOff } from "lucide-react";
+import { Edit, Trash, Plus, Upload, Star, Circle, StarOff, Download } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -286,6 +286,7 @@ export default function AdminNews() {
         </Button>
 
         <Button onClick={() => exportToPDF(news)} variant="default">
+          <Download/>
           Export to PDF
         </Button>
       </div>

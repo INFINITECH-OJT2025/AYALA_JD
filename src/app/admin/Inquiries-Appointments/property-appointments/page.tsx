@@ -19,7 +19,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Archive, Trash, Inbox, User, ImageIcon } from "lucide-react";
+import { Mail, Archive, Trash, Inbox, User, ImageIcon, Download } from "lucide-react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -318,6 +318,7 @@ export default function AdminAppointments() {
           variant="default"
           className="ml-auto"
         >
+          <Download/>
           Export to PDF
         </Button>
       </div>

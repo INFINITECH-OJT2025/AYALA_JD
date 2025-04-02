@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import AdminHistory from "@/components/common/HistorySection"; // ✅ Import History Section
 import { Save } from "lucide-react";
+import ProgramsSection from "@/components/common/ProgramsSection";
 
 interface HistoryItem {
   title: string;
@@ -25,11 +26,22 @@ interface HistoryItem {
   preview: string | null;
 }
 
+interface ProgramItem {
+  title: string;
+  description: string;
+  link: string;
+}
+
 export default function AdminAboutUs() {
   const [aboutUsData, setAboutUsData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewMedia, setPreviewMedia] = useState<string | null>(null);
+  const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+
+  const [programs, setPrograms] = useState<ProgramItem[]>([
+    { title: '', description: '', link: '' },
+  ]);
 
   const form = useForm({
     defaultValues: {
@@ -59,7 +71,10 @@ export default function AdminAboutUs() {
           vision_description: data.vision_description,
         });
 
-        setPreviewImage(data.hero_image || null);
+        if (data.hero_image) {
+          setPreviewMedia(data.hero_image);
+          setMediaType(data.hero_image.endsWith(".mp4") ? "video" : "image");
+        }
       }
       setLoading(false);
     };
@@ -69,7 +84,11 @@ export default function AdminAboutUs() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setPreviewImage(URL.createObjectURL(file));
+      const fileURL = URL.createObjectURL(file);
+      const isVideo = file.type.startsWith("video/");
+
+      setPreviewMedia(fileURL);
+      setMediaType(isVideo ? "video" : "image");
       form.setValue("hero_image", file as any);
     }
   };
@@ -98,6 +117,13 @@ export default function AdminAboutUs() {
         }
       });
   
+      // ✅ Include programs data in form submission
+      programs.forEach((program, index) => {
+        formData.append(`programs[${index}][title]`, program.title);
+        formData.append(`programs[${index}][description]`, program.description);
+        formData.append(`programs[${index}][link]`, program.link);
+      });
+  
       const response = await updateAboutUsContent(formData);
       if (response) {
         toast.success("About Us updated successfully!");
@@ -108,7 +134,7 @@ export default function AdminAboutUs() {
       console.error("Error updating About Us:", error);
       toast.error("An error occurred while updating About Us.");
     } finally {
-      setLoading(false); // ✅ Ensure loading is reset after request
+      setLoading(false);
     }
   };
   
@@ -127,19 +153,31 @@ export default function AdminAboutUs() {
             render={() => (
               <FormItem>
                 <FormLabel className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                  Hero Image
+                  Hero Media (Image or Video)
                 </FormLabel>
-                {previewImage && (
+
+                {previewMedia && mediaType === "image" && (
                   <img
-                    src={previewImage}
+                    src={previewMedia}
                     alt="Hero Preview"
                     className="mt-2 w-full h-64 object-cover rounded-lg shadow-md"
                   />
                 )}
+
+                {previewMedia && mediaType === "video" && (
+                  <video
+                    controls
+                    className="mt-2 w-full h-64 object-cover rounded-lg shadow-md"
+                  >
+                    <source src={previewMedia} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+
                 <FormControl>
                   <Input
                     type="file"
-                    accept="image/*"
+                    accept="image/*, video/*"
                     onChange={handleFileChange}
                     className="mt-2 border-gray-300 dark:border-gray-600"
                   />
@@ -274,6 +312,8 @@ export default function AdminAboutUs() {
           {/* ✅ Imported History Section */}
           <AdminHistory history={history} setHistory={setHistory} />
 
+          <ProgramsSection programs={programs} setPrograms={setPrograms} />
+
           <div className="flex justify-end">
             <Button
               type="submit"
@@ -281,7 +321,7 @@ export default function AdminAboutUs() {
               className="px-5 py-2 text-base font-medium flex items-center gap-2"
               disabled={loading}
             >
-              <Save className="w-5 h-5"/>
+              <Save className="w-5 h-5" />
               {loading ? "Saving..." : "Save Changes"}
             </Button>
           </div>

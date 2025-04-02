@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
-import { Eye, CalendarCheck, X, Trash, Clock } from "lucide-react";
+import { Eye, CalendarCheck, X, Trash, Clock, Download } from "lucide-react";
 import { toast } from "sonner";
 import useFetchSchedule from "@/hooks/useFetchSchedule";
 import { Badge } from "../ui/badge";
@@ -311,6 +311,7 @@ export default function JobApplicants() {
           Job Applicants
         </h2>
         <Button onClick={() => exportToPDF(applicants)} variant="default">
+          <Download/>
           Export to PDF
         </Button>
       </div>

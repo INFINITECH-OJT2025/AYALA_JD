@@ -176,7 +176,7 @@ export function NonFeaturedNewsUpdates() {
                     className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
                     onClick={() => setSelectedNews(article)}
                   >
-                    Read More
+                    View Full Details
                   </Button>
                 </div>
               </Card>

@@ -25,6 +25,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Banknote,
+  Download,
 } from "lucide-react";
 import { List, Hourglass } from "lucide-react";
 import {
@@ -403,6 +404,7 @@ export default function PropertyList() {
               className="w-64"
             />
             <Button onClick={() => exportToPDF(properties)} variant="default">
+              <Download/>
               Export to PDF
             </Button>
           </div>

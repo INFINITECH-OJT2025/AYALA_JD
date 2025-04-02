@@ -108,7 +108,7 @@ export function Services() {
                   className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition"
                   onClick={() => setSelectedService(service)}
                 >
-                  Read More
+                  View Full Details
                 </Button>
               </CardFooter>
             </Card>

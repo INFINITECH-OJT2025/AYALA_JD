@@ -27,6 +27,7 @@ import {
   Undo,
   ImageIcon,
   Inbox,
+  Download,
 } from "lucide-react";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
@@ -184,7 +185,7 @@ export default function AdminPropertyInquiries() {
         doc.internal.pageSize.height - 10
       ); // Page number
       doc.text(
-        "Company Name or Footer Text",
+        "AyalaLand",
         160,
         doc.internal.pageSize.height - 10
       ); // Footer text
@@ -306,6 +307,7 @@ export default function AdminPropertyInquiries() {
         {/* Export to PDF button aligned to the far right */}
         <div className="ml-auto">
           <Button onClick={() => exportToPDF(inquiries)} variant="default">
+            <Download/>
             Export to PDF
           </Button>
         </div>

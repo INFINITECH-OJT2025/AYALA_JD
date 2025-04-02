@@ -5,7 +5,7 @@ import { fetchJobs, deleteJob, updateJob } from "@/lib/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash } from "lucide-react";
+import { Download, Pencil, Trash } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -295,6 +295,7 @@ export default function JobTable() {
           className="ml-auto"
           variant="default"
         >
+          <Download/>
           Export to PDF
         </Button>
       </div>

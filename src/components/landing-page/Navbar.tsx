@@ -120,7 +120,7 @@ export function Navbar() {
             {/* Tools Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="text-gray-200 dark:text-gray-80 font-semibold bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 transition px-4 min-w-[160px] flex items-center gap-2">
+                <Button className="text-black dark:text-white font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-blue-600 dark:hover:bg-blue-500 transition px-4 min-w-[160px] flex items-center gap-2">
                   <Wrench className="w-5 h-5" /> Tools
                 </Button>
               </DropdownMenuTrigger>
