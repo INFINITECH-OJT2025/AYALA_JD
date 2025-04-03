@@ -33,6 +33,8 @@ import {
 import Link from "next/link";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import autoTable from "jspdf-autotable";
+import { Button } from "../ui/button";
 
 interface ComparisonModalProps {
   isOpen: boolean;
@@ -53,20 +55,111 @@ export default function ComparisonModal({
     }
   }, [selectedProperties, isOpen, onClose]);
 
-  const exportToPDF = () => {
-    const modalContent = document.getElementById("comparison-modal");
-    if (!modalContent) return;
-
-    html2canvas(modalContent, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-      pdf.save("property-comparison.pdf");
+  
+  const exportToPDF = (selectedProperties: Property[]) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width; // Get page width
+    const margin = 14; // Left margin
+    const logoWidth = 15; // Smaller logo width in mm
+    const logoHeight = 10; // Adjusted height to maintain aspect ratio
+  
+    // ** Function to Add Header (Logo + Company Name + Date) **
+    const addHeader = () => {
+      const logo = "/logo.png"; // Ensure this image is in the public folder
+  
+      // Move the logo to the top right
+      doc.addImage(logo, "PNG", pageWidth - margin - logoWidth, 5, logoWidth, logoHeight);
+  
+      // Company Name
+      doc.setFontSize(14);
+      doc.text("AyalaLand", margin, 10); // Aligned to the left
+  
+      // Report Title
+      doc.setFontSize(12);
+      doc.text("Property Comparison Report", margin, 16);
+  
+      // Date
+      doc.setFontSize(10);
+      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, margin, 22);
+  
+      // Horizontal line
+      doc.line(margin, 24, pageWidth - margin, 24);
+    };
+  
+    // Add Header on First Page
+    addHeader();
+  
+    // Define row headers (property attributes), excluding "ID"
+    const rowHeaders = [
+      "Property Name",
+      "Listing Type",
+      "Unit Type",
+      "Status",
+      "Location",
+      "Price",
+      "Square Meter",
+      "Floor Number",
+      "Parking",
+      "Pool Area",
+      "Guest Suite",
+      "Underground Parking",
+      "Pet Friendly",
+      "Balcony/Terrace",
+      "Club House",
+      "Gym/Fitness",
+      "Elevator",
+      "Concierge Services",
+      "Security",
+    ];
+  
+    // Transpose data: Make property attributes rows and properties columns
+    const tableRows = rowHeaders.map((header, index) => {
+      return [
+        header, // The row header (e.g., "Property Name")
+        ...selectedProperties.map((property) => {
+          // Extract corresponding values based on index, excluding the "id"
+          const values = [
+            property.property_name,
+            property.type_of_listing,
+            property.unit_type,
+            property.unit_status,
+            property.location,
+            property.price,
+            property.square_meter,
+            property.floor_number,
+            property.parking ? "Yes" : "No",
+            property.pool_area ? "Yes" : "No",
+            property.guest_suite ? "Yes" : "No",
+            property.underground_parking ? "Yes" : "No",
+            property.pet_friendly_facilities ? "Yes" : "No",
+            property.balcony_terrace ? "Yes" : "No",
+            property.club_house ? "Yes" : "No",
+            property.gym_fitness_center ? "Yes" : "No",
+            property.elevator ? "Yes" : "No",
+            property.concierge_services ? "Yes" : "No",
+            property.security ? "Yes" : "No",
+          ];
+          return values[index]; // Get the corresponding value for this row
+        }),
+      ];
     });
+  
+    // Generate table
+    autoTable(doc, {
+      head: [], // No column headers needed
+      body: tableRows,
+      startY: 30, // Start below the header
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [41, 128, 185], textColor: 255, fontSize: 10 },
+      columnStyles: { 0: { fontStyle: "bold" } }, // Make first column bold for row headers
+      didDrawPage: addHeader, // Ensure header is drawn on each page
+    });
+  
+    // Save PDF
+    doc.save("property_comparison.pdf");
   };
+  
+  
 
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation(); // ✅ Prevents closing on other clicks
@@ -84,12 +177,12 @@ export default function ComparisonModal({
         <DialogHeader>
           <DialogTitle className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 flex justify-between">
             🏡 Compare Properties
-            <button
-            onClick={exportToPDF}
-            className="bg-blue-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-blue-600"
-          >
-            Export as PDF
-          </button>
+            <Button
+              onClick={() => exportToPDF(selectedProperties)}
+              variant="default"
+            >
+              Export to PDF
+            </Button>
           </DialogTitle>
         </DialogHeader>
         <div id="comparison-modal" className="flex-1 overflow-y-auto p-4">
@@ -128,7 +221,11 @@ export default function ComparisonModal({
                     <MapPin className="w-4 h-4 mr-1" /> {property.location}
                   </p>
                   <p className="text-green-600 dark:text-green-400 font-semibold text-sm md:text-lg">
-                    ₱{Number(property.price).toLocaleString()}
+                    ₱
+                    {Number(property.price).toLocaleString("en-PH", {
+                      minimumFractionDigits: 2, // Always show two decimal places
+                      maximumFractionDigits: 2, // Prevents extra decimals
+                    })}
                   </p>
 
                   <div className="mt-2 grid grid-cols-2 gap-2 text-sm">

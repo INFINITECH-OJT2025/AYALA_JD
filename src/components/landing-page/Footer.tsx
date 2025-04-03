@@ -9,12 +9,14 @@ import {
   Mail,
   MapPin,
   Phone,
+  Youtube,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SubscribeNewsletter } from "../common/SubscribeNewsletter";
 import { fetchContactDetails } from "@/lib/api";
 import { useEffect, useState } from "react";
+import { FaTiktok } from "react-icons/fa";
 export function Footer() {
   const [contact, setContact] = useState<{
     location: string;
@@ -131,25 +133,39 @@ export function Footer() {
         </p>
         <div className="flex space-x-4 mt-4 md:mt-0">
           <a
-            href="https://facebook.com"
+            href="https://www.facebook.com/officialayalaland/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <Facebook size={24} className="hover:text-white transition" />
           </a>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/ayalaland/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <Instagram size={24} className="hover:text-white transition" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://ph.linkedin.com/company/ayala-land-inc-"
             target="_blank"
             rel="noopener noreferrer"
           >
             <Linkedin size={24} className="hover:text-white transition" />
+          </a>
+          <a
+            href="https://ph.linkedin.com/company/ayala-land-inc-"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Youtube size={24} className="hover:text-white transition" />
+          </a>
+          <a
+            href="https://www.tiktok.com/@ayalalandofficial"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaTiktok size={24} className="hover:text-white transition" />
           </a>
         </div>
       </div>

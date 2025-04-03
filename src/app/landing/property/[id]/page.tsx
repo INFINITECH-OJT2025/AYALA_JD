@@ -34,6 +34,7 @@ interface Property {
   type_of_listing: string;
   property_name: string;
   description: string;
+  other_details: string[];
   unit_type: string;
   unit_status: string;
   location: string;
@@ -217,7 +218,10 @@ export default function PropertyDetails() {
               <div>
                 {/* Status & Listing Type */}
                 <div className="flex items-center space-x-2 flex-wrap">
-                  <Badge className="bg-green-500 text-white text-sm px-3 py-1">
+                  <Badge
+                    className="bg-green-500 text-white text-sm px-3 py-1 
+                   hover:bg-green-600 transition"
+                  >
                     {property.unit_status}
                   </Badge>
 
@@ -226,13 +230,17 @@ export default function PropertyDetails() {
                     property.type_of_listing.map((listing, index) => (
                       <Badge
                         key={index}
-                        className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center"
+                        className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center
+                       hover:bg-blue-600 transition"
                       >
                         <FaTag className="mr-1" /> {listing}
                       </Badge>
                     ))
                   ) : (
-                    <Badge className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center">
+                    <Badge
+                      className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center
+                        hover:bg-blue-600 transition"
+                    >
                       <FaTag className="mr-1" /> {property.type_of_listing}
                     </Badge>
                   )}
@@ -245,9 +253,11 @@ export default function PropertyDetails() {
                 <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-200">
                   ₱
                   {Number(property.price).toLocaleString("en-PH", {
-                    minimumFractionDigits: 0,
+                    minimumFractionDigits: 2, // Ensures two decimal places
+                    maximumFractionDigits: 2, // Prevents extra decimals
                   })}
                 </p>
+
                 <p className="text-lg text-gray-600 dark:text-gray-300 flex items-center mt-1">
                   📌 {property.location}
                 </p>
@@ -258,7 +268,7 @@ export default function PropertyDetails() {
                   {[
                     {
                       label: "Floor",
-                      value: `${property.floor_number}`,
+                      value: `${property.floor_number} level/s`,
                       icon: <FaBuilding className="mr-1" />,
                     },
                     {
@@ -270,7 +280,9 @@ export default function PropertyDetails() {
                     detail.value ? (
                       <Badge
                         key={index}
-                        className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 text-sm px-3 py-1 flex items-center rounded-lg"
+                        className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 
+                        text-sm px-3 py-1 flex items-center rounded-lg 
+                        hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                       >
                         {detail.icon} {detail.label}: {detail.value}
                       </Badge>
@@ -283,8 +295,18 @@ export default function PropertyDetails() {
 
               {/* Right Section: Property Description */}
               <div className="lg:mt-12 md:mt-0">
-                <h3 className="font-bold">DESCRIPTION:</h3>
-                <p className="text-lg text-gray-700 dark:text-gray-300 italic mt-1">
+                <h3 className="font-bold">OTHER DETAILS</h3>
+                <ul className="text-gray-700 dark:text-gray-300 col-span-2 list-disc pl-5 mt-1">
+                  {property.other_details?.length ? (
+                    property.other_details.map((detail, index) => (
+                      <li key={index}>{detail}</li>
+                    ))
+                  ) : (
+                    <li>No details provided</li>
+                  )}
+                </ul>
+                <h3 className="font-bold mt-2">DESCRIPTION</h3>
+                <p className="text-lg text-gray-700 dark:text-gray-300 mt-1">
                   {property.description}
                 </p>
               </div>
@@ -346,7 +368,9 @@ export default function PropertyDetails() {
                 feature.value ? (
                   <Badge
                     key={index}
-                    className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 text-sm px-3 py-1 flex items-center rounded-lg"
+                    className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 
+                    text-sm px-3 py-1 flex items-center rounded-lg 
+                    hover:bg-gray-300 dark:hover:bg-gray-600 transition"
                   >
                     {feature.icon} {feature.label}
                   </Badge>

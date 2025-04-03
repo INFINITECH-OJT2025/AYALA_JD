@@ -192,20 +192,20 @@ export default function JobApplicants() {
     };
 
     // Add Footer with page number
-    const addFooter = (pageNumber: number) => {
-      const pageCount = doc.internal.getNumberOfPages();
-      doc.setFontSize(10);
-      doc.text(
-        `Page ${pageNumber} of ${pageCount}`,
-        14,
-        doc.internal.pageSize.height - 10
-      ); // Page number
-      doc.text(
-        "AyalaLand",
-        160,
-        doc.internal.pageSize.height - 10
-      ); // Footer text
-    };
+    // const addFooter = (pageNumber: number) => {
+    //   const pageCount = doc.internal.getNumberOfPages();
+    //   doc.setFontSize(10);
+    //   doc.text(
+    //     `Page ${pageNumber} of ${pageCount}`,
+    //     14,
+    //     doc.internal.pageSize.height - 10
+    //   ); // Page number
+    //   doc.text(
+    //     "AyalaLand",
+    //     160,
+    //     doc.internal.pageSize.height - 10
+    //   ); // Footer text
+    // };
 
     // Define Table Headers
     const tableColumn = [
@@ -235,13 +235,19 @@ export default function JobApplicants() {
     autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
 
     // Add Footer with page number
-    addFooter(doc.internal.getNumberOfPages());
+    // addFooter(doc.internal.getNumberOfPages());
 
     // Save PDF
     doc.save("job_applicants_list.pdf");
   };
-
-  const columns: ColumnDef<any>[] = [
+const columns: ColumnDef<any>[] = [
+  {
+    accessorKey: "numbering",
+    header: "No.",
+    cell: ({ row }) => {
+      return <span>{row.index + 1}</span>;
+    },
+  },
     { accessorKey: "first_name", header: "First Name" },
     { accessorKey: "last_name", header: "Last Name" },
     { accessorKey: "email", header: "Email" },

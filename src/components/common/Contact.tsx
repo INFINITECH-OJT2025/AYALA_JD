@@ -26,6 +26,7 @@ export default function Contact() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [consent, setConsent] = useState(false); // Consent checkbox state
 
   const handleBlur = () => {
     if (!form.email) {
@@ -49,11 +50,26 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if consent is not given
+    if (!consent) {
+      toast.error("You must agree to the privacy policy before submitting.");
+      return;
+    }
+
+    // Check if inquiry type is selected
+    if (!form.inquiry_type) {
+      toast.error("Please select an inquiry type.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await sendInquiry(form);
+      await sendInquiry(form); // Assuming sendInquiry function exists
       toast.success("Inquiry sent successfully! 🎉");
+
+      // Reset form after successful submission
       setForm({
         inquiry_type: "",
         last_name: "",
@@ -152,6 +168,25 @@ export default function Contact() {
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {form.message.length}/250 characters
         </p>
+
+        <div className="flex items-start space-x-2">
+          <input
+            type="checkbox"
+            id="consent"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            className="mt-1"
+          />
+          <label
+            htmlFor="consent"
+            className="text-sm text-gray-600 dark:text-gray-300 text-justify"
+          >
+            By clicking, you consent to the collection and processing of the
+            following personal data necessary to address your query. These data
+            are protected under the Data Privacy Act and our Company's Private
+            Notice.
+          </label>
+        </div>
 
         {/* Submit Button */}
         <Button

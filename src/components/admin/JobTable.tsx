@@ -144,20 +144,20 @@ export default function JobTable() {
     };
 
     // Add Footer with page number
-    const addFooter = (pageNumber: number) => {
-      const pageCount = doc.internal.getNumberOfPages();
-      doc.setFontSize(10);
-      doc.text(
-        `Page ${pageNumber} of ${pageCount}`,
-        14,
-        doc.internal.pageSize.height - 10
-      ); // Page number
-      doc.text(
-        "AyalaLand",
-        160,
-        doc.internal.pageSize.height - 10
-      ); // Footer text
-    };
+    // const addFooter = (pageNumber: number) => {
+    //   const pageCount = doc.internal.getNumberOfPages();
+    //   doc.setFontSize(10);
+    //   doc.text(
+    //     `Page ${pageNumber} of ${pageCount}`,
+    //     14,
+    //     doc.internal.pageSize.height - 10
+    //   ); // Page number
+    //   doc.text(
+    //     "AyalaLand",
+    //     160,
+    //     doc.internal.pageSize.height - 10
+    //   ); // Footer text
+    // };
 
     // Define Table Headers
     const tableColumn = [
@@ -188,7 +188,7 @@ export default function JobTable() {
     autoTable(doc, { head: [tableColumn], body: tableRows, startY: 20 });
 
     // Add Footer with page number
-    addFooter(doc.internal.getNumberOfPages());
+    // addFooter(doc.internal.getNumberOfPages());
 
     // Save PDF
     doc.save("job_listings.pdf");
@@ -196,6 +196,14 @@ export default function JobTable() {
 
   // Table Columns
   const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "numbering",
+      header: "No.",
+      cell: ({ row }) => {
+        // Use row.index to directly number from 1 upwards
+        return <span>{row.index + 1}</span>;
+      },
+    },
     { accessorKey: "title", header: "Title" },
     { accessorKey: "location", header: "Location" },
     { accessorKey: "type", header: "Type" },
@@ -206,14 +214,14 @@ export default function JobTable() {
       cell: ({ row }) => {
         const rawDate = row.original.deadline;
         if (!rawDate) return "No deadline"; // ✅ Handle missing deadline
-
+  
         const deadlineDate = new Date(rawDate);
         const today = new Date();
         today.setHours(0, 0, 0, 0); // ✅ Remove time for accurate comparison
         deadlineDate.setHours(0, 0, 0, 0); // ✅ Remove time from deadline for accurate check
-
+  
         const isExpired = deadlineDate <= today; // ✅ Expired if today or earlier
-
+  
         return (
           <Tooltip>
             <TooltipTrigger>
@@ -256,6 +264,7 @@ export default function JobTable() {
       ),
     },
   ];
+  
 
   return (
     <div className="container mx-auto">
@@ -417,7 +426,7 @@ export default function JobTable() {
                 {/* Description */}
                 <div>
                   <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
-                    Job Description
+                    Job Qualification
                   </label>
                   <Textarea
                     name="description"

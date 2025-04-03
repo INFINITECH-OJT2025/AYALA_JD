@@ -59,13 +59,7 @@ export function NonFeaturedNewsUpdates() {
 
   return (
     <section className="py-4 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
-          Latest News
-        </h2>
-        <p className="text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
-          Stay informed with our latest news and updates.
-        </p>
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Category Buttons - Responsive */}
         <div className="mb-6">
@@ -120,73 +114,62 @@ export function NonFeaturedNewsUpdates() {
         </div>
 
         {/* Content Handling */}
-        {loading ? (
-          <p className="text-center text-gray-500 dark:text-gray-300">
-            Loading news...
-          </p>
-        ) : error ? (
-          <p className="text-center text-red-500">{error}</p>
-        ) : filteredNews.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredNews.map((article) => (
-              <Card
-                key={article.id}
-                className="p-6 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
-              >
-                {/* Image */}
-                {article.image && (
-                  <Image
-                    src={
-                      article.image.startsWith("http")
-                        ? article.image
-                        : `/storage/news_images/${article.image}`
-                    }
-                    alt={article.title}
-                    width={500}
-                    height={300}
-                    className="w-full h-48 object-cover rounded-md mb-4"
-                  />
-                )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
-                {/* Title and Metadata */}
-                <CardHeader className="mb-2">
-                  <CardTitle className="text-lg font-semibold truncate">
-                    {article.title}
-                  </CardTitle>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                    {article.category} •{" "}
-                    {new Date(article.created_at).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </p>
-                </CardHeader>
+          {filteredNews.map((article) => (
+            <Card
+              key={article.id}
+              className="p-6 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+            >
+              {/* Image */}
+              {article.image && (
+                <Image
+                  src={
+                    article.image.startsWith("http")
+                      ? article.image
+                      : `/storage/news_images/${article.image}`
+                  }
+                  alt={article.title}
+                  width={500}
+                  height={300}
+                  className="w-full h-48 object-cover rounded-md mb-4"
+                />
+              )}
 
-                {/* Description */}
-                <CardContent className="flex-grow">
-                  <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
-                    {article.content}
-                  </p>
-                </CardContent>
+              {/* Title and Metadata */}
+              <CardHeader className="mb-2">
+                <CardTitle className="text-lg font-semibold truncate">
+                  {article.title}
+                </CardTitle>
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                  {article.category} •{" "}
+                  {new Date(article.created_at).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              </CardHeader>
 
-                {/* Read More Button */}
-                <div className="mt-auto">
-                  <Button
-                    className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
-                    onClick={() => setSelectedNews(article)}
-                  >
-                    View Full Details
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-600 dark:text-gray-300">
-            No news available in this category.
-          </p>
-        )}
+              {/* Description */}
+              <CardContent className="flex-grow">
+                <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
+                  {article.content}
+                </p>
+              </CardContent>
+
+              {/* Read More Button */}
+              <div className="mt-auto">
+                <Button
+                  className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
+                  onClick={() => setSelectedNews(article)}
+                >
+                  View Full Details
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {selectedNews && (

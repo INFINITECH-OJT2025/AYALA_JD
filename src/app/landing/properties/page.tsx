@@ -97,16 +97,31 @@ export default function FeaturedProperties() {
   return (
     <>
       <Navbar />
-      <section className="bg-gray-100 dark:bg-gray-900 py-6">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-start">
+      <div className="relative bg-gradient-to-r from-green-700 to-green-900 dark:from-gray-900 dark:to-gray-800 py-12 px-6 text-center shadow-lg overflow-hidden">
+        {/* Background Image with Gradient Overlay */}
+        <div className="absolute inset-0">
+          <img
+            src="/properties.jpg"
+            alt="Properties"
+            className="w-full h-72 object-cover opacity-50"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative max-w-6xl mx-auto">
+          <h2 className="text-5xl font-extrabold text-white mb-4 tracking-wide">
             Properties
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 text-lg mb-6">
+          <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-4 leading-relaxed">
             Turning Dreams into Addresses, Secure Your Future with the Right
             Property.
           </p>
+        </div>
+      </div>
 
+      <section className="bg-gray-100 dark:bg-gray-900 py-6">
+        <div className="container mx-auto px-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 items-center">
             <input
               type="text"
@@ -263,9 +278,10 @@ export default function FeaturedProperties() {
                       <div className="mt-auto flex justify-between items-center pt-4">
                         <p className="text-lg font-bold text-green-800 dark:text-green-400">
                           ₱
-                          {new Intl.NumberFormat("en-PH").format(
-                            formatPrice(property.price)
-                          )}
+                          {new Intl.NumberFormat("en-PH", {
+                            minimumFractionDigits: 2, // Ensures two decimal places
+                            maximumFractionDigits: 2, // Prevents extra decimals
+                          }).format(formatPrice(property.price))}
                         </p>
 
                         {/* ✅ Home+ Button (Add to Compare) */}

@@ -42,6 +42,7 @@ export default function ApplicationModal({
   };
 
   const [loading, setLoading] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -55,6 +56,10 @@ export default function ApplicationModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      toast.error("You must agree to the privacy policy before submitting.");
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData();
@@ -155,6 +160,25 @@ export default function ApplicationModal({
               accept=".pdf,.doc,.docx,.txt,.odt,.rtf,.jpg,.jpeg,.png"
               required
             />
+          </div>
+
+          <div className="flex items-start space-x-2">
+            <input
+              type="checkbox"
+              id="consent"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-1"
+            />
+            <label
+              htmlFor="consent"
+              className="text-sm text-gray-600 dark:text-gray-300 text-justify"
+            >
+              By clicking, you consent to the collection and processing of the
+              following personal data necessary to address your query. These
+              data are protected under the Data Privacy Act and our Company's
+              Private Notice.
+            </label>
           </div>
 
           <Button

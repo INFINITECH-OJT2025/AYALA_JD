@@ -12,6 +12,7 @@ interface Property {
   unit_type: string;
   location: string;
   price: string;
+  square_meter: number;
   status: string;
 }
 
@@ -107,12 +108,15 @@ export function FeaturedProperties() {
                     <p className="text-gray-600 dark:text-gray-300 text-sm">
                       {property.location}
                     </p>
-                    <p className="mt-2 text-xl font-bold text-green-800 dark:text-green-400">
+                    <p className="mt-2 text-xl font-bold text-green-800 dark:text-green-400 flex items-center">
                       ₱
                       {parseFloat(property.price).toLocaleString("en-PH", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                        / {property.square_meter} sqm
+                      </span>
                     </p>
                   </div>
                 </div>

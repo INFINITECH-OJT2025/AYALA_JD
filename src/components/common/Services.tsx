@@ -48,16 +48,7 @@ export function Services() {
   }, []);
 
   return (
-    <section className="py-12 px-6 lg:px-24 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-          Our Services
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-          Explore our top-quality real estate services designed to meet your
-          needs.
-        </p>
-      </div>
+    <section className="py-6 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
 
       {loading ? (
         <p className="text-center text-gray-500 dark:text-gray-300">
@@ -70,7 +61,7 @@ export function Services() {
           {services.map((service) => (
             <Card
               key={service.id}
-              className="shadow-md dark:shadow-lg bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+              className="shadow-md dark:shadow-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
             >
               {/* ✅ Proper Spacing & Consistent Image Design */}
               {service.image && (

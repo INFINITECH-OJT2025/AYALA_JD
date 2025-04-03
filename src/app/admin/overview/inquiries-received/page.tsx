@@ -224,6 +224,13 @@ export default function AdminInquiries() {
 
   // ✅ Table Columns
   const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "numbering",
+      header: "No.",
+      cell: ({ row }) => {
+        return <span>{row.index + 1}</span>;
+      },
+    },
     { accessorKey: "inquiry_type", header: "Type" },
     { accessorKey: "last_name", header: "Last Name" },
     { accessorKey: "first_name", header: "First Name" },

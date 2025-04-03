@@ -182,7 +182,7 @@ export default function Notification() {
     if (message.startsWith("new property inquiry"))
       return "/admin/Inquiries-Appointments/property-inquiries";
     if (message.startsWith("new appointment booked"))
-      return "/admin/inquiries-appointments/property-appointments";
+      return "/admin/Inquiries-Appointments/property-appointments";
     if (message.startsWith("new general inquiry"))
       return "/admin/overview/inquiries-received";
 

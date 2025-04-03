@@ -20,6 +20,8 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
   });
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [consent, setConsent] = useState(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -28,6 +30,10 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consent) {
+      toast.error("You must agree to the privacy policy before submitting.");
+      return;
+    }
     setLoading(true);
     const formData = new FormData();
     formData.append("property_id", propertyId.toString());
@@ -50,7 +56,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
     }
   };
 
-  return  (
+  return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-lg md:max-w-xl lg:max-w-2xl h-auto md:h-[70vh] flex flex-col">
       <div className="flex space-x-2 mb-4">
         <Button
@@ -74,7 +80,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
           Appointment
         </Button>
       </div>
-  
+
       {/* Scrollable Form Container */}
       <div className="overflow-y-auto flex-1 pr-2 p-2">
         {activeTab === "inquiry" ? (
@@ -83,8 +89,20 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
               <FaQuestion className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               <span>Send Inquiry</span>
             </h3>
-            <Input name="last_name" placeholder="Last Name" value={form.last_name} onChange={handleChange} required />
-            <Input name="first_name" placeholder="First Name" value={form.first_name} onChange={handleChange} required />
+            <Input
+              name="last_name"
+              placeholder="Last Name"
+              value={form.last_name}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              name="first_name"
+              placeholder="First Name"
+              value={form.first_name}
+              onChange={handleChange}
+              required
+            />
             <Input
               name="email"
               type="email"
@@ -101,7 +119,9 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
               }}
               required
             />
-            {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
             <Input
               name="phone"
               type="text"
@@ -132,8 +152,32 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
                 {form.message.length} / 100 characters
               </div>
             </div>
-  
-            <Button type="submit" variant="success" className="w-full" disabled={loading}>
+
+            <div className="flex items-start space-x-2">
+              <input
+                type="checkbox"
+                id="consent"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-1"
+              />
+              <label
+                htmlFor="consent"
+                className="text-sm text-gray-600 dark:text-gray-300 text-justify"
+              >
+                By clicking, you consent to the collection and processing of the
+                following personal data necessary to address your query. These
+                data are protected under the Data Privacy Act and our Company's
+                Private Notice.
+              </label>
+            </div>
+
+            <Button
+              type="submit"
+              variant="success"
+              className="w-full"
+              disabled={loading}
+            >
               {loading ? "Sending... " : "Send Inquiry"}
             </Button>
           </form>
@@ -143,5 +187,4 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
       </div>
     </div>
   );
-  
 }

@@ -223,6 +223,13 @@ export default function AdminAppointments() {
   };
 
   const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "numbering",
+      header: "No.",
+      cell: ({ row }) => {
+        return <span>{row.index + 1}</span>;
+      },
+    },
     { accessorKey: "property.property_name", header: "Property Name" },
     { accessorKey: "last_name", header: "Last Name" },
     { accessorKey: "first_name", header: "First Name" },

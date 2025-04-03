@@ -236,7 +236,7 @@ export function Navbar() {
       </nav>
 
       {/* Spacer to prevent content overlap */}
-      <div className="h-16 md:h-20"></div>
+      <div className="h-14 md:h-18"></div>
     </>
   );
 }

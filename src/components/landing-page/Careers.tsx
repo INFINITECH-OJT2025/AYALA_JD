@@ -69,10 +69,18 @@ export function Careers() {
 
   return (
     <section className="py-12 bg-gray-100 dark:bg-gray-800">
-      <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-8">
+
+
+      <div className="max-w-6xl mx-auto text-center">
+      <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
         Join Our Team
         </h2>
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+          Explore our top-quality real estate services designed to meet your
+          needs.
+        </p>
+  
+    
 
         {loading ? (
           <div className="flex justify-center items-center">

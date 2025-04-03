@@ -12,6 +12,7 @@ import {
   FaInstagram,
   FaLinkedin,
   FaYoutube,
+  FaTiktok,
 } from "react-icons/fa";
 import { Footer } from "@/components/landing-page/Footer";
 import { Navbar } from "@/components/landing-page/Navbar";
@@ -53,6 +54,8 @@ export default function ContactPage() {
         return <FaLinkedin className="text-blue-700 dark:text-blue-500" />;
       case "youtube":
         return <FaYoutube className="text-red-600 dark:text-red-500" />;
+      case "tiktok":
+        return <FaTiktok className="text-red-600 dark:text-red-500" />;
       default:
         return <FaGlobe className="text-green-600 dark:text-green-400" />; // Default icon for unknown platforms
     }
@@ -61,7 +64,29 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-12">
+      <div className="relative bg-gradient-to-r from-green-700 to-green-900 dark:from-gray-900 dark:to-gray-800 py-12 px-6 text-center shadow-lg overflow-hidden">
+        {/* Background Image with Gradient Overlay */}
+        <div className="absolute inset-0">
+          <img
+            src="/contact.jpg"
+            alt="Contact Us"
+            className="w-full h-80 object-cover opacity-50"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative max-w-6xl mx-auto">
+          <h2 className="text-5xl font-extrabold text-white mb-4 tracking-wide">
+            Contact Us
+          </h2>
+          <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-4 leading-relaxed">
+            Get in Touch with Ayala Land
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-6">
         <div className="max-w-6xl mx-auto px-6">
           {/* Contact Section */}
           <div className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
@@ -79,7 +104,7 @@ export default function ContactPage() {
               <div className="mt-6 space-y-4">
                 {/* Email at the Top */}
                 {contact?.email && (
-                  <div className="flex items-center space-x-3 text-lg">
+                  <div className="flex items-center space-x-3 text-md">
                     <FaEnvelope className="text-green-600 dark:text-green-400" />
                     <a
                       href={`mailto:${contact.email}`}
@@ -94,7 +119,7 @@ export default function ContactPage() {
                 {contact?.phones?.map((phone, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-3 text-lg"
+                    className="flex items-center space-x-3 text-md"
                   >
                     <FaPhoneAlt className="text-green-600 dark:text-green-400" />
                     <span className="text-gray-800 dark:text-gray-200">
@@ -113,7 +138,7 @@ export default function ContactPage() {
                 {contact?.social_media?.map((social, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-3 text-lg"
+                    className="flex items-center space-x-3 text-md"
                   >
                     {getSocialIcon(social.platform)}
                     <span className="text-gray-800 dark:text-gray-200">
@@ -132,7 +157,7 @@ export default function ContactPage() {
 
                 {/* Office Location (without title, only icon) */}
                 {contact?.location && (
-                  <div className="flex items-center space-x-3 text-lg">
+                  <div className="flex items-center space-x-3 text-md">
                     <FaMapMarkerAlt className="text-green-600 dark:text-green-400" />
                     <span className="text-blue-700 dark:text-blue-400 font-medium">
                       {contact.location}

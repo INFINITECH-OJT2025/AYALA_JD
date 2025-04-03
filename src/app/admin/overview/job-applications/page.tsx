@@ -247,8 +247,8 @@ export default function JobForm() {
             </div>
 
             <Textarea
-              name="description"
-              placeholder="Job Description (Min 50 characters)"
+              name="qualifications"
+              placeholder="Job Qualification/s (Min 50 characters)"
               value={form.description}
               onChange={handleChange}
               maxLength={50}

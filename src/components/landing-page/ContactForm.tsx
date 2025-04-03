@@ -75,7 +75,7 @@ export function ContactForm() {
             <div className="mt-6 space-y-4">
               {/* Email at the Top */}
               {contact?.email && (
-                <div className="flex items-center space-x-3 text-lg">
+                <div className="flex items-center space-x-3 text-md">
                   <FaEnvelope className="text-green-600 dark:text-green-400" />
                   <a
                     href={`mailto:${contact.email}`}
@@ -90,7 +90,7 @@ export function ContactForm() {
               {contact?.phones?.map((phone, index) => (
                 <div
                   key={index}
-                  className="flex items-center space-x-3 text-lg"
+                  className="flex items-center space-x-3 text-md"
                 >
                   <FaPhoneAlt className="text-green-600 dark:text-green-400" />
                   <span className="text-gray-800 dark:text-gray-200">
@@ -109,7 +109,7 @@ export function ContactForm() {
               {contact?.social_media?.map((social, index) => (
                 <div
                   key={index}
-                  className="flex items-center space-x-3 text-lg"
+                  className="flex items-center space-x-3 text-md"
                 >
                   {getSocialIcon(social.platform)}
                   <span className="text-gray-800 dark:text-gray-200">
@@ -128,7 +128,7 @@ export function ContactForm() {
 
               {/* Office Location (without title, only icon) */}
               {contact?.location && (
-                <div className="flex items-center space-x-3 text-lg">
+                <div className="flex items-center space-x-3 text-md">
                   <FaMapMarkerAlt className="text-green-600 dark:text-green-400" />
                   <span className="text-blue-700 dark:text-blue-400 font-medium">
                     {contact.location}

@@ -292,16 +292,16 @@ export default function PropertyList() {
     };
 
     // Footer
-    const addFooter = (pageNumber: number) => {
-      const pageCount = doc.internal.getNumberOfPages();
-      doc.setFontSize(10);
-      doc.text(
-        `Page ${pageNumber} of ${pageCount}`,
-        14,
-        doc.internal.pageSize.height - 10
-      ); // Page number
-      doc.text("AyalaLand", 160, doc.internal.pageSize.height - 10); // Footer text
-    };
+    // const addFooter = (pageNumber: number) => {
+    //   const pageCount = doc.internal.getNumberOfPages();
+    //   doc.setFontSize(10);
+    //   doc.text(
+    //     `Page ${pageNumber} of ${pageCount}`,
+    //     14,
+    //     doc.internal.pageSize.height - 10
+    //   ); // Page number
+    //   doc.text("AyalaLand", 160, doc.internal.pageSize.height - 10); // Footer text
+    // };
 
     properties.forEach((property, index) => {
       if (index > 0) doc.addPage(); // New page for each property
@@ -345,7 +345,7 @@ export default function PropertyList() {
         doc.text(detail[1], 80, 40 + i * 8);
       });
 
-      addFooter(doc.internal.getNumberOfPages()); // Add footer on each page
+      // addFooter(doc.internal.getNumberOfPages()); // Add footer on each page
     });
 
     doc.save("property_details.pdf");
@@ -404,7 +404,7 @@ export default function PropertyList() {
               className="w-64"
             />
             <Button onClick={() => exportToPDF(properties)} variant="default">
-              <Download/>
+              <Download />
               Export to PDF
             </Button>
           </div>
@@ -429,6 +429,7 @@ export default function PropertyList() {
             <Table className="min-w-full">
               <TableHeader>
                 <TableRow>
+                  <TableHead>No.</TableHead>
                   <TableHead>First Name</TableHead>
                   <TableHead>Last Name</TableHead>
                   <TableHead>Type of Listing</TableHead>
@@ -443,50 +444,55 @@ export default function PropertyList() {
               </TableHeader>
               <TableBody>
                 {currentProperties.length > 0 ? (
-                  currentProperties.map((property) => (
-                    <TableRow key={property.id}>
-                      <TableCell className="whitespace-nowrap px-2">
-                        {property.first_name}
-                      </TableCell>
-                      <TableCell className="whitespace-nowrap px-2">
-                        {property.last_name}
-                      </TableCell>
-                      <TableCell>{property.type_of_listing}</TableCell>
-                      <TableCell>{property.property_name}</TableCell>
-                      <TableCell>{property.unit_type}</TableCell>
-                      <TableCell>{property.unit_status}</TableCell>
-                      <TableCell>{property.location}</TableCell>
-                      <TableCell>
-                        ₱
-                        {parseFloat(property.price).toLocaleString("en-PH", {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
-                      </TableCell>
-                      <TableCell>{property.status}</TableCell>
-                      <TableCell className="whitespace-nowrap px-2">
-                        <Button
-                          variant="secondary"
-                          size="icon"
-                          onClick={() => handleViewProperty(property)}
-                        >
-                          <Eye className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => confirmDelete(property.id)}
-                          className="ml-2"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  currentProperties
+                    .slice()
+                    .map((property, index) => (
+                      <TableRow key={property.id}>
+                        <TableCell className="whitespace-nowrap px-2 font-semibold">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap px-2">
+                          {property.first_name}
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap px-2">
+                          {property.last_name}
+                        </TableCell>
+                        <TableCell>{property.type_of_listing}</TableCell>
+                        <TableCell>{property.property_name}</TableCell>
+                        <TableCell>{property.unit_type}</TableCell>
+                        <TableCell>{property.unit_status}</TableCell>
+                        <TableCell>{property.location}</TableCell>
+                        <TableCell>
+                          ₱
+                          {parseFloat(property.price).toLocaleString("en-PH", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </TableCell>
+                        <TableCell>{property.status}</TableCell>
+                        <TableCell className="whitespace-nowrap px-2">
+                          <Button
+                            variant="secondary"
+                            size="icon"
+                            onClick={() => handleViewProperty(property)}
+                          >
+                            <Eye className="w-5 h-5" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            onClick={() => confirmDelete(property.id)}
+                            className="ml-2"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
                 ) : (
                   <TableRow>
                     <TableCell
-                      colSpan={10}
+                      colSpan={11}
                       className="text-center text-gray-500"
                     >
                       No properties found.

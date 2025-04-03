@@ -67,6 +67,7 @@ export default function CreateListingLand({
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [otherDetails, setOtherDetails] = useState<string[]>([]);
   const unitStatus = form.watch("unit_status"); // ✅ Watch selected value
+  const [consent, setConsent] = useState(false); // Consent checkbox state
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -87,6 +88,10 @@ export default function CreateListingLand({
 
   const onSubmit = async (data: any) => {
     console.log("Submitting Data:", data);
+    if (!consent) {
+      toast.error("You must agree to the privacy policy before submitting.");
+      return;
+    }
     setLoading(true);
 
     const formData = new FormData();
@@ -115,6 +120,8 @@ export default function CreateListingLand({
     selectedImages.forEach((image) =>
       formData.append("property_image[]", image)
     );
+
+
 
     try {
       const response = await submitProperty(formData);
@@ -625,6 +632,24 @@ export default function CreateListingLand({
                     </div>
                   ))}
                 </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <input
+                  type="checkbox"
+                  id="consent"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-1"
+                />
+                <label
+                  htmlFor="consent"
+                  className="text-sm text-gray-600 dark:text-gray-300"
+                >
+                  By clicking, you consent to the collection and processing of
+                  the following personal data necessary to address your query.
+                  These data are protected under the Data Privacy Act and our
+                  Company's Private Notice.
+                </label>
               </div>
               <div className="flex justify-end gap-2">
                 <Button onClick={onClose}>Cancel</Button>

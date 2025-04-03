@@ -67,36 +67,6 @@ export function NewsUpdates() {
         {/* ✅ Category Filter */}
         <div className="mb-6">
           {/* Mobile Dropdown */}
-          <div className="sm:hidden relative">
-            <button
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-white rounded-md flex justify-between items-center"
-            >
-              {selectedCategory || "Select Category"}
-              <span className="ml-2">{dropdownOpen ? "▲" : "▼"}</span>
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg z-10">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 ${
-                      selectedCategory === category
-                        ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                        : "text-gray-800 dark:text-gray-300"
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
 
           {/* ✅ "See All News" button */}
           <div className="mt-2 mb-2 flex justify-center">
@@ -106,23 +76,6 @@ export function NewsUpdates() {
             >
               See All News
             </a>
-          </div>
-
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex flex-wrap justify-center gap-2">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 text-sm sm:text-base rounded-md transition-all ${
-                  selectedCategory === category
-                    ? "bg-blue-600 text-white dark:bg-blue-500 dark:text-white"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
-                }`}
-              >
-                {category}
-              </Button>
-            ))}
           </div>
         </div>
 
@@ -153,8 +106,11 @@ export function NewsUpdates() {
                   />
                 )}
 
-                <CardHeader>
-                  <CardTitle className="text-lg">{article.title}</CardTitle>
+                {/* ✅ Title & Date are aligned properly */}
+                <CardHeader className="flex flex-col">
+                  <CardTitle className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2">
+                    {article.title}
+                  </CardTitle>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {article.category} •{" "}
                     {new Date(article.created_at).toLocaleDateString("en-US", {
@@ -165,14 +121,14 @@ export function NewsUpdates() {
                   </p>
                 </CardHeader>
 
-                {/* ✅ Ensures content takes remaining space */}
+                {/* ✅ Content takes remaining space to ensure buttons align */}
                 <CardContent className="flex-grow">
                   <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
                     {article.content}
                   </p>
                 </CardContent>
 
-                {/* ✅ Button always at bottom */}
+                {/* ✅ Ensures button is always at the bottom */}
                 <div className="mt-auto">
                   <Button
                     className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
@@ -201,7 +157,11 @@ export function NewsUpdates() {
               <DialogTitle>{selectedNews.title}</DialogTitle>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 {selectedNews.category} •{" "}
-                {new Date(selectedNews.created_at).toLocaleDateString()}
+                {new Date(selectedNews.created_at).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </p>
             </DialogHeader>
 

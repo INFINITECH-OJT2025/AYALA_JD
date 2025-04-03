@@ -98,14 +98,30 @@ const JobListings = () => {
   return (
     <>
       <Navbar />
+      <div className="relative bg-gradient-to-r from-green-700 to-green-900 dark:from-gray-900 dark:to-gray-800 py-12 px-6 text-center shadow-lg overflow-hidden">
+        {/* Background Image with Gradient Overlay */}
+        <div className="absolute inset-0">
+          <img
+            src="/careers.jpg"
+            alt="Join Our Team"
+            className="w-full h-full object-cover opacity-50"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative max-w-6xl mx-auto">
+          <h2 className="text-5xl font-extrabold text-white mb-4 tracking-wide">
+            Join Our Team
+          </h2>
+          <p className="text-lg text-gray-200 max-w-2xl mx-auto mb-4 leading-relaxed">
+            Join us and grow your skill while making an impact!
+          </p>
+        </div>
+      </div>
 
       <section className="py-6 bg-gray-100 dark:bg-gray-900">
         <div className="max-w-5xl mx-auto px-6">
-          <h2 className="text-4xl font-bold text-center mb-4">Join Our Team</h2>
-          <p className="text-center text-gray-600 dark:text-gray-300 mb-8">
-            Join us and grow your skill while making an impact!
-          </p>
-
           {loading ? (
             <div className="flex justify-center items-center">
               <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
