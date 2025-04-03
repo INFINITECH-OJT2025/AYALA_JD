@@ -25,12 +25,12 @@ const benefits = [
 
 export function WhyChooseUs() {
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-800">
+    <section className="py-12 bg-gray-100 dark:bg-gray-800 ">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
           Why Choose Us?
         </h2>
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-4 gap-6 animate-fade-down animate-once">
           {benefits.map((benefit, index) => (
             <div
               key={index}

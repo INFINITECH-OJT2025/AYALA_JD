@@ -93,7 +93,11 @@ export function Navbar() {
             {mounted && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="w-10 h-10 text-white" >
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="w-10 h-10 text-white"
+                  >
                     {theme === "dark" ? (
                       <Moon size={20} />
                     ) : theme === "light" ? (
@@ -137,8 +141,11 @@ export function Navbar() {
                   <Link
                     href="/landing/roomplanner"
                     className="flex items-center gap-2"
+                    target="_blank" // Open the link in a new tab
+                    rel="noopener noreferrer" // Recommended for security when using target="_blank"
                   >
-                    <LayoutGrid className="w-5 h-5" /> Room Planner
+                    <LayoutGrid className="w-5 h-5" />
+                    Room Planner
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>

@@ -38,10 +38,7 @@ export default function AdminAboutUs() {
   const [previewMedia, setPreviewMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<"image" | "video" | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-
-  const [programs, setPrograms] = useState<ProgramItem[]>([
-    { title: '', description: '', link: '' },
-  ]);
+  const [programs, setPrograms] = useState<ProgramItem[]>([]);
 
   const form = useForm({
     defaultValues: {
@@ -58,10 +55,12 @@ export default function AdminAboutUs() {
   useEffect(() => {
     const getContent = async () => {
       const data = await fetchAboutUsContent();
+      console.log("Fetched Data:", data); // Debugging output
       if (data) {
         setAboutUsData(data);
         setHistory(data.history || []);
-
+        setPrograms(data.programs || []);
+  
         form.reset({
           hero_title: data.hero_title,
           hero_subtitle: data.hero_subtitle,
@@ -70,7 +69,7 @@ export default function AdminAboutUs() {
           vision_title: data.vision_title,
           vision_description: data.vision_description,
         });
-
+  
         if (data.hero_image) {
           setPreviewMedia(data.hero_image);
           setMediaType(data.hero_image.endsWith(".mp4") ? "video" : "image");
@@ -80,6 +79,7 @@ export default function AdminAboutUs() {
     };
     getContent();
   }, [form]);
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

@@ -1,5 +1,6 @@
 "use client";
 
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,22 +14,38 @@ interface ProgramItem {
 
 interface ProgramsSectionProps {
   programs: ProgramItem[];
-  setPrograms: (newPrograms: ProgramItem[]) => void;
+  setPrograms: Dispatch<SetStateAction<ProgramItem[]>>;
 }
 
 export default function ProgramsSection({ programs, setPrograms }: ProgramsSectionProps) {
-  const handleProgramChange = (
-    index: number,
-    field: "title" | "description" | "link",
-    value: string
-  ) => {
+  // ✅ Load initial data from localStorage once
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    if (programs.length === 0) {
+      const storedPrograms = localStorage.getItem("programs");
+      if (storedPrograms) {
+        setPrograms(JSON.parse(storedPrograms));
+      }
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (programs.length > 0) {
+      localStorage.setItem("programs", JSON.stringify(programs));
+    }
+  }, [programs]);
+  
+
+  const handleProgramChange = (index: number, field: keyof ProgramItem, value: string) => {
     const updated = [...programs];
     updated[index] = { ...updated[index], [field]: value };
     setPrograms(updated);
   };
 
   const addProgram = () => {
-    setPrograms([...programs, { title: "", description: "", link: "" }]);
+    const newPrograms = [...programs, { title: "", description: "", link: "" }];
+    setPrograms(newPrograms);
   };
 
   const removeProgram = (index: number) => {

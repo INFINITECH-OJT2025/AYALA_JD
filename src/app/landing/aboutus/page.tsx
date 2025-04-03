@@ -68,7 +68,7 @@ export default function AboutUsPage() {
               <h2 className="text-4xl font-bold text-green-700 dark:text-green-400">
                 {aboutUs?.mission_title}
               </h2>
-              <p className="mt-4 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+              <p className="mt-4 text-gray-700 dark:text-gray-300 text-lg text-justify leading-relaxed">
                 {aboutUs?.mission_description}
               </p>
             </div>
@@ -76,7 +76,7 @@ export default function AboutUsPage() {
               <h2 className="text-4xl font-bold text-green-700 dark:text-green-400">
                 {aboutUs?.vision_title}
               </h2>
-              <p className="mt-4 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+              <p className="mt-4 text-gray-700 dark:text-gray-300 text-lg text-justify leading-relaxed">
                 {aboutUs?.vision_description}
               </p>
             </div>
@@ -109,7 +109,7 @@ export default function AboutUsPage() {
                 <h3 className="text-xl font-semibold mt-4 text-gray-800 dark:text-gray-100">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-gray-600 dark:text-gray-300">
+                <p className="mt-2 text-gray-600 dark:text-gray-300 text-justify leading-relaxed">
                   {item.description}
                 </p>
               </div>
@@ -131,6 +131,12 @@ export default function AboutUsPage() {
               );
               const youtubeId = youtubeMatch ? youtubeMatch[1] : null;
 
+              // Extract Facebook video ID or check if the link is a Facebook link
+              const facebookMatch = program.link?.match(
+                /(?:facebook\.com\/)(?:[^/]+\/)+videos\/(\d+)/
+              );
+              const facebookId = facebookMatch ? facebookMatch[1] : null;
+
               return (
                 <div
                   key={index}
@@ -139,6 +145,7 @@ export default function AboutUsPage() {
                   {/* Video or Image Preview */}
                   <div className="relative w-full h-48 overflow-hidden rounded-md">
                     {youtubeId ? (
+                      // YouTube Thumbnail
                       <a
                         href={program.link}
                         target="_blank"
@@ -162,7 +169,23 @@ export default function AboutUsPage() {
                           </div>
                         </div>
                       </a>
+                    ) : facebookId ? (
+                      // Facebook Video or Image Preview (using Open Graph image)
+                      <a
+                        href={program.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full h-full relative"
+                      >
+                        <img
+                          src={`https://graph.facebook.com/${facebookId}/picture?type=large`}
+                          alt="Facebook Video Thumbnail"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition"></div>
+                      </a>
                     ) : program.image ? (
+                      // Custom Image Preview
                       <a
                         href={program.link}
                         target="_blank"
@@ -180,7 +203,22 @@ export default function AboutUsPage() {
                         />
                         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition"></div>
                       </a>
-                    ) : null}
+                    ) : (
+                      // Default Image (if no video/image link)
+                      <a
+                        href={program.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full h-full relative"
+                      >
+                        <img
+                          src="/defaultplay.png"
+                          alt="Default Thumbnail"
+                          className="w-32 h-32 mx-auto object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition"></div>
+                      </a>
+                    )}
                   </div>
 
                   {/* Program Content */}
