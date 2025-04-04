@@ -80,6 +80,8 @@ const data = {
         { title: "Services", url: "/admin/Posting/services" },
         { title: "About Us", url: "/admin/Posting/about-us" },
         { title: "Contact Details", url: "/admin/Posting/contact-details" },
+        { title: "Testimonials", url: "/admin/Posting/testimonials" },
+        { title: "FAQ", url: "/admin/Posting/faq" },
       ],
     },
   ],

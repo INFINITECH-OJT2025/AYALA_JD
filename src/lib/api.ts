@@ -981,7 +981,105 @@ export const updateContactDetails = async (data: any) => {
 };
 
 
+// api.ts
 
+export const getFaqs = async () => {
+  const response = await fetch('http://127.0.0.1:8000/api/faqs');
+  if (!response.ok) {
+    throw new Error('Failed to fetch FAQs');
+  }
+  return response.json();
+};
+
+export const createFaq = async (data: { question: string; answer: string }) => {
+  const response = await fetch('http://127.0.0.1:8000/api/faqs', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create FAQ');
+  }
+  return response.json();
+};
+
+export const updateFaq = async (id: number, data: { question: string; answer: string }) => {
+  const response = await fetch(`http://127.0.0.1:8000/api/faqs/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update FAQ');
+  }
+  return response.json();
+};
+
+export const deleteFaq = async (id: number) => {
+  const response = await fetch(`http://127.0.0.1:8000/api/faqs/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    throw new Error('Failed to delete FAQ');
+  }
+  return response.json();
+};
+
+// lib/api.ts
+
+export async function sendTestimonial(formData: FormData) {
+  const res = await fetch("http://localhost:8000/api/testimonial", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.message || "Failed to submit testimonial");
+  }
+
+  return res.json();
+}
+
+export const getTestimonials = async () => {
+  const response = await fetch(`${API_URL}/testimonials`);
+  if (!response.ok) {
+    throw new Error("Failed to fetch testimonials");
+  }
+  return response.json();
+};
+
+// Update testimonial status (publish/unpublish)
+export const updateTestimonialStatus = async (id: number, status: number) => {
+  const response = await fetch(`${API_URL}/testimonials/${id}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update testimonial status");
+  }
+  return response.json();
+};
+
+// Delete a testimonial
+export const deleteTestimonial = async (id: number) => {
+  const response = await fetch(`${API_URL}/testimonials/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete testimonial");
+  }
+  return response.json();
+};
 
 
 

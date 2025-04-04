@@ -176,7 +176,7 @@ export default function ComparisonModal({
       <DialogContent className="w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl h-[95vh] overflow-hidden p-6 sm:p-8 md:p-10 mx-auto rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100 flex justify-between">
-            🏡 Compare Properties
+            Compare Properties
             <Button
               onClick={() => exportToPDF(selectedProperties)}
               variant="default"
