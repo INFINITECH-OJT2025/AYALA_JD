@@ -21,9 +21,11 @@ import {
   FaCalendarAlt,
   FaRulerCombined,
   FaTag,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 import Inquiry from "@/components/common/Inquiry";
 import Nearby from "@/components/common/Nearby";
+import FAQSection from "@/components/common/Faq";
 
 interface Property {
   id: number;
@@ -120,6 +122,21 @@ export default function PropertyDetails() {
                   onClick={() => openFullScreen(currentImageIndex)}
                 />
 
+                <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-md flex items-center gap-1 text-sm sm:text-base shadow-md">
+                  <FaMapMarkerAlt className="text-red-400" />
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      property.location
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate max-w-[75vw] hover:underline"
+                    title="View on Google Maps"
+                  >
+                    {property.location}
+                  </a>
+                </div>
+
                 {/* Navigation Buttons */}
                 <button
                   className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/60 text-white p-2 sm:p-3 rounded-full shadow-lg hover:bg-black/80 transition"
@@ -212,104 +229,86 @@ export default function PropertyDetails() {
           </div>
 
           {/* Property Details */}
-          <Card className="p-6 sm:p-8 space-y-4 mt-4 bg-white dark:bg-gray-800 shadow-xl rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {/* Left Section: Property Details */}
-              <div>
-                {/* Status & Listing Type */}
-                <div className="flex items-center space-x-2 flex-wrap">
+          <div className="gap-6 md:gap-8">
+            <div className="flex flex-wrap items-center gap-2 mt-4 md:mt-0">
+              <Badge className="bg-green-600 text-white text-sm px-3 py-1 hover:bg-green-700 transition">
+                {property.unit_status}
+              </Badge>
+
+              {/* Handle multiple type_of_listing values */}
+              {Array.isArray(property.type_of_listing) ? (
+                property.type_of_listing.map((listing, index) => (
                   <Badge
-                    className="bg-green-500 text-white text-sm px-3 py-1 
-                   hover:bg-green-600 transition"
+                    key={index}
+                    className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center hover:bg-blue-600 transition"
                   >
-                    {property.unit_status}
+                    <FaTag className="mr-1" /> {listing}
                   </Badge>
+                ))
+              ) : (
+                <Badge className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center hover:bg-blue-600 transition">
+                  <FaTag className="mr-1" /> {property.type_of_listing}
+                </Badge>
+              )}
 
-                  {/* Handle multiple type_of_listing values */}
-                  {Array.isArray(property.type_of_listing) ? (
-                    property.type_of_listing.map((listing, index) => (
-                      <Badge
-                        key={index}
-                        className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center
-                       hover:bg-blue-600 transition"
-                      >
-                        <FaTag className="mr-1" /> {listing}
-                      </Badge>
-                    ))
-                  ) : (
-                    <Badge
-                      className="bg-blue-500 text-white text-sm px-3 py-1 flex items-center
-                        hover:bg-blue-600 transition"
-                    >
-                      <FaTag className="mr-1" /> {property.type_of_listing}
-                    </Badge>
-                  )}
-                </div>
+              {/* Price as a badge */}
+              <Badge className="bg-red-500 text-white text-sm px-3 py-1 hover:bg-gray-900 transition">
+                ₱
+                {Number(property.price).toLocaleString("en-PH", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </Badge>
+            </div>
 
-                {/* Property Name & Price */}
-                <h2 className="text-2xl sm:text-3xl font-bold mt-2">
-                  {property.property_name}
-                </h2>
-                <p className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-gray-200">
-                  ₱
-                  {Number(property.price).toLocaleString("en-PH", {
-                    minimumFractionDigits: 2, // Ensures two decimal places
-                    maximumFractionDigits: 2, // Prevents extra decimals
-                  })}
-                </p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 mt-2">
+              {property.unit_type} | {property.property_name}
+            </h1>
 
-                <p className="text-lg text-gray-600 dark:text-gray-300 flex items-center mt-1">
-                  📌 {property.location}
-                </p>
+            <h3 className="font-bold mt-4">DISCOVER YOUR DREAM SPACE</h3>
+            <p className="text-base text-gray-700 dark:text-gray-300 mt-1">
+              {property.description}
+            </p>
 
-                {/* Property Details */}
-                <h3 className="font-bold mt-4">DETAILS</h3>
-                <div className="flex flex-wrap gap-3 mt-2">
-                  {[
-                    {
-                      label: "Floor",
-                      value: `${property.floor_number} level/s`,
-                      icon: <FaBuilding className="mr-1" />,
-                    },
-                    {
-                      label: "Size",
-                      value: `${property.square_meter} sqm`,
-                      icon: <FaRulerCombined className="mr-1" />,
-                    },
-                  ].map((detail, index) =>
-                    detail.value ? (
-                      <Badge
-                        key={index}
-                        className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 
+            {/* Property Details */}
+            <h3 className="font-bold mt-4">DETAILS</h3>
+            <div className="flex flex-wrap gap-3 mt-2">
+              {[
+                {
+                  label: "Floor",
+                  value: `${property.floor_number} level/s`,
+                  icon: <FaBuilding className="mr-1" />,
+                },
+                {
+                  label: "Size",
+                  value: `${property.square_meter} sqm`,
+                  icon: <FaRulerCombined className="mr-1" />,
+                },
+              ].map((detail, index) =>
+                detail.value ? (
+                  <Badge
+                    key={index}
+                    className="bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 
                         text-sm px-3 py-1 flex items-center rounded-lg 
                         hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-                      >
-                        {detail.icon} {detail.label}: {detail.value}
-                      </Badge>
-                    ) : null
-                  )}
-                </div>
+                  >
+                    {detail.icon} {detail.label}: {detail.value}
+                  </Badge>
+                ) : null
+              )}
+            </div>
 
-                {/* Features & Amenities */}
-              </div>
-
-              {/* Right Section: Property Description */}
-              <div className="lg:mt-12 md:mt-0">
-                <h3 className="font-bold">OTHER DETAILS</h3>
-                <ul className="text-gray-700 dark:text-gray-300 col-span-2 list-disc pl-5 mt-1">
-                  {property.other_details?.length ? (
-                    property.other_details.map((detail, index) => (
-                      <li key={index}>{detail}</li>
-                    ))
-                  ) : (
-                    <li>No details provided</li>
-                  )}
-                </ul>
-                <h3 className="font-bold mt-2">DESCRIPTION</h3>
-                <p className="text-lg text-gray-700 dark:text-gray-300 mt-1">
-                  {property.description}
-                </p>
-              </div>
+            <div className="mt-4">
+              <h3 className="font-bold">OTHER DETAILS</h3>
+              <ul className="text-gray-700 dark:text-gray-300 col-span-2 list-disc pl-5 mt-1">
+                {property.other_details?.length ? (
+                  property.other_details.map((detail, index) => (
+                    <li key={index}>{detail}</li>
+                  ))
+                ) : (
+                  <li>No details provided</li>
+                )}
+              </ul>
             </div>
             <h3 className="font-bold mt-4">FEATURES & AMENITIES</h3>
             <div className="flex flex-wrap gap-3 mt-2">
@@ -377,13 +376,14 @@ export default function PropertyDetails() {
                 ) : null
               )}
             </div>
-          </Card>
+          </div>
+          <FAQSection/>
         </div>
 
         {/* Right Section: Inquiry Form */}
         <div className="col-span-7 md:col-span-5 lg:col-span-3">
           <Inquiry propertyId={parseInt(id as string, 10)} />
-          <div className="mt-4">
+          <div className="mt-2">
             <Nearby />
           </div>
         </div>

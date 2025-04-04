@@ -12,6 +12,7 @@ import {
   FaInstagram,
   FaLinkedin,
   FaYoutube,
+  FaTiktok,
 } from "react-icons/fa";
 import Contact from "../common/Contact";
 import { fetchContactDetails } from "@/lib/api";
@@ -38,23 +39,25 @@ export function ContactForm() {
     loadContactDetails();
   }, []);
 
-    const getSocialIcon = (platform: string) => {
-      switch (platform.toLowerCase()) {
-        case "facebook":
-          return <FaFacebook className="text-blue-600 dark:text-blue-400" />;
-        case "twitter":
-        case "x": // Supports both Twitter & X branding
-          return <FaTwitter className="text-blue-400 dark:text-blue-300" />;
-        case "instagram":
-          return <FaInstagram className="text-pink-500 dark:text-pink-400" />;
-        case "linkedin":
-          return <FaLinkedin className="text-blue-700 dark:text-blue-500" />;
-        case "youtube":
-          return <FaYoutube className="text-red-600 dark:text-red-500" />;
-        default:
-          return <FaGlobe className="text-green-600 dark:text-green-400" />; // Default icon for unknown platforms
-      }
-    };
+  const getSocialIcon = (platform: string) => {
+    switch (platform.toLowerCase()) {
+      case "facebook":
+        return <FaFacebook className="text-blue-600 dark:text-blue-400" />;
+      case "twitter":
+      case "x": // Supports both Twitter & X branding
+        return <FaTwitter className="text-blue-400 dark:text-blue-300" />;
+      case "instagram":
+        return <FaInstagram className="text-pink-500 dark:text-pink-400" />;
+      case "linkedin":
+        return <FaLinkedin className="text-blue-700 dark:text-blue-500" />;
+      case "youtube":
+        return <FaYoutube className="text-red-600 dark:text-red-500" />;
+      case "tiktok":
+        return <FaTiktok className="text-red-600 dark:text-red-500" />;
+      default:
+        return <FaGlobe className="text-green-600 dark:text-green-400" />; // Default icon for unknown platforms
+    }
+  };
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800">
@@ -77,6 +80,7 @@ export function ContactForm() {
               {contact?.email && (
                 <div className="flex items-center space-x-3 text-md">
                   <FaEnvelope className="text-green-600 dark:text-green-400" />
+                  <p className="font-medium">Email:</p>
                   <a
                     href={`mailto:${contact.email}`}
                     className="text-blue-700 dark:text-blue-400 hover:underline"
@@ -130,6 +134,7 @@ export function ContactForm() {
               {contact?.location && (
                 <div className="flex items-center space-x-3 text-md">
                   <FaMapMarkerAlt className="text-green-600 dark:text-green-400" />
+                  <p className="font-medium">Location:</p>
                   <span className="text-blue-700 dark:text-blue-400 font-medium">
                     {contact.location}
                   </span>

@@ -106,6 +106,7 @@ export default function ContactPage() {
                 {contact?.email && (
                   <div className="flex items-center space-x-3 text-md">
                     <FaEnvelope className="text-green-600 dark:text-green-400" />
+                    <p className="font-medium">Email:</p>
                     <a
                       href={`mailto:${contact.email}`}
                       className="text-blue-700 dark:text-blue-400 hover:underline"
@@ -159,6 +160,7 @@ export default function ContactPage() {
                 {contact?.location && (
                   <div className="flex items-center space-x-3 text-md">
                     <FaMapMarkerAlt className="text-green-600 dark:text-green-400" />
+                    <p className="font-medium">Location:</p>
                     <span className="text-blue-700 dark:text-blue-400 font-medium">
                       {contact.location}
                     </span>

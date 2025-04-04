@@ -72,7 +72,7 @@ const AdminCalendar = () => {
           eventClick={handleEventClick}
           dayHeaderClassNames="bg-gray-100 dark:bg-gray-800 dark:text-gray-200"
           dayCellClassNames="bg-white dark:bg-gray-900 dark:border-gray-700"
-          eventClassNames="bg-blue-500 text-white dark:bg-blue-400 dark:text-gray-900"
+          eventClassNames="bg-blue-500 text-white dark:bg-blue-400 dark:text-gray-900 hover:bg-blue-600 hover:text-gray-100 dark:hover:bg-blue-500 dark:hover:text-gray-200"
         />
       </div>
 

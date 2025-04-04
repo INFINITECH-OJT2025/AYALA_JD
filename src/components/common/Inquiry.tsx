@@ -57,7 +57,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-lg md:max-w-xl lg:max-w-2xl h-auto md:h-[70vh] flex flex-col">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-lg md:max-w-xl lg:max-w-2xl flex flex-col">
       <div className="flex space-x-2 mb-4">
         <Button
           className={`px-4 py-2 rounded-md ${
@@ -82,7 +82,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
       </div>
 
       {/* Scrollable Form Container */}
-      <div className="overflow-y-auto flex-1 pr-2 p-2">
+      <div className="flex-1 pr-2 p-2">
         {activeTab === "inquiry" ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center space-x-2">
