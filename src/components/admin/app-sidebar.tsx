@@ -49,7 +49,7 @@ const data = {
           url: "/admin/overview/listed-properties",
         },
         { title: "Job Applications", url: "/admin/overview/job-applications" },
-        { title: "Calendar", url: "/admin/calendar/" },
+        { title: "Calendar", url: "/admin/overview/calendar/" },
       ],
     },
     {

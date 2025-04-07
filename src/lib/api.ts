@@ -1054,19 +1054,21 @@ export const getTestimonials = async () => {
 };
 
 // Update testimonial status (publish/unpublish)
-export const updateTestimonialStatus = async (id: number, status: number) => {
+// Example of updateTestimonialStatus function
+export const updateTestimonialStatus = async (id: number, status: string) => {
   const response = await fetch(`${API_URL}/testimonials/${id}/status`, {
-    method: "PATCH",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status }), // Send status as JSON
   });
 
   if (!response.ok) {
-    throw new Error("Failed to update testimonial status");
+    throw new Error('Failed to update testimonial status');
   }
-  return response.json();
+
+  return await response.json();
 };
 
 // Delete a testimonial

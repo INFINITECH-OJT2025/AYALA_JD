@@ -291,7 +291,7 @@ export default function AdminInquiries() {
   ];
 
   return (
-    <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
+    <div className="p-6 w-full rounded-lg">
       <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
         General Inquiries
       </h2>

@@ -27,7 +27,7 @@ export default function FAQSection() {
   return (
     <div className="w-full mt-10">
       {/* Title Section */}
-      <h2 className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400">
+      <h2 className="text-2xl sm:text-3xl font-bold text-green-700 dark:text-green-400">
         Frequently Asked Questions
       </h2>
       <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base mt-2">

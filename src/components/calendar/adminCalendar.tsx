@@ -58,7 +58,7 @@ const AdminCalendar = () => {
 
   return (
     <div>
-      <div className="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 p-4">
+      <div className="text-gray-900 dark:text-gray-100 p-4">
         <FullCalendar
           plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
           initialView="dayGridMonth"

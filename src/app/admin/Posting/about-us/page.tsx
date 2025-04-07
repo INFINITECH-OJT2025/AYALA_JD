@@ -142,7 +142,7 @@ export default function AdminAboutUs() {
   if (loading) return <div className="text-center py-10">Loading...</div>;
 
   return (
-    <div className=" bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
+    <div className=" p-6 w-full">
       <h2 className="text-2xl font-bold mb-4">Manage About Us</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">

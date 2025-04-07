@@ -98,9 +98,11 @@ export default function ApplicationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border dark:border-gray-700 p-6 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle>Apply for {job?.title}</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+            Apply for {job?.title}
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
@@ -109,6 +111,7 @@ export default function ApplicationModal({
             value={form.first_name}
             onChange={handleChange}
             required
+            className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 p-2 rounded-md"
           />
           <Input
             name="last_name"
@@ -116,6 +119,7 @@ export default function ApplicationModal({
             value={form.last_name}
             onChange={handleChange}
             required
+            className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 p-2 rounded-md"
           />
           <div>
             <Input
@@ -126,6 +130,7 @@ export default function ApplicationModal({
               onChange={handleChange}
               onBlur={handleBlur}
               required
+              className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 p-2 rounded-md"
             />
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
@@ -141,14 +146,15 @@ export default function ApplicationModal({
             }}
             maxLength={11} // Ensures max input length
             required
+            className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 p-2 rounded-md"
           />
-
           <Input
             name="address"
             placeholder="Address"
             value={form.address}
             onChange={handleChange}
             required
+            className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 p-2 rounded-md"
           />
           <div>
             <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
@@ -159,6 +165,7 @@ export default function ApplicationModal({
               onChange={handleFileChange}
               accept=".pdf,.doc,.docx,.txt,.odt,.rtf,.jpg,.jpeg,.png"
               required
+              className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 p-2 rounded-md"
             />
           </div>
 
@@ -184,7 +191,7 @@ export default function ApplicationModal({
           <Button
             variant="success"
             type="submit"
-            className="w-full"
+            className="w-full bg-blue-500 dark:bg-blue-700 text-white hover:bg-blue-600 dark:hover:bg-blue-800"
             disabled={loading}
           >
             {loading ? "Submitting..." : "Submit Application"}

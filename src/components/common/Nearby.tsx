@@ -5,7 +5,7 @@ const Nearby = () => {
   return (
     <div className="flex flex-col items-center justify-center text-center py-6">
       {/* Title */}
-      <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-400">
+      <h1 className="text-3xl font-bold text-green-700 dark:text-green-400">
         Nearby Properties
       </h1>
       <p className="text-gray-600 dark:text-gray-300 max-w-md mt-2">

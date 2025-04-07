@@ -114,7 +114,7 @@ export function FeaturedProperties() {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}
-                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-300">
+                      <span className="ml-2 font-normal text-gray-600 dark:text-gray-300 text-sm">
                         / {property.square_meter} sqm
                       </span>
                     </p>

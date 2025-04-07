@@ -64,8 +64,8 @@ export default function ContactDetails() {
   };
 
   return (
-    <Card className="p-6 space-y-6">
-      <h2 className="text-xl font-semibold">Update Contact Details</h2>
+    <div className="p-6 w-full">
+      <h2 className="text-2xl font-bold">Update Contact Details</h2>
 
       {/* Phone Numbers */}
       <div>
@@ -199,6 +199,6 @@ export default function ContactDetails() {
           {loading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
-    </Card>
+    </div>
   );
 }

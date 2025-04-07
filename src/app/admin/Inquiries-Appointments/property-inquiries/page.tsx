@@ -285,7 +285,7 @@ export default function AdminPropertyInquiries() {
   ];
 
   return (
-    <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
+    <div className=" p-6 w-full">
       <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
         Property Inquiries
       </h2>

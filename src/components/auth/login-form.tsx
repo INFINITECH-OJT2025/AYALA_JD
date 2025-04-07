@@ -13,11 +13,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,43 +55,67 @@ export function LoginForm({
       router.push("/admin/overview/dashboard");
     } catch (err) {
       setLoading(false);
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong.";
+      setError(errorMessage);
+      toast.error(errorMessage); // Toast for error
     }
   };
 
   const handleForgotPassword = async () => {
     if (!email) {
       setForgotPasswordMessage("Please enter your email to reset password.");
+      toast.error("Please enter your email to reset password."); // Toast for validation
       return;
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/forgot-password",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to send password reset email.");
       }
 
       setForgotPasswordMessage("Password reset link sent to your email.");
+      toast.success("Password reset link sent to your email."); // Success toast
     } catch (err) {
-      setForgotPasswordMessage(err instanceof Error ? err.message : "Something went wrong.");
+      const errorMessage = err instanceof Error ? err.message : "Something went wrong.";
+      setForgotPasswordMessage(errorMessage);
+      toast.error(errorMessage); // Toast for error
     }
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
+        {/* Logo at the top */}
+        <div className="flex justify-center mt-6">
+          <img
+            src="/logo.png"
+            alt="Ayala Land Logo"
+            width={120}
+            height={40}
+            className="object-contain"
+          />
+        </div>
+
         <CardHeader>
-          <CardTitle className="text-2xl">Admin Login</CardTitle>
-          <CardDescription>Enter your credentials to access the system.</CardDescription>
+          <CardTitle className="text-2xl text-center">Admin Login</CardTitle>
+          <CardDescription className="text-center">
+            Enter your credentials to access the system.
+          </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
+              {/* Email */}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -100,20 +127,39 @@ export function LoginForm({
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              <div className="grid gap-2">
+
+              {/* Password with toggle */}
+              <div className="grid gap-2 relative">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-8 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
               </div>
+
+              {/* Error */}
               {error && <p className="text-red-500 text-sm">{error}</p>}
-              <Button type="submit" className="w-full" disabled={loading}>
+
+              {/* Submit */}
+              <Button type="submit" variant="success" className="w-full" disabled={loading}>
                 {loading ? "Logging in..." : "Login"}
               </Button>
+
+              {/* Forgot Password */}
               <button
                 type="button"
                 onClick={handleForgotPassword}
@@ -121,7 +167,13 @@ export function LoginForm({
               >
                 Forgot Password?
               </button>
-              {forgotPasswordMessage && <p className="text-sm text-green-600">{forgotPasswordMessage}</p>}
+
+              {/* Success Message */}
+              {forgotPasswordMessage && (
+                <p className="text-sm text-green-600">
+                  {forgotPasswordMessage}
+                </p>
+              )}
             </div>
           </form>
         </CardContent>

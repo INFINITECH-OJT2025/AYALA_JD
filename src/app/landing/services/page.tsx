@@ -1,3 +1,4 @@
+import PublishedTestimonials from "@/components/common/PublishedTestimonials";
 import Services from "@/components/common/Services";
 import { Footer } from "@/components/landing-page/Footer";
 import { Navbar } from "@/components/landing-page/Navbar";
@@ -30,6 +31,8 @@ export default function ServicesPage() {
       </div>
 
       <Services />
+
+      <PublishedTestimonials/>
 
       <hr className="border-t border-gray-300 dark:border-gray-700" />
 

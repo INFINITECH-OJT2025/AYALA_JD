@@ -355,7 +355,6 @@ export default function PropertyList() {
     <div className="container mx-auto p-2 ">
       <h1 className="text-1xl font-bold mb-2">Property Listings</h1>
 
-      <Card className="p-4">
         {/* Header Actions */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">
           <div className="flex flex-wrap gap-3">
@@ -551,8 +550,6 @@ export default function PropertyList() {
             </Button>
           </div>
         )}
-      </Card>
-
       {/* Dialog for Viewing Property */}
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>

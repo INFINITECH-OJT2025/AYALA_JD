@@ -121,8 +121,6 @@ export default function CreateListingLand({
       formData.append("property_image[]", image)
     );
 
-
-
     try {
       const response = await submitProperty(formData);
       console.log("Property submitted successfully", response);
@@ -148,7 +146,7 @@ export default function CreateListingLand({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl h-[90vh] overflow-hidden p-6 sm:p-8 md:p-10 mx-auto rounded-lg">
+      <DialogContent className="w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl h-[90vh] overflow-hidden p-6 sm:p-8 md:p-10 mx-auto rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border dark:border-gray-700">
         <DialogHeader>
           <DialogTitle>Submit Your Property</DialogTitle>
         </DialogHeader>
@@ -178,6 +176,7 @@ export default function CreateListingLand({
                           placeholder="First Name"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -200,6 +199,7 @@ export default function CreateListingLand({
                           placeholder="Last Name"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -229,6 +229,7 @@ export default function CreateListingLand({
                           placeholder="Email"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />{" "}
@@ -259,6 +260,7 @@ export default function CreateListingLand({
                               field.onChange(value);
                             }
                           }}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
 
@@ -288,6 +290,7 @@ export default function CreateListingLand({
                           placeholder="Property Name"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -310,6 +313,7 @@ export default function CreateListingLand({
                           placeholder="Location"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -386,6 +390,7 @@ export default function CreateListingLand({
                               field.onChange(Number(field.value)); // Convert to number on blur
                             }
                           }}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -408,6 +413,7 @@ export default function CreateListingLand({
                           placeholder="Square Meter"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -430,6 +436,7 @@ export default function CreateListingLand({
                           placeholder="Floor Number"
                           {...field}
                           value={field.value || ""}
+                          className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                         />
                       </FormControl>
                       <FormMessage />
@@ -451,7 +458,7 @@ export default function CreateListingLand({
                       </FormLabel>
                       <Select onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600">
                             <SelectValue placeholder="Unit Status" />
                           </SelectTrigger>
                         </FormControl>
@@ -485,7 +492,7 @@ export default function CreateListingLand({
                       </FormLabel>
                       <Select onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600">
                             <SelectValue placeholder="Select Unit Type" />
                           </SelectTrigger>
                         </FormControl>
@@ -516,7 +523,7 @@ export default function CreateListingLand({
                       </FormLabel>
                       <Select onValueChange={field.onChange}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600">
                             <SelectValue placeholder="Select Parking Availability" />
                           </SelectTrigger>
                         </FormControl>
@@ -551,6 +558,7 @@ export default function CreateListingLand({
                       <Textarea
                         placeholder="Enter property description"
                         {...field}
+                        className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600"
                       />
                     </FormControl>
                     <FormMessage />
@@ -607,7 +615,7 @@ export default function CreateListingLand({
                     type="file"
                     multiple
                     onChange={handleImageChange}
-                    className="mt-2"
+                    className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border dark:border-gray-600 mt-2"
                   />
                 </FormControl>
                 <FormMessage />

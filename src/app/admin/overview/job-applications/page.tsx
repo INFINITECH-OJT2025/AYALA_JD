@@ -138,7 +138,7 @@ export default function JobForm() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-[30%_70%] gap-6">
         {/* Left Column: Job Form */}
-        <div className="bg-white dark:bg-black p-6 w-full rounded-lg shadow-lg">
+        <div className=" p-6 w-full">
           <h2 className="text-2xl font-bold mb-4 text-black dark:text-white text-center md:text-left">
             Create Job
           </h2>
@@ -297,7 +297,7 @@ export default function JobForm() {
         </div>
 
         {/* Right Column: Job Table */}
-        <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg">
+        <div className="p-6">
           <JobTable />
         </div>
       </div>

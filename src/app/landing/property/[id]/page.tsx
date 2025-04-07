@@ -261,7 +261,7 @@ export default function PropertyDetails() {
               </Badge>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-400 mt-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-green-700 dark:text-green-400 mt-2">
               {property.unit_type} | {property.property_name}
             </h1>
 

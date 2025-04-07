@@ -8,8 +8,8 @@ import PropertyStats from "@/components/dashboard/PropertyStats";
 export default function AdminDashboard() {
   return (
     <div className="space-y-0">
-      <PropertyStats />
       <JobApplicationsDashboard />
+      <PropertyStats />
       {/* <JobApplicationsTable /> */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
         {/* ✅ Latest Inquiries Table */}

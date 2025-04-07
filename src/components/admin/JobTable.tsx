@@ -214,14 +214,18 @@ export default function JobTable() {
       cell: ({ row }) => {
         const rawDate = row.original.deadline;
         if (!rawDate) return "No deadline"; // ✅ Handle missing deadline
-  
+
         const deadlineDate = new Date(rawDate);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // ✅ Remove time for accurate comparison
-        deadlineDate.setHours(0, 0, 0, 0); // ✅ Remove time from deadline for accurate check
-  
-        const isExpired = deadlineDate <= today; // ✅ Expired if today or earlier
-  
+
+        // Set expiration to next day at 12:00 AM
+        const expirationDate = new Date(deadlineDate);
+        expirationDate.setDate(expirationDate.getDate() + 1);
+        expirationDate.setHours(0, 0, 0, 0); // ✅ Expire at midnight the next day
+
+        const now = new Date();
+
+        const isExpired = now >= expirationDate;
+
         return (
           <Tooltip>
             <TooltipTrigger>
@@ -233,7 +237,10 @@ export default function JobTable() {
               <span>
                 {isExpired
                   ? "This job listing has expired."
-                  : `Expires on ${format(deadlineDate, "MMMM d, yyyy")}`}
+                  : `Expires on ${format(
+                      expirationDate,
+                      "MMMM d, yyyy"
+                    )} at 12:00 AM`}
               </span>
             </TooltipContent>
           </Tooltip>
@@ -264,7 +271,6 @@ export default function JobTable() {
       ),
     },
   ];
-  
 
   return (
     <div className="container mx-auto">
@@ -304,7 +310,7 @@ export default function JobTable() {
           className="ml-auto"
           variant="default"
         >
-          <Download/>
+          <Download />
           Export to PDF
         </Button>
       </div>

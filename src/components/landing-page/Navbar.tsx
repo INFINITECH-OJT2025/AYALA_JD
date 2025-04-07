@@ -54,7 +54,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="bg-[#119768] dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
+      <nav className="bg-[#16423C] dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
         <div className="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-y-4 max-w-screen-xl">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">

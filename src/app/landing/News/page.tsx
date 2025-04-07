@@ -1,4 +1,5 @@
 import { NonFeaturedNewsUpdates } from "@/components/common/NonFeaturedNewsUpdates";
+import PublishedTestimonials from "@/components/common/PublishedTestimonials";
 import { Footer } from "@/components/landing-page/Footer";
 import { Navbar } from "@/components/landing-page/Navbar";
 import { NewsUpdates } from "@/components/landing-page/NewsUpdates";

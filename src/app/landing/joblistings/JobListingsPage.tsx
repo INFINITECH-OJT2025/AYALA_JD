@@ -9,6 +9,7 @@ import {
   FileText,
   CalendarDays,
 } from "lucide-react";
+
 import { Navbar } from "@/components/landing-page/Navbar";
 import { Footer } from "@/components/landing-page/Footer";
 import ApplicationModal from "@/components/common/ApplicationModal";
@@ -53,6 +54,14 @@ const JobListings = () => {
     slots?: number;
   }
 
+  // Helper function to check if a job is expired
+  const isJobExpired = (deadline: string | null | undefined): boolean => {
+    if (!deadline) return false; // If no deadline, it's not expired
+    const jobDeadline = new Date(deadline);
+    jobDeadline.setHours(23, 59, 59, 999); // Set to end of the day
+    return jobDeadline < new Date(); // Check if the deadline has passed
+  };
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -60,17 +69,17 @@ const JobListings = () => {
         const data: Job[] = await res.json();
 
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0); // Set to the start of today
 
         // ✅ Filter out jobs that expired more than 7 days ago
         const filteredJobs = data.filter((job: Job) => {
-          if (!job.deadline) return true;
+          if (!job.deadline) return true; // Include jobs without a deadline
 
           const deadlineDate = new Date(job.deadline);
           const expiryDate = new Date(deadlineDate);
-          expiryDate.setDate(expiryDate.getDate() + 7);
+          expiryDate.setDate(expiryDate.getDate() + 7); // Set expiry to 7 days after the deadline
 
-          return expiryDate >= today;
+          return expiryDate >= today; // Keep jobs that are not expired
         });
 
         setJobs(filteredJobs);
@@ -79,10 +88,13 @@ const JobListings = () => {
         const selectedFromUrl = filteredJobs.find(
           (job) => job.id.toString() === jobId
         );
+
+        // Filter non-expired jobs for selection
         const nonExpiredJobs = filteredJobs.filter(
           (job) => !job.deadline || new Date(job.deadline) >= today
         );
 
+        // Set the selected job to the one from the URL or the first non-expired job
         setSelectedJob(selectedFromUrl || nonExpiredJobs[0] || null);
       } catch (err) {
         console.error("Error fetching jobs:", err);
@@ -167,8 +179,11 @@ const JobListings = () => {
                       <CommandList>
                         <CommandEmpty>No jobs found.</CommandEmpty>
                         {jobs.map((job) => {
+                          const jobDeadline = new Date(job.deadline);
+                          // Set the deadline to the end of the day
+                          jobDeadline.setHours(23, 59, 59, 999);
                           const isExpired =
-                            job.deadline && new Date(job.deadline) < new Date();
+                            job.deadline && jobDeadline < new Date();
 
                           return (
                             <CommandItem
@@ -203,15 +218,12 @@ const JobListings = () => {
                 </div>
 
                 <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
-                  <CalendarDays className="w-4 h-4 mr-2 text-red-500" />{" "}
-                  {/* ✅ New Icon & Color */}
-                  <span className="font-medium">Deadline:</span>{" "}
-                  {/* ✅ Added Label */}
+                  <CalendarDays className="w-4 h-4 mr-2 text-red-500" />
+                  <span className="font-medium">Deadline:</span>
                   <span className="ml-1">
                     {selectedJob?.deadline
-                      ? format(new Date(selectedJob.deadline), "MMMM d, yyyy") // ✅ Format the date
-                      : "No deadline"}{" "}
-                    {/* ✅ Fallback for missing deadline */}
+                      ? format(new Date(selectedJob.deadline), "MMMM d, yyyy")
+                      : "No deadline"}
                   </span>
                 </div>
 
@@ -230,26 +242,23 @@ const JobListings = () => {
                 {/* Apply Button Fixed at Bottom */}
                 <Button
                   className={`w-full text-white text-lg py-3 rounded-lg font-semibold transition mt-4 ${
-                    selectedJob?.deadline &&
-                    new Date(selectedJob.deadline) < new Date()
-                      ? "bg-red-400 cursor-not-allowed" // ✅ Disabled if expired
+                    selectedJob?.deadline && isJobExpired(selectedJob.deadline)
+                      ? "bg-red-400 cursor-not-allowed" // Disabled if expired
                       : "bg-blue-600 hover:bg-blue-700"
                   }`}
                   onClick={() => {
                     if (
                       selectedJob?.deadline &&
-                      new Date(selectedJob.deadline) >= new Date()
+                      !isJobExpired(selectedJob.deadline) // Allow applying if not expired
                     ) {
                       setIsModalOpen(true);
                     }
                   }}
                   disabled={
-                    selectedJob?.deadline &&
-                    new Date(selectedJob.deadline) < new Date()
-                  } // ✅ Disable expired jobs
+                    selectedJob?.deadline && isJobExpired(selectedJob.deadline)
+                  } // Disable if expired
                 >
-                  {selectedJob?.deadline &&
-                  new Date(selectedJob.deadline) < new Date()
+                  {selectedJob?.deadline && isJobExpired(selectedJob.deadline)
                     ? "Expired"
                     : "APPLY NOW"}
                 </Button>
