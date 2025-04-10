@@ -56,7 +56,7 @@ export function MobileAppDownload() {
   };
 
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-800">
+    <section className="py-12 bg-white dark:bg-black">
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-center">
         {/* App Mockup */}
         <div className="text-center md:text-left">

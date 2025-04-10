@@ -32,27 +32,29 @@ export function Careers() {
     description?: string;
     image_url?: string;
     slots?: number;
-    created_at: string; 
+    created_at: string;
   }
 
   useEffect(() => {
     const getJobs = async () => {
       try {
         const data: Job[] = await fetchFeaturedJobs(); // ✅ Ensure data is typed as Job[]
-  
+
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-  
+
         // ✅ Filter out expired jobs
         const filteredJobs = data
           .filter((job: Job) => {
             if (!job.deadline) return true; // ✅ Keep jobs without a deadline
             return new Date(job.deadline) >= today; // ✅ Only show non-expired jobs
           })
-          .sort((a, b) => 
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
           ); // ✅ Sort by most recent `created_at` first
-  
+
         setJobs(filteredJobs);
       } catch (err) {
         setError("Failed to load featured jobs.");
@@ -60,27 +62,20 @@ export function Careers() {
         setLoading(false);
       }
     };
-  
+
     getJobs();
   }, []);
-  
-  
+
   const router = useRouter();
 
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-800">
-
-
-      <div className="max-w-6xl mx-auto text-center">
-      <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
-        Join Our Team
+    <section className="py-6 px-6 bg-white dark:bg-black">
+        <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 text-left mb-2">
+          Join Our Team
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-          Explore our top-quality real estate services designed to meet your
-          needs.
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl text-left mb-4">
+          Join us and grow your skill while making an impact!
         </p>
-  
-    
 
         {loading ? (
           <div className="flex justify-center items-center">
@@ -99,7 +94,7 @@ export function Careers() {
                   <img
                     src={job.image_url || "/defaultJob.jpg"}
                     alt={job.title}
-                    className="w-full h-40 object-cover rounded-md mb-4"
+                    className="w-full h-60 object-cover rounded-md mb-4"
                   />
                   <CardTitle className="text-lg text-green-700 dark:text-green-400">
                     {job.title}
@@ -142,7 +137,8 @@ export function Careers() {
                 {/* Button fixed at bottom */}
                 <CardFooter className="mt-auto">
                   <Button
-                    className="w-full bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 dark:hover:bg-blue-600 transition"
+                    className="w-full px-4 py-2"
+                    variant="success"
                     onClick={() =>
                       router.push(`/landing/joblistings?jobId=${job.id}`)
                     } // ✅ Pass job ID
@@ -167,7 +163,6 @@ export function Careers() {
             onClose={() => setIsModalOpen(false)}
           />
         )}
-      </div>
     </section>
   );
 }

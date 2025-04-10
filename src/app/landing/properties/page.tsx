@@ -120,7 +120,7 @@ export default function FeaturedProperties() {
         </div>
       </div>
 
-      <section className="bg-gray-100 dark:bg-gray-900 py-6">
+      <section className="bg-white dark:bg-gray-900 py-6">
         <div className="container mx-auto px-6">
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 items-center">
             <input
@@ -179,9 +179,7 @@ export default function FeaturedProperties() {
                     className="bg-green-600 text-gray-100 px-3 py-1 rounded flex items-center max-w-[120px] truncate"
                     title={property.property_name}
                   >
-                    <span className="truncate max-w-[100px]">
-                      {property.property_name}
-                    </span>
+                    <span className="truncate">{property.property_name}</span>
                     <button
                       className="ml-2 text-sm font-extrabold text-red-600"
                       onClick={() => togglePropertySelection(property)}
@@ -247,7 +245,7 @@ export default function FeaturedProperties() {
                             property.type_of_listing.includes("For Rent")
                               ? "bg-gradient-to-r from-green-500 to-blue-500"
                               : property.type_of_listing.includes("For Sale")
-                              ? "bg-green-500"
+                              ? "bg-green-600"
                               : "bg-blue-500"
                           }`}
                         >
@@ -264,10 +262,18 @@ export default function FeaturedProperties() {
 
                     {/* 🏡 Property Details */}
                     <div className="p-4 flex flex-col flex-grow">
-                      <span className="inline-block w-fit text-xs bg-green-100 dark:bg-green-700 text-green-800 dark:text-green-300 font-bold px-2 py-1 rounded">
-                        {property.unit_status}
-                      </span>
-                      <h3 className="mt-2 text-sm font-bold dark:text-white">
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                          Floor: {property.floor_number}
+                        </span>
+                        <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                          {property.square_meter} sqm
+                        </span>
+                        <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                          {property.unit_status}
+                        </span>
+                      </div>
+                      <h3 className="mt-2 text-lg font-bold dark:text-white truncate">
                         {property.unit_type} | {property.property_name}
                       </h3>
                       <p className="text-gray-600 dark:text-gray-300 text-sm">

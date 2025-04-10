@@ -37,7 +37,11 @@ export function Services() {
     const getServices = async () => {
       try {
         const data: Service[] = await fetchServices();
-        setServices(data.filter((s: Service) => s.status === "active")); // ✅ Fully typed
+        const activeServices = data
+          .filter((s: Service) => s.status === "active")
+          .sort((a, b) => b.id - a.id) // assuming higher `id` means newer
+          .slice(0, 5); // limit to 5 latest
+        setServices(activeServices);
       } catch (err) {
         setError("Failed to load services.");
       } finally {
@@ -46,14 +50,15 @@ export function Services() {
     };
     getServices();
   }, []);
+  
 
   return (
-    <section className="py-12 px-6 lg:px-24 bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+    <section className="py-12 px-6 bg-white dark:bg-black">
+      <div className="w-full text-left">
+        <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
           Our Services
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mb-4">
           Explore our top-quality real estate services designed to meet your
           needs.
         </p>
@@ -66,7 +71,7 @@ export function Services() {
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : services.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {services.map((service) => (
             <Card
               key={service.id}
@@ -74,7 +79,7 @@ export function Services() {
             >
               {/* ✅ Proper Spacing & Consistent Image Design */}
               {service.image && (
-                <div className="p-4">
+                <div className="p-4 block hover:scale-105 transition-transform duration-300">
                   <Image
                     src={
                       service.image.startsWith("http")
@@ -90,7 +95,7 @@ export function Services() {
               )}
 
               <CardHeader className="px-4 pb-2">
-                <CardTitle className="text-xl font-semibold text-green-700 dark:text-green-400">
+                <CardTitle className="text-xl font-semibold text-green-700 dark:text-green-400 truncate">
                   {service.title}
                 </CardTitle>
               </CardHeader>
@@ -105,7 +110,8 @@ export function Services() {
               {/* ✅ Button Fixed at Bottom */}
               <CardFooter className="px-4 mt-auto pb-4">
                 <Button
-                  className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition"
+                  className="w-full"
+                  variant="success"
                   onClick={() => setSelectedService(service)}
                 >
                   View Full Details

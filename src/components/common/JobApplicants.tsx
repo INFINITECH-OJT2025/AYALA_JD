@@ -311,7 +311,7 @@ const columns: ColumnDef<any>[] = [
   ];
 
   return (
-    <div className="p-6 w-full">
+    <div className="w-full">
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
           Job Applicants

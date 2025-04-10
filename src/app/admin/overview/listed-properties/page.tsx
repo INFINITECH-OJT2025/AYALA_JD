@@ -352,8 +352,8 @@ export default function PropertyList() {
   };
 
   return (
-    <div className="container mx-auto p-2 ">
-      <h1 className="text-1xl font-bold mb-2">Property Listings</h1>
+    <div className="container">
+      <h1 className="text-2xl font-bold mb-2">Property Listings</h1>
 
         {/* Header Actions */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-3">

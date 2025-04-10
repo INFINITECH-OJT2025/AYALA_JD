@@ -59,7 +59,7 @@ export function LoanCalculator() {
   
 
   return (
-    <div className="max-w-4xl mx-auto p-2 mb-10 bg-white dark:bg-gray-900 shadow-md rounded-lg">
+    <Card className="max-w-4xl mx-auto p-2 mb-10 mt-10 bg-white dark:bg-gray-900 shadow-md rounded-lg">
       {/* Title with Vector Image */}
       <div className="flex items-center space-x-3">
         <Image src="/loan.png" alt="Loan Icon" width={50} height={50} />
@@ -194,6 +194,6 @@ export function LoanCalculator() {
           monthlyPayment,
         }}
       />
-    </div>
+    </Card>
   );
 }

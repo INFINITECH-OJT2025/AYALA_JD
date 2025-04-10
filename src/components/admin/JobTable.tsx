@@ -5,7 +5,7 @@ import { fetchJobs, deleteJob, updateJob } from "@/lib/api";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
-import { Download, Pencil, Trash } from "lucide-react";
+import { Download, Pencil, PlusIcon, Trash } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/tooltip";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import JobCreateModal from "../common/JobCreateModal";
 export default function JobTable() {
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ export default function JobTable() {
   const [editForm, setEditForm] = useState<any | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Fetch Jobs
   useEffect(() => {
     const getJobs = async () => {
@@ -300,11 +301,18 @@ export default function JobTable() {
         </DialogContent>
       </Dialog>
 
-      <div className="flex justify-between">
-        <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
-          Job Listings
-        </h2>
+      <JobCreateModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+      <h2 className="text-2xl font-bold mb-4 text-center md:text-left">
+        Job Listings
+      </h2>
+      <div className="flex justify-between items-center mb-2">
+        {/* Left corner: Create Job button */}
+        <Button onClick={() => setIsModalOpen(true)} variant="success">
+          <PlusIcon />
+          Create Job
+        </Button>
 
+        {/* Right corner: Export to PDF button */}
         <Button
           onClick={() => exportToPDF(jobs)}
           className="ml-auto"
@@ -330,24 +338,40 @@ export default function JobTable() {
       {/* Edit Job Modal */}
       {editJob && (
         <Dialog open={!!editJob} onOpenChange={() => setEditJob(null)}>
-          <DialogContent>
+          <DialogContent className="max-w-3xl overflow-y-auto max-h-[90vh]">
             <DialogHeader>
               <DialogTitle>Edit Job</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleUpdate} className="space-y-2" method="POST">
               {/* Title */}
-              <div>
-                <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
-                  Job Title
-                </label>
-                <Input
-                  name="title"
-                  value={editForm.title || ""}
-                  onChange={handleEditChange}
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Job Title */}
+                <div>
+                  <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
+                    Job Title
+                  </label>
+                  <Input
+                    name="title"
+                    value={editForm.title || ""}
+                    onChange={handleEditChange}
+                    required
+                  />
+                </div>
+
+                {/* Seniority Level */}
+                <div>
+                  <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
+                    Seniority Level
+                  </label>
+                  <Input
+                    name="seniority_level"
+                    value={editForm.seniority_level || ""}
+                    onChange={handleEditChange}
+                  />
+                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 {/* Location */}
                 <div>
                   <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
@@ -367,7 +391,7 @@ export default function JobTable() {
                     Job Type
                   </label>
                   <Input
-                    name="category"
+                    name="type"
                     value={editForm.type || ""}
                     onChange={handleEditChange}
                     required
@@ -381,6 +405,8 @@ export default function JobTable() {
                   </label>
                   <Input
                     name="slots"
+                    type="number"
+                    min="1"
                     value={editForm.slots || ""}
                     onChange={handleEditChange}
                     required
@@ -429,16 +455,39 @@ export default function JobTable() {
 
               {/* Full-Width Fields */}
               <div className="space-y-4">
-                {/* Description */}
+                {/* Job Description */}
                 <div>
                   <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
-                    Job Qualification
+                    Job Description
                   </label>
                   <Textarea
                     name="description"
                     value={editForm.description || ""}
                     onChange={handleEditChange}
                     required
+                  />
+                </div>
+
+                {/* Job Qualification */}
+                <div>
+                  <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
+                    Job Qualification
+                  </label>
+                  <Textarea
+                    name="qualification"
+                    value={editForm.qualification || ""}
+                    onChange={handleEditChange}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold dark:text-gray-100 text-gray-700">
+                    Job Function
+                  </label>
+                  <Textarea
+                    name="qualification"
+                    value={editForm.job_function || ""}
+                    onChange={handleEditChange}
                   />
                 </div>
 
@@ -490,8 +539,8 @@ export default function JobTable() {
                 >
                   Cancel
                 </Button>
-                <Button variant="success" type="submit">
-                  Update Job
+                <Button variant="success" type="submit" disabled={loading}>
+                  {loading ? "Updating..." : "Update Job"}
                 </Button>
               </div>
             </form>

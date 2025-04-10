@@ -58,8 +58,7 @@ export function NonFeaturedNewsUpdates() {
       : news.filter((article) => article.category === selectedCategory);
 
   return (
-    <section className="py-4 px-6 lg:px-24 bg-gray-100 dark:bg-gray-900">
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-4 px-6 bg-white dark:bg-gray-900">
 
         {/* Category Buttons - Responsive */}
         <div className="mb-6">
@@ -114,12 +113,12 @@ export function NonFeaturedNewsUpdates() {
         </div>
 
         {/* Content Handling */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
 
           {filteredNews.map((article) => (
             <Card
               key={article.id}
-              className="p-6 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+              className="p-4 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
             >
               {/* Image */}
               {article.image && (
@@ -132,7 +131,7 @@ export function NonFeaturedNewsUpdates() {
                   alt={article.title}
                   width={500}
                   height={300}
-                  className="w-full h-48 object-cover rounded-md mb-4"
+                  className="w-full h-40 object-cover rounded-md"
                 />
               )}
 
@@ -161,7 +160,8 @@ export function NonFeaturedNewsUpdates() {
               {/* Read More Button */}
               <div className="mt-auto">
                 <Button
-                  className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
+                  className="w-full"
+                  variant="success"
                   onClick={() => setSelectedNews(article)}
                 >
                   View Full Details
@@ -170,7 +170,6 @@ export function NonFeaturedNewsUpdates() {
             </Card>
           ))}
         </div>
-      </div>
 
       {selectedNews && (
         <Dialog

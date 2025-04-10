@@ -25,7 +25,7 @@ const benefits = [
 
 export function WhyChooseUs() {
   return (
-    <section className="py-12 bg-gray-100 dark:bg-gray-800 ">
+    <section className="py-12 bg-white dark:bg-gray-800 ">
       <div className="container mx-auto px-6 text-center">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
           Why Choose Us?

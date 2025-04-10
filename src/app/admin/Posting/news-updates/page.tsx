@@ -13,7 +13,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Edit, Trash, Plus, Upload, Star, Circle, StarOff, Download } from "lucide-react";
+import {
+  Edit,
+  Trash,
+  Plus,
+  Upload,
+  Star,
+  Circle,
+  StarOff,
+  Download,
+} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import {
   Select,
@@ -162,11 +171,7 @@ export default function AdminNews() {
         14,
         doc.internal.pageSize.height - 10
       ); // Page number
-      doc.text(
-        "AyalaLand",
-        160,
-        doc.internal.pageSize.height - 10
-      ); // Footer text
+      doc.text("AyalaLand", 160, doc.internal.pageSize.height - 10); // Footer text
     };
 
     // Define Table Headers
@@ -275,7 +280,8 @@ export default function AdminNews() {
 
       <div className="flex justify-between">
         <Button
-          className="mb-4 bg-blue-600 text-white"
+          className="mb-4"
+          variant="success"
           onClick={() => {
             setSelectedNews(null);
             resetForm();
@@ -286,7 +292,7 @@ export default function AdminNews() {
         </Button>
 
         <Button onClick={() => exportToPDF(news)} variant="default">
-          <Download/>
+          <Download />
           Export to PDF
         </Button>
       </div>
@@ -300,100 +306,91 @@ export default function AdminNews() {
       )}
 
       {isDialogOpen && (
-       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-       <DialogContent
-         className="bg-white dark:bg-[#18181a] text-black dark:text-white rounded-lg p-6"
-       >
-         <DialogHeader>
-           <DialogTitle>
-             {selectedNews ? "Edit News Post" : "Create News Post"}
-           </DialogTitle>
-         </DialogHeader>
-     
-         {/* Title */}
-         <Input
-           placeholder="Title"
-           value={formData.title}
-           onChange={(e) =>
-             setFormData({ ...formData, title: e.target.value })
-           }
-           className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
-         />
-     
-         {/* Category Dropdown */}
-         <Select
-           value={formData.category}
-           onValueChange={(value) =>
-             setFormData({ ...formData, category: value })
-           }
-         >
-           <SelectTrigger
-             className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white"
-           >
-             <SelectValue placeholder="Select Category" />
-           </SelectTrigger>
-           <SelectContent className="bg-white dark:bg-[#222222] text-black dark:text-white">
-             <SelectItem value="Real Estate">Real Estate</SelectItem>
-             <SelectItem value="Events">Events</SelectItem>
-             <SelectItem value="Announcements">Announcements</SelectItem>
-           </SelectContent>
-         </Select>
-     
-         {/* Content */}
-         <Textarea
-           placeholder="Content"
-           value={formData.content}
-           onChange={(e) =>
-             setFormData({ ...formData, content: e.target.value })
-           }
-           className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
-         />
-     
-         {/* Featured Toggle */}
-         <div className="flex items-center space-x-2">
-           <Switch
-             checked={formData.is_featured}
-             onCheckedChange={(checked) =>
-               setFormData({ ...formData, is_featured: checked })
-             }
-           />
-           <label className="text-gray-700 dark:text-gray-300">
-             Feature this post
-           </label>
-         </div>
-     
-         {/* Image Upload */}
-         <div>
-           <label className="text-gray-700 dark:text-gray-300 flex items-center">
-             <Upload className="w-5 h-5 mr-2" /> Upload Image
-           </label>
-           <Input
-             type="file"
-             accept="image/*"
-             onChange={handleImageChange}
-             className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
-           />
-         </div>
-     
-         <DialogFooter>
-           <Button
-             variant="outline"
-             onClick={() => setIsDialogOpen(false)}
-             className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
-           >
-             Cancel
-           </Button>
-           <Button
-             onClick={handleSave}
-             variant="success"
-             disabled={loading}
-           >
-             {loading ? "Saving..." : "Save"}
-           </Button>
-         </DialogFooter>
-       </DialogContent>
-     </Dialog>
-     
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="bg-white dark:bg-[#18181a] text-black dark:text-white rounded-lg p-6">
+            <DialogHeader>
+              <DialogTitle>
+                {selectedNews ? "Edit News Post" : "Create News Post"}
+              </DialogTitle>
+            </DialogHeader>
+
+            {/* Title */}
+            <Input
+              placeholder="Title"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
+            />
+
+            {/* Category Dropdown */}
+            <Select
+              value={formData.category}
+              onValueChange={(value) =>
+                setFormData({ ...formData, category: value })
+              }
+            >
+              <SelectTrigger className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-[#222222] text-black dark:text-white">
+                <SelectItem value="Real Estate">Real Estate</SelectItem>
+                <SelectItem value="Events">Events</SelectItem>
+                <SelectItem value="Announcements">Announcements</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Content */}
+            <Textarea
+              placeholder="Content"
+              value={formData.content}
+              onChange={(e) =>
+                setFormData({ ...formData, content: e.target.value })
+              }
+              className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
+            />
+
+            {/* Featured Toggle */}
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.is_featured}
+                onCheckedChange={(checked) =>
+                  setFormData({ ...formData, is_featured: checked })
+                }
+              />
+              <label className="text-gray-700 dark:text-gray-300">
+                Feature this post
+              </label>
+            </div>
+
+            {/* Image Upload */}
+            <div>
+              <label className="text-gray-700 dark:text-gray-300 flex items-center">
+                <Upload className="w-5 h-5 mr-2" /> Upload Image
+              </label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
+              />
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSave} variant="success" disabled={loading}>
+                {loading ? "Saving..." : "Save"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

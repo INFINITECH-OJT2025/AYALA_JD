@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import Contact from "../common/Contact";
 import { fetchContactDetails } from "@/lib/api";
+import { Card } from "../ui/card";
 
 interface ContactDetails {
   phones: { title: string; number: string }[];
@@ -60,91 +61,100 @@ export function ContactForm() {
   };
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800">
-      <div className="max-w-6xl mx-auto px-6 py-12">
+    <div className="bg-white dark:bg-black">
+      <div className="px-6 py-12">
         {/* Contact Section */}
-        <div className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-md">
-          {/* Left Side - Contact Info */}
-          <div>
-            <h2 className="text-3xl font-bold text-green-700 dark:text-green-400">
-              Get in Touch with Ayala Land
-            </h2>
-            <p className="text-gray-700 dark:text-gray-300 mt-3">
-              Our expert team is ready to assist you in finding your dream home
-              or investment property. Reach out today!
-            </p>
+        <Card className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-md">
+          {/* Left Side - Contact Info with Background */}
+          <div
+            className="relative w-full h-full p-6 rounded-lg bg-cover bg-center"
+            style={{ backgroundImage: "url('/contact.png')" }}
+          >
+            {/* Overlay for better readability */}
+            <div className="absolute inset-0 bg-white/90 dark:bg-gray-900/80 rounded-lg z-0" />
 
-            {/* Contact Icons */}
-            <div className="mt-6 space-y-4">
-              {/* Email at the Top */}
-              {contact?.email && (
-                <div className="flex items-center space-x-3 text-md">
-                  <FaEnvelope className="text-green-600 dark:text-green-400" />
-                  <p className="font-medium">Email:</p>
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="text-blue-700 dark:text-blue-400 hover:underline"
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-green-700 dark:text-green-400">
+                Get in Touch with Ayala Land
+              </h2>
+              <p className="text-gray-700 dark:text-gray-300 mt-3">
+                Our expert team is ready to assist you in finding your dream
+                home or investment property. Reach out today!
+              </p>
+
+              {/* Contact Icons */}
+              <div className="mt-6 space-y-4">
+                {/* Email at the Top */}
+                {contact?.email && (
+                  <div className="flex items-center space-x-3 text-md">
+                    <FaEnvelope className="text-green-600 dark:text-green-400" />
+                    <p className="font-medium">Email:</p>
+                    <a
+                      href={`mailto:${contact.email}`}
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
+                    >
+                      {contact.email}
+                    </a>
+                  </div>
+                )}
+
+                {/* Phone Numbers */}
+                {contact?.phones?.map((phone, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 text-md"
                   >
-                    {contact.email}
-                  </a>
-                </div>
-              )}
+                    <FaPhoneAlt className="text-green-600 dark:text-green-400" />
+                    <span className="text-gray-800 dark:text-gray-200">
+                      {phone.title}:
+                    </span>
+                    <a
+                      href={`tel:${phone.number}`}
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
+                    >
+                      {phone.number}
+                    </a>
+                  </div>
+                ))}
 
-              {/* Phone Numbers */}
-              {contact?.phones?.map((phone, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-3 text-md"
-                >
-                  <FaPhoneAlt className="text-green-600 dark:text-green-400" />
-                  <span className="text-gray-800 dark:text-gray-200">
-                    {phone.title}:
-                  </span>
-                  <a
-                    href={`tel:${phone.number}`}
-                    className="text-blue-700 dark:text-blue-400 hover:underline"
+                {/* Social Media */}
+                {contact?.social_media?.map((social, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 text-md"
                   >
-                    {phone.number}
-                  </a>
-                </div>
-              ))}
+                    {getSocialIcon(social.platform)}
+                    <span className="text-gray-800 dark:text-gray-200">
+                      {social.platform}:
+                    </span>
+                    <a
+                      href={social.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-700 dark:text-blue-400 hover:underline"
+                    >
+                      {social.link}
+                    </a>
+                  </div>
+                ))}
 
-              {/* Social Media */}
-              {contact?.social_media?.map((social, index) => (
-                <div
-                  key={index}
-                  className="flex items-center space-x-3 text-md"
-                >
-                  {getSocialIcon(social.platform)}
-                  <span className="text-gray-800 dark:text-gray-200">
-                    {social.platform}:
-                  </span>
-                  <a
-                    href={social.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-700 dark:text-blue-400 hover:underline"
-                  >
-                    {social.link}
-                  </a>
-                </div>
-              ))}
-
-              {/* Office Location (without title, only icon) */}
-              {contact?.location && (
-                <div className="flex items-center space-x-3 text-md">
-                  <FaMapMarkerAlt className="text-green-600 dark:text-green-400" />
-                  <p className="font-medium">Location:</p>
-                  <span className="text-blue-700 dark:text-blue-400 font-medium">
-                    {contact.location}
-                  </span>
-                </div>
-              )}
+                {/* Office Location */}
+                {contact?.location && (
+                  <div className="flex items-center space-x-3 text-md">
+                    <FaMapMarkerAlt className="text-green-600 dark:text-green-400" />
+                    <p className="font-medium">Location:</p>
+                    <span className="text-blue-700 dark:text-blue-400 font-medium">
+                      {contact.location}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
+          {/* Right Side - Contact Form or Component */}
           <Contact />
-        </div>
+        </Card>
       </div>
     </div>
   );

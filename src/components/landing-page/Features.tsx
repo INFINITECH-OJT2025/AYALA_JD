@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Card } from "../ui/card";
 
 interface Property {
   id: number;
@@ -14,6 +15,8 @@ interface Property {
   price: string;
   square_meter: number;
   status: string;
+  floor_number: number;
+  unit_status: string;
 }
 
 export function FeaturedProperties() {
@@ -27,28 +30,62 @@ export function FeaturedProperties() {
 
         const data: Property[] = await response.json();
 
-        // ✅ Filter only approved properties
         const approvedProperties = data
           .filter((property) => property.status.toLowerCase() === "approved")
           .map((property) => ({
             ...property,
             numericPrice: parseFloat(property.price.replace(/[^\d.]/g, "")),
           }))
-          .sort((a, b) => b.numericPrice - a.numericPrice); // Sort highest to lowest
+          .sort((a, b) => b.numericPrice - a.numericPrice);
 
-        // ✅ Get highest, mid, and lowest-priced properties
-        let featured = [];
-        if (approvedProperties.length >= 3) {
-          featured = [
-            approvedProperties[0], // Highest price
-            approvedProperties[Math.floor(approvedProperties.length / 2)], // Mid price
-            approvedProperties[approvedProperties.length - 1], // Lowest price
-          ];
-        } else {
-          featured = approvedProperties.slice(0, 3); // Show available properties (if < 3)
+        if (approvedProperties.length < 5) {
+          setProperties(approvedProperties);
+          return;
         }
 
-        setProperties(featured);
+        const highest = approvedProperties[0];
+        const lowest = approvedProperties[approvedProperties.length - 1];
+        const mid =
+          approvedProperties[Math.floor(approvedProperties.length / 2)];
+        const lowerMid =
+          approvedProperties[Math.floor(approvedProperties.length * 0.75)];
+
+        const averagePrice =
+          approvedProperties.reduce((sum, p) => sum + p.numericPrice, 0) /
+          approvedProperties.length;
+        const average = approvedProperties.reduce((prev, curr) =>
+          Math.abs(curr.numericPrice - averagePrice) <
+          Math.abs(prev.numericPrice - averagePrice)
+            ? curr
+            : prev
+        );
+
+        // Collect candidates
+        let featured = [highest, average, mid, lowerMid, lowest];
+
+        // Remove duplicates by id
+        const uniqueFeatured: Property[] = [];
+        const seenIds = new Set();
+
+        for (const property of featured) {
+          if (!seenIds.has(property.id)) {
+            uniqueFeatured.push(property);
+            seenIds.add(property.id);
+          }
+        }
+
+        // If still less than 5, add more from sorted list
+        if (uniqueFeatured.length < 5) {
+          for (const property of approvedProperties) {
+            if (!seenIds.has(property.id)) {
+              uniqueFeatured.push(property);
+              seenIds.add(property.id);
+              if (uniqueFeatured.length === 5) break;
+            }
+          }
+        }
+
+        setProperties(uniqueFeatured);
       } catch (error) {
         console.error("Error fetching properties:", error);
       }
@@ -58,25 +95,35 @@ export function FeaturedProperties() {
   }, []);
 
   return (
-    <section className="py-5 bg-white dark:bg-gray-900">
+    <section className="bg-white dark:bg-black">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-6">
-          Featured Properties
-        </h2>
+        <div className="w-full mt-10">
+          {/* Title and Description Section */}
+          <div className="flex flex-col">
+            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+              Recommended for You
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+              Explore properties that best match your preferences and needs.
+              Find the perfect fit for your next home or investment.
+            </p>
+          </div>
+
+          {/* Recommended Properties List (your existing code) */}
+        </div>
 
         {/* Property Grid */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-5 gap-6 mt-4">
           {properties.length > 0 ? (
             properties.map((property) => (
               <Link
                 key={property.id}
                 href={`/landing/property/${property.id}`}
-                className="block transform transition-transform hover:scale-105"
               >
-                <div className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden">
-                  <div className="relative">
+                <Card className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden">
+                  <div className="relative block hover:scale-105 transition-transform duration-300">
                     <Image
-                      src={property.property_image?.[0] || "/placeholder.jpg"} // ✅ Show first image or fallback
+                      src={property.property_image?.[0] || "/placeholder.jpg"}
                       alt={property.property_name}
                       width={500}
                       height={300}
@@ -89,10 +136,10 @@ export function FeaturedProperties() {
                             property.type_of_listing.includes("For Rent")
                             ? "bg-gradient-to-r from-green-500 to-blue-500"
                             : property.type_of_listing.includes("For Sale")
-                            ? "bg-green-500"
+                            ? "bg-green-600"
                             : "bg-blue-500"
                           : property.type_of_listing === "For Sale"
-                          ? "bg-green-500"
+                          ? "bg-green-600"
                           : "bg-blue-500"
                       }`}
                     >
@@ -101,25 +148,39 @@ export function FeaturedProperties() {
                         : property.type_of_listing}
                     </span>
                   </div>
+
                   <div className="p-4">
-                    <h3 className="mt-2 text-lg font-bold dark:text-white">
+                    {/* Badge Section */}
+                    <div className="mb-2 flex flex-wrap gap-2">
+                      <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                        Floor: {property.floor_number}
+                      </span>
+                      <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                        {property.square_meter} sqm
+                      </span>
+                      <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                        {property.unit_status}
+                      </span>
+                    </div>
+
+                    {/* Property Name */}
+                    <h3 className="mt-2 text-lg font-bold truncate dark:text-white">
                       {property.unit_type} | {property.property_name}
                     </h3>
+
                     <p className="text-gray-600 dark:text-gray-300 text-sm">
                       {property.location}
                     </p>
+
                     <p className="mt-2 text-xl font-bold text-green-800 dark:text-green-400 flex items-center">
                       ₱
                       {parseFloat(property.price).toLocaleString("en-PH", {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2,
                       })}
-                      <span className="ml-2 font-normal text-gray-600 dark:text-gray-300 text-sm">
-                        / {property.square_meter} sqm
-                      </span>
                     </p>
                   </div>
-                </div>
+                </Card>
               </Link>
             ))
           ) : (
@@ -130,7 +191,7 @@ export function FeaturedProperties() {
         </div>
 
         {/* Submit Your Property Section */}
-        <div className="mt-10 text-center">
+        {/* <div className="mt-10 text-center">
           <p className="text-lg text-gray-700 dark:text-gray-300">
             Do you have a property for{" "}
             <span className="text-green-600 dark:text-green-400 font-semibold">
@@ -151,7 +212,7 @@ export function FeaturedProperties() {
           >
             Submit Your Property
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );

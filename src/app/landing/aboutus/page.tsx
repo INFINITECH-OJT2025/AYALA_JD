@@ -25,7 +25,7 @@ export default function AboutUsPage() {
   return (
     <>
       <Navbar />
-      <div className="bg-gray-100 dark:bg-gray-800">
+      <div className="bg-white dark:bg-gray-800">
         {/* Hero Section */}
         <section className="relative h-[500px]">
           {aboutUs?.hero_image && (
@@ -84,7 +84,7 @@ export default function AboutUsPage() {
         </section>
 
         {/* History Section */}
-        <section className="bg-gray-200 dark:bg-gray-900 py-16 px-8 lg:px-24">
+        <section className="bg-white dark:bg-gray-900 py-16 px-8 lg:px-24">
           <h2 className="text-4xl font-bold text-center text-green-700 dark:text-green-400">
             OUR HISTORY
           </h2>

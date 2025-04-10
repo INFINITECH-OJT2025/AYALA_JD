@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { getFaqs } from "@/lib/api";  // Import the API function to fetch FAQs

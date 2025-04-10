@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import { FaArrowRight } from "react-icons/fa";
 
 interface NewsItem {
   id: number;
@@ -35,7 +36,15 @@ export function NewsUpdates() {
     const getNews = async () => {
       try {
         const data: NewsItem[] = await fetchPublishedNews();
-        setNews(data.filter((n: NewsItem) => n.is_featured));
+        const featuredNews = data
+          .filter((n: NewsItem) => n.is_featured)
+          .sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .slice(0, 5); // Get only the 5 newest
+        setNews(featuredNews);
       } catch (err) {
         setError("Failed to load news.");
       } finally {
@@ -45,9 +54,6 @@ export function NewsUpdates() {
     getNews();
   }, []);
 
-  // ✅ Extract unique categories from news data
-  const categories = ["All", ...new Set(news.map((item) => item.category))];
-
   // ✅ Filter news based on the selected category
   const filteredNews =
     selectedCategory === "All"
@@ -55,97 +61,98 @@ export function NewsUpdates() {
       : news.filter((article) => article.category === selectedCategory);
 
   return (
-    <section className="py-12 px-6 lg:px-24 bg-white dark:bg-gray-900">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 text-center mb-4">
-          Featured News
-        </h2>
-        <p className="text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-6">
-          Stay updated with our latest featured news and announcements.
-        </p>
-
-        {/* ✅ Category Filter */}
-        <div className="mb-6">
-          {/* Mobile Dropdown */}
-
-          {/* ✅ "See All News" button */}
-          <div className="mt-2 mb-2 flex justify-center">
-            <a
-              href="/landing/News"
-              className="px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-blue-700 transition"
-            >
-              See All News
-            </a>
-          </div>
+    <section className="py-12 px-6 bg-white dark:bg-black">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+        {/* Title and Description (Left side) */}
+        <div className="text-left">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+            Featured News
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mb-4">
+            Stay updated with our latest featured news and announcements.
+          </p>
         </div>
 
-        {loading ? (
-          <p className="text-center text-gray-500 dark:text-gray-300">
-            Loading news...
-          </p>
-        ) : error ? (
-          <p className="text-center text-red-500">{error}</p>
-        ) : filteredNews.length > 0 ? (
-          <div className="grid md:grid-cols-3 gap-6">
-            {filteredNews.map((article) => (
-              <Card
-                key={article.id}
-                className="p-6 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
-              >
-                {article.image && (
-                  <Image
-                    src={
-                      article.image.startsWith("http")
-                        ? article.image
-                        : `/storage/news_images/${article.image}`
-                    }
-                    alt={article.title}
-                    width={500}
-                    height={300}
-                    className="w-full h-48 object-cover rounded-md mb-4"
-                  />
-                )}
-
-                {/* ✅ Title & Date are aligned properly */}
-                <CardHeader className="flex flex-col">
-                  <CardTitle className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2">
-                    {article.title}
-                  </CardTitle>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {article.category} •{" "}
-                    {new Date(article.created_at).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </p>
-                </CardHeader>
-
-                {/* ✅ Content takes remaining space to ensure buttons align */}
-                <CardContent className="flex-grow">
-                  <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
-                    {article.content}
-                  </p>
-                </CardContent>
-
-                {/* ✅ Ensures button is always at the bottom */}
-                <div className="mt-auto">
-                  <Button
-                    className="w-full bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600"
-                    onClick={() => setSelectedNews(article)}
-                  >
-                    View Full Details
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-600 dark:text-gray-300">
-            No news available in this category.
-          </p>
-        )}
+        {/* "See All News" Button (Right side) */}
+        <div className="self-start md:self-auto">
+          <a
+            href="/landing/News"
+            className="inline-flex items-center px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-blue-700 transition"
+          >
+            See All News
+            <FaArrowRight className="ml-2 rotate-45" />
+          </a>
+        </div>
       </div>
+
+      {loading ? (
+        <p className="text-center text-gray-500 dark:text-gray-300">
+          Loading news...
+        </p>
+      ) : error ? (
+        <p className="text-center text-red-500">{error}</p>
+      ) : filteredNews.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+
+          {filteredNews.map((article) => (
+            <Card
+              key={article.id}
+              className="p-4 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+            >
+              {article.image && (
+                <Image
+                  src={
+                    article.image.startsWith("http")
+                      ? article.image
+                      : `/storage/news_images/${article.image}`
+                  }
+                  alt={article.title}
+                  width={500}
+                  height={300}
+                  className="w-full h-40 object-cover rounded-lg block hover:scale-105 transition-transform duration-300"
+                />
+              )}
+
+              {/* ✅ Title & Date are aligned properly */}
+              <CardHeader className="flex flex-col">
+                <CardTitle className="text-lg font-bold text-gray-900 dark:text-white truncate">
+                  {article.title}
+                </CardTitle>
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                  {article.category} •{" "}
+                  {new Date(article.created_at).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              </CardHeader>
+
+              {/* ✅ Content takes remaining space to ensure buttons align */}
+              <CardContent className="flex-grow">
+                <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
+                  {article.content}
+                </p>
+              </CardContent>
+
+              {/* ✅ Ensures button is always at the bottom */}
+              <div className="mt-auto">
+                <Button
+                  className="w-full"
+                  variant="success"
+                  onClick={() => setSelectedNews(article)}
+                >
+                  View Full Details
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          No news available in this category.
+        </p>
+      )}
 
       {selectedNews && (
         <Dialog

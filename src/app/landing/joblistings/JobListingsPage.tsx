@@ -8,6 +8,7 @@ import {
   Loader2,
   FileText,
   CalendarDays,
+  Star,
 } from "lucide-react";
 
 import { Navbar } from "@/components/landing-page/Navbar";
@@ -26,10 +27,11 @@ import {
   CommandList,
   CommandEmpty,
 } from "@/components/ui/command";
-import { FaMoneyBill } from "react-icons/fa";
+import { FaCertificate, FaMoneyBill } from "react-icons/fa";
 import { ChevronsUpDown } from "lucide-react";
 import { format } from "date-fns"; // ✅ Import date formatting
 import { useSearchParams } from "next/navigation"; // ✅ Import Next.js hook
+import { Card } from "@/components/ui/card";
 const JobListings = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
@@ -52,6 +54,9 @@ const JobListings = () => {
     description?: string;
     image_url?: string;
     slots?: number;
+    qualification: string;
+    seniority_level: string;
+    job_function: string;
   }
 
   // Helper function to check if a job is expired
@@ -132,136 +137,183 @@ const JobListings = () => {
         </div>
       </div>
 
-      <section className="py-6 bg-gray-100 dark:bg-gray-900">
-        <div className="max-w-5xl mx-auto px-6">
+      <section className="py-6 bg-white dark:bg-gray-900">
+        <Card className="max-w-6xl mx-auto px-0 overflow-hidden">
           {loading ? (
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center py-12">
               <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
             </div>
           ) : error ? (
             <p className="text-center text-red-500">{error}</p>
           ) : jobs.length > 0 ? (
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* ✅ Left Side: Job Image */}
-              <div>
-                <img
-                  src={selectedJob?.image_url || "/defaultJob.jpg"}
-                  alt={selectedJob?.title}
-                  className="w-full h-80 object-cover rounded-lg"
-                />
+            <div className="relative h-[600px] w-full">
+              {/* Background Image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage: `url('${
+                    selectedJob?.image_url || "/defaultJob.jpg"
+                  }')`,
+                }}
+              >
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-70" />
               </div>
 
-              {/* ✅ Right Side: Job Details */}
-              <div className="flex flex-col justify-between">
-                {/* Job Slots */}
-                <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                  Slots: <span>{selectedJob?.slots ?? "N/A"}</span>
-                </p>
+              {/* Content Overlay */}
+              <div className="relative z-10 h-full w-full flex flex-col justify-center px-6 md:px-12 text-white">
+                <div className="max-w-3xl space-y-4">
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="bg-white text-black w-full max-w-sm"
+                      >
+                        {selectedJob?.title || "Select a Job"}
+                        <ChevronsUpDown className="w-4 h-4 ml-auto text-gray-500" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full max-w-sm p-0">
+                      <Command>
+                        <CommandInput
+                          placeholder="Search for a job..."
+                          value={search}
+                          onValueChange={setSearch}
+                        />
+                        <CommandList>
+                          <CommandEmpty>No jobs found.</CommandEmpty>
+                          {jobs.map((job) => {
+                            const jobDeadline = new Date(job.deadline);
+                            jobDeadline.setHours(23, 59, 59, 999);
+                            const isExpired =
+                              job.deadline && jobDeadline < new Date();
+                            return (
+                              <CommandItem
+                                key={job.id}
+                                value={job.title}
+                                onSelect={() => {
+                                  setSelectedJob(job);
+                                  setOpen(false);
+                                }}
+                                className={`cursor-pointer ${
+                                  isExpired ? "opacity-50" : ""
+                                }`}
+                              >
+                                {job.title} {isExpired && "(Expired)"}
+                              </CommandItem>
+                            );
+                          })}
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <h2 className="text-4xl font-bold">
+                      {selectedJob?.title}{" "}
+                      <span className="text-xl font-medium">
+                        ({selectedJob?.slots ?? "N/A"} slots)
+                      </span>
+                    </h2>
+                  </div>
 
-                {/* Job Selection Dropdown (with Autocomplete) */}
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full flex justify-between bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700"
-                    >
-                      {selectedJob?.title || "Select a Job"}
-                      <ChevronsUpDown className="w-4 h-4 text-gray-500" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
-                    <Command>
-                      <CommandInput
-                        placeholder="Search for a job..."
-                        value={search}
-                        onValueChange={setSearch}
-                      />
-                      <CommandList>
-                        <CommandEmpty>No jobs found.</CommandEmpty>
-                        {jobs.map((job) => {
-                          const jobDeadline = new Date(job.deadline);
-                          // Set the deadline to the end of the day
-                          jobDeadline.setHours(23, 59, 59, 999);
-                          const isExpired =
-                            job.deadline && jobDeadline < new Date();
+                  {/* Job Dropdown */}
 
-                          return (
-                            <CommandItem
-                              key={job.id}
-                              value={job.title}
-                              onSelect={() => {
-                                setSelectedJob(job); // ✅ Allow selecting expired jobs
-                                setOpen(false);
-                              }}
-                              className={`cursor-pointer ${
-                                isExpired ? "opacity-50" : ""
-                              }`} // ✅ Just faded, not disabled
-                            >
-                              {job.title} {isExpired && "(Expired)"}
-                            </CommandItem>
-                          );
-                        })}
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                  <div className="flex items-center text-sm">
+                    <FaMoneyBill className="w-4 h-4 mr-2 text-green-400" />
+                    Salary Starts:
+                    <span className="font-bold ml-2 text-green-400">
+                      {selectedJob?.salary
+                        ? `₱${Number(selectedJob.salary).toLocaleString(
+                            "en-PH",
+                            {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }
+                          )}`
+                        : "Not specified"}
+                    </span>
+                  </div>
 
-                {/* Salary */}
-                <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
-                  <FaMoneyBill className="w-4 h-4 mr-2 text-green-600 dark:text-green-500" />
-                  Salary Starts:
-                  <span className="font-bold text-green-700 dark:text-green-500 ml-2">
-                    {selectedJob?.salary
-                      ? `₱${Number(selectedJob.salary).toLocaleString("en-PH")}`
-                      : "Not specified"}
-                  </span>
-                </div>
+                  <div className="flex items-center text-sm">
+                    <CalendarDays className="w-4 h-4 mr-2 text-red-400" />
+                    <span className="font-medium">Deadline:</span>
+                    <span className="font-bold ml-2 text-red-400">
+                      {selectedJob?.deadline
+                        ? format(new Date(selectedJob.deadline), "MMMM d, yyyy")
+                        : "No deadline"}
+                    </span>
+                  </div>
 
-                <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
-                  <CalendarDays className="w-4 h-4 mr-2 text-red-500" />
-                  <span className="font-medium">Deadline:</span>
-                  <span className="ml-1">
-                    {selectedJob?.deadline
-                      ? format(new Date(selectedJob.deadline), "MMMM d, yyyy")
-                      : "No deadline"}
-                  </span>
-                </div>
+                  <div className="flex items-center text-sm">
+                    <Clock className="w-4 h-4 mr-2 text-blue-400" />
+                    Type: <span className="ml-2">{selectedJob?.type}</span>
+                  </div>
 
-                {/* Job Type */}
-                <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
-                  <Clock className="w-4 h-4 mr-2 text-blue-600" />
-                  {selectedJob?.type}
-                </div>
+                  {selectedJob?.seniority_level && (
+                    <div className="text-sm">
+                      <Star className="w-4 h-4 mr-2 inline-block text-yellow-400" />
+                      Seniority Level:{" "}
+                      <span>{selectedJob?.seniority_level}</span>
+                    </div>
+                  )}
 
-                {/* Job Description */}
-                <div className="flex items-center text-gray-700 dark:text-gray-300 text-sm">
-                  <FileText className="w-4 h-4 mr-2 text-gray-600 dark:text-gray-400" />
-                  {selectedJob?.description}
-                </div>
+                  {selectedJob?.location && (
+                    <div className="text-sm">
+                      <MapPin className="w-4 h-4 mr-2 inline-block text-orange-400" />
+                      Location: <span>{selectedJob?.location}</span>
+                    </div>
+                  )}
 
-                {/* Apply Button Fixed at Bottom */}
-                <Button
-                  className={`w-full text-white text-lg py-3 rounded-lg font-semibold transition mt-4 ${
-                    selectedJob?.deadline && isJobExpired(selectedJob.deadline)
-                      ? "bg-red-400 cursor-not-allowed" // Disabled if expired
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-                  onClick={() => {
-                    if (
+                  {selectedJob?.job_function && (
+                    <div className="text-sm">
+                      <Briefcase className="w-4 h-4 mr-2 inline-block text-gray-300" />
+                      Job Function: <span>{selectedJob?.job_function}</span>
+                    </div>
+                  )}
+
+                  <div className="text-sm">
+                    <FileText className="w-4 h-4 mr-2 inline-block text-gray-300" />
+                    Description:{" "}
+                    <span className="text-justify">
+                      {selectedJob?.description}
+                    </span>
+                  </div>
+
+                  {selectedJob?.qualification && (
+                    <div className="text-sm">
+                      <FaCertificate className="w-4 h-4 mr-2 inline-block text-blue-400" />
+                      Qualification:{" "}
+                      <span className="text-justify">
+                        {selectedJob?.qualification}
+                      </span>
+                    </div>
+                  )}
+
+                  <Button
+                    className={` max-w-sm text-lg py-3 rounded-lg font-semibold transition mt-4 ${
                       selectedJob?.deadline &&
-                      !isJobExpired(selectedJob.deadline) // Allow applying if not expired
-                    ) {
-                      setIsModalOpen(true);
+                      isJobExpired(selectedJob.deadline)
+                        ? "bg-red-400 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                    onClick={() => {
+                      if (
+                        selectedJob?.deadline &&
+                        !isJobExpired(selectedJob.deadline)
+                      ) {
+                        setIsModalOpen(true);
+                      }
+                    }}
+                    disabled={
+                      selectedJob?.deadline &&
+                      isJobExpired(selectedJob.deadline)
                     }
-                  }}
-                  disabled={
-                    selectedJob?.deadline && isJobExpired(selectedJob.deadline)
-                  } // Disable if expired
-                >
-                  {selectedJob?.deadline && isJobExpired(selectedJob.deadline)
-                    ? "Expired"
-                    : "APPLY NOW"}
-                </Button>
+                  >
+                    {selectedJob?.deadline && isJobExpired(selectedJob.deadline)
+                      ? "Expired"
+                      : "Apply Now"}
+                  </Button>
+                </div>
               </div>
             </div>
           ) : (
@@ -278,7 +330,7 @@ const JobListings = () => {
               onClose={() => setIsModalOpen(false)}
             />
           )}
-        </div>
+        </Card>
       </section>
 
       <hr className="border-t border-gray-300 dark:border-gray-700" />

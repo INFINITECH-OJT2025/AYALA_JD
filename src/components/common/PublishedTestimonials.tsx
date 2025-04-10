@@ -48,13 +48,13 @@ export default function PublishedTestimonials() {
 
   return (
     <>
-      <div className="py-10 bg-white dark:bg-gray-900">
+      <div className="py-4 bg-white dark:bg-black">
         <div className="container mx-auto px-6">
           {/* Title and description */}
-          <h2 className="text-3xl font-semibold text-center text-gray-900 dark:text-white mb-6">
+          <h2 className="text-4xl font-bold text-left text-gray-900 dark:text-white mb-2">
             What Our Clients Say
           </h2>
-          <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-left text-lg text-gray-600 dark:text-gray-300 mb-4">
             Hear from our satisfied clients about their experiences with our
             services.
           </p>

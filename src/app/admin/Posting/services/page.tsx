@@ -228,7 +228,8 @@ export default function AdminServices() {
 
       {/* ✅ Add Service Button */}
       <Button
-        className="mb-4 bg-blue-600 text-white"
+        className="mb-4"
+        variant="success"
         onClick={() => {
           setSelectedService(null);
           resetForm();
@@ -250,79 +251,74 @@ export default function AdminServices() {
       {/* ✅ Service Dialog */}
       {isDialogOpen && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white dark:bg-[#18181a] text-black dark:text-white rounded-lg p-6">
-          <DialogHeader>
-            <DialogTitle>
-              {selectedService ? "Edit Service" : "Create Service"}
-            </DialogTitle>
-          </DialogHeader>
-      
-          {/* Service Title */}
-          <Input
-            placeholder="Service Title"
-            value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
-            className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
-          />
-      
-          {/* Service Description */}
-          <Textarea
-            placeholder="Service Description"
-            value={formData.description}
-            onChange={(e) =>
-              setFormData({ ...formData, description: e.target.value })
-            }
-            className="h-20 bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
-          />
-      
-          {/* Status Toggle */}
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={formData.status === "active"}
-              onCheckedChange={(checked) =>
-                setFormData({
-                  ...formData,
-                  status: checked ? "active" : "inactive",
-                })
-              }
-            />
-            <label className="text-gray-700 dark:text-gray-300">Active</label>
-          </div>
-      
-          {/* Image Upload */}
-          <div>
-            <label className="text-gray-700 dark:text-gray-300 flex items-center">
-              <Upload className="w-5 h-5 mr-2" /> Upload Image
-            </label>
+          <DialogContent className="bg-white dark:bg-[#18181a] text-black dark:text-white rounded-lg p-6">
+            <DialogHeader>
+              <DialogTitle>
+                {selectedService ? "Edit Service" : "Create Service"}
+              </DialogTitle>
+            </DialogHeader>
+
+            {/* Service Title */}
             <Input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
+              placeholder="Service Title"
+              value={formData.title}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
             />
-          </div>
-      
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDialogOpen(false)}
-              className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSave}
-              variant="success"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
+
+            {/* Service Description */}
+            <Textarea
+              placeholder="Service Description"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+              className="h-20 bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
+            />
+
+            {/* Status Toggle */}
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.status === "active"}
+                onCheckedChange={(checked) =>
+                  setFormData({
+                    ...formData,
+                    status: checked ? "active" : "inactive",
+                  })
+                }
+              />
+              <label className="text-gray-700 dark:text-gray-300">Active</label>
+            </div>
+
+            {/* Image Upload */}
+            <div>
+              <label className="text-gray-700 dark:text-gray-300 flex items-center">
+                <Upload className="w-5 h-5 mr-2" /> Upload Image
+              </label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
+              />
+            </div>
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSave} variant="success" disabled={loading}>
+                {loading ? "Saving..." : "Save"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
