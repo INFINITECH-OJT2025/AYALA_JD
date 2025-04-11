@@ -7,7 +7,7 @@ export function Hero() {
       {/* Background Video with HTML5 Controls */}
       <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out">
         <video
-          src="/ayalavid"
+          src="/ayala.mp4"
           autoPlay
           loop
           muted

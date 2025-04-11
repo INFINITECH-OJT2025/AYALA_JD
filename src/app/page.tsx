@@ -21,8 +21,8 @@ function page() {
       <Services />
       <Careers />
       <NewsUpdates />
-      <ContactForm />
       <Testimonials />
+      <ContactForm />
       <div className="px-6">
         <FAQSection />
       </div>

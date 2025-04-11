@@ -14,7 +14,7 @@ type Testimonial = {
   experience: string;
   photo: string | null;
   media: string[];
-  status: string; // Status is a string (e.g., "published" or "unpublished")
+  status: string; 
   photo_url?: string;
   media_urls?: string[];
 };
