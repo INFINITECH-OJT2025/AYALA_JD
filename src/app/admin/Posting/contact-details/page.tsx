@@ -68,14 +68,46 @@ export default function ContactDetails() {
       <h2 className="text-2xl font-bold">Update Contact Details</h2>
 
       {/* Phone Numbers */}
+
+      {/* Email */}
       <div>
-        <label className="font-medium">Phone Numbers</label>
+        <label className="font-semibold">Email</label>
+        <div className="flex gap-2 mt-2 items-start">
+          <Input
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="flex-1"
+          />
+          <div className="w-[82px]"></div>
+        </div>
+      </div>
+
+      {/* Location */}
+      <div>
+        <label className="font-semibold">Location</label>
+        <div className="flex gap-2 mt-2 items-start">
+          <Input
+            type="text"
+            placeholder="Enter location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="flex-1"
+          />
+          <div className="w-[82px]"></div>
+        </div>
+      </div>
+
+      <div>
+        <label className="font-semibold mt-2">Phone Numbers</label>
         {phones.map((phone, index) => (
-          <div key={index} className="flex gap-2 mt-2">
+          <div key={index} className="flex gap-2 mt-2 items-start">
             <Input
               type="text"
               placeholder="Title (e.g., Sales Inquiry)"
               value={phone.title}
+              className="flex-1"
               onChange={(e) => {
                 const updatedPhones = [...phones];
                 updatedPhones[index].title = e.target.value;
@@ -86,25 +118,27 @@ export default function ContactDetails() {
               type="text"
               placeholder="Phone Number"
               value={phone.number}
+              className="flex-1"
               onChange={(e) => {
-                const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+                const numericValue = e.target.value.replace(/\D/g, "");
                 if (numericValue.length <= 11) {
-                  // Limit to 11 digits
                   const updatedPhones = [...phones];
                   updatedPhones[index].number = numericValue;
                   setPhones(updatedPhones);
                 }
               }}
-              maxLength={11} // Ensures max input length
+              maxLength={11}
             />
 
-            {index > 0 && (
+            {index > 0 ? (
               <Button
                 variant="destructive"
                 onClick={() => setPhones(phones.filter((_, i) => i !== index))}
               >
                 Remove
               </Button>
+            ) : (
+              <div className="w-[82px]"></div> // width matches the button for alignment
             )}
           </div>
         ))}
@@ -118,36 +152,17 @@ export default function ContactDetails() {
       </div>
 
       {/* Email */}
-      <div>
-        <label className="font-medium">Email</label>
-        <Input
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-
-      {/* Location */}
-      <div>
-        <label className="font-medium">Location</label>
-        <Input
-          type="text"
-          placeholder="Enter location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-      </div>
 
       {/* Social Media */}
       <div>
-        <label className="font-medium">Social Media</label>
+        <label className="font-semibold mt-2">Social Media</label>
         {socialMedia.map((social, index) => (
-          <div key={index} className="flex gap-2 mt-2">
+          <div key={index} className="flex gap-2 mt-2 items-start">
             <Input
               type="text"
               placeholder="Platform (e.g., Facebook)"
               value={social.platform}
+              className="flex-1"
               onChange={(e) => {
                 const updatedSocial = [...socialMedia];
                 updatedSocial[index].platform = e.target.value;
@@ -158,13 +173,14 @@ export default function ContactDetails() {
               type="text"
               placeholder="Link (e.g., https://facebook.com/yourpage)"
               value={social.link}
+              className="flex-1"
               onChange={(e) => {
                 const updatedSocial = [...socialMedia];
                 updatedSocial[index].link = e.target.value;
                 setSocialMedia(updatedSocial);
               }}
             />
-            {index > 0 && (
+            {index > 0 ? (
               <Button
                 variant="destructive"
                 onClick={() =>
@@ -173,6 +189,8 @@ export default function ContactDetails() {
               >
                 Remove
               </Button>
+            ) : (
+              <div className="w-[82px]"></div>
             )}
           </div>
         ))}

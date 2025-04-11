@@ -48,7 +48,7 @@ export function Services() {
   }, []);
 
   return (
-<section className="py-6 px-6 bg-white dark:bg-gray-900">
+<section className="py-6 px-6 bg-white dark:bg-black">
   {loading ? (
     <p className="text-center text-gray-500 dark:text-gray-300">
       Loading services...
@@ -60,7 +60,7 @@ export function Services() {
       {services.map((service) => (
         <Card
           key={service.id}
-          className="shadow-md dark:shadow-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+          className="shadow-md dark:shadow-lg bg-white dark:bg-[#18181a] text-gray-700 dark:text-gray-300 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
         >
           {/* ✅ Proper Spacing & Consistent Image Design */}
           {service.image && (

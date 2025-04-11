@@ -57,8 +57,8 @@ export function NavMain({
                     asChild
                     className={`flex items-center w-full px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
                       isActive
-                        ? "bg-blue-600 text-white shadow-md"
-                        : "text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        ? "bg-emerald-600 text-white shadow-md hover:bg-emerald-800 hover:text-white"
+                        : "text-gray-800 dark:text-gray-200 hover:bg-emerald-100 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300"
                     }`}
                   >
                     <Link
@@ -85,8 +85,8 @@ export function NavMain({
                               asChild
                               className={`flex items-center w-full px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
                                 isSubActive
-                                  ? "bg-blue-500 text-white shadow-sm"
-                                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                  ? "bg-emerald-700 text-white shadow-sm hover:bg-emerald-800 hover:text-white"
+                                  : "text-gray-700 dark:text-gray-300 hover:bg-emerald-100 dark:hover:bg-emerald-900 hover:text-emerald-700 dark:hover:text-emerald-300"
                               }`}
                             >
                               <Link href={subItem.url}>

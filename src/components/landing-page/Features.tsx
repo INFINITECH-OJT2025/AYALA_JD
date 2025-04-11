@@ -95,125 +95,96 @@ export function FeaturedProperties() {
   }, []);
 
   return (
-    <section className="bg-white dark:bg-black">
-      <div className="container mx-auto px-6">
-        <div className="w-full mt-10">
-          {/* Title and Description Section */}
-          <div className="flex flex-col">
-            <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-              Recommended for You
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
-              Explore properties that best match your preferences and needs.
-              Find the perfect fit for your next home or investment.
-            </p>
-          </div>
-
-          {/* Recommended Properties List (your existing code) */}
-        </div>
-
-        {/* Property Grid */}
-        <div className="grid md:grid-cols-5 gap-6 mt-4">
-          {properties.length > 0 ? (
-            properties.map((property) => (
-              <Link
-                key={property.id}
-                href={`/landing/property/${property.id}`}
-              >
-                <Card className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden">
-                  <div className="relative block hover:scale-105 transition-transform duration-300">
-                    <Image
-                      src={property.property_image?.[0] || "/placeholder.jpg"}
-                      alt={property.property_name}
-                      width={500}
-                      height={300}
-                      className="w-full h-48 object-cover"
-                    />
-                    <span
-                      className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
-                        Array.isArray(property.type_of_listing)
-                          ? property.type_of_listing.includes("For Sale") &&
-                            property.type_of_listing.includes("For Rent")
-                            ? "bg-gradient-to-r from-green-500 to-blue-500"
-                            : property.type_of_listing.includes("For Sale")
-                            ? "bg-green-600"
-                            : "bg-blue-500"
-                          : property.type_of_listing === "For Sale"
-                          ? "bg-green-600"
-                          : "bg-blue-500"
-                      }`}
-                    >
-                      {Array.isArray(property.type_of_listing)
-                        ? property.type_of_listing.join(" & ")
-                        : property.type_of_listing}
-                    </span>
-                  </div>
-
-                  <div className="p-4">
-                    {/* Badge Section */}
-                    <div className="mb-2 flex flex-wrap gap-2">
-                      <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
-                        Floor: {property.floor_number}
-                      </span>
-                      <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
-                        {property.square_meter} sqm
-                      </span>
-                      <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
-                        {property.unit_status}
-                      </span>
-                    </div>
-
-                    {/* Property Name */}
-                    <h3 className="mt-2 text-lg font-bold truncate dark:text-white">
-                      {property.unit_type} | {property.property_name}
-                    </h3>
-
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">
-                      {property.location}
-                    </p>
-
-                    <p className="mt-2 text-xl font-bold text-green-800 dark:text-green-400 flex items-center">
-                      ₱
-                      {parseFloat(property.price).toLocaleString("en-PH", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </p>
-                  </div>
-                </Card>
-              </Link>
-            ))
-          ) : (
-            <p className="text-center text-gray-500 dark:text-gray-400 col-span-3">
-              No featured properties available.
-            </p>
-          )}
-        </div>
-
-        {/* Submit Your Property Section */}
-        {/* <div className="mt-10 text-center">
-          <p className="text-lg text-gray-700 dark:text-gray-300">
-            Do you have a property for{" "}
-            <span className="text-green-600 dark:text-green-400 font-semibold">
-              sale
-            </span>{" "}
-            or{" "}
-            <span className="text-blue-600 dark:text-blue-400 font-semibold">
-              rent
-            </span>
-            ?
-          </p>
-          <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-            List it with us and connect with potential buyers or tenants.
-          </p>
-          <Link
-            href="/landing/properties"
-            className="inline-block bg-gradient-to-r from-blue-600 to-green-500 text-white text-lg font-bold py-3 px-6 rounded-lg shadow-lg animate-bounce hover:scale-110 transition duration-800"
-          >
-            Submit Your Property
-          </Link>
-        </div> */}
+<section className="bg-white dark:bg-black py-8">
+  <div className="container px-6 sm:px-6 lg:px-6">
+    <div className="w-full mb-6">
+      {/* Title and Description Section */}
+      <div className="flex flex-col">
+        <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+          Recommended for You
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
+          Explore properties that best match your preferences and needs.
+          Find the perfect fit for your next home or investment.
+        </p>
       </div>
-    </section>
+    </div>
+
+    {/* Property Grid */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      {properties.length > 0 ? (
+        properties.map((property) => (
+          <Link key={property.id} href={`/landing/property/${property.id}`}>
+            <Card className="bg-white dark:bg-[#18181a] shadow-md dark:shadow-lg rounded-2xl overflow-hidden">
+              <div className="relative">
+                <Image
+                  src={property.property_image?.[0] || "/placeholder.jpg"}
+                  alt={property.property_name}
+                  width={500}
+                  height={300}
+                  className="w-full h-48 object-cover transition-transform hover:scale-105 duration-300"
+                />
+                <span
+                  className={`absolute top-2 left-2 text-white text-xs font-bold px-3 py-1 rounded ${
+                    Array.isArray(property.type_of_listing)
+                      ? property.type_of_listing.includes("For Sale") &&
+                        property.type_of_listing.includes("For Rent")
+                        ? "bg-gradient-to-r from-green-500 to-blue-500"
+                        : property.type_of_listing.includes("For Sale")
+                        ? "bg-green-600"
+                        : "bg-blue-500"
+                      : property.type_of_listing === "For Sale"
+                      ? "bg-green-600"
+                      : "bg-blue-500"
+                  }`}
+                >
+                  {Array.isArray(property.type_of_listing)
+                    ? property.type_of_listing.join(" & ")
+                    : property.type_of_listing}
+                </span>
+              </div>
+
+              <div className="p-4">
+                {/* Badges */}
+                <div className="mb-2 flex flex-wrap gap-2">
+                  <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    Floor: {property.floor_number}
+                  </span>
+                  <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    {property.square_meter} sqm
+                  </span>
+                  <span className="bg-green-200 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    {property.unit_status}
+                  </span>
+                </div>
+
+                {/* Property Name */}
+                <h3 className="mt-2 text-base sm:text-lg font-bold truncate dark:text-white">
+                  {property.unit_type} | {property.property_name}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                  {property.location}
+                </p>
+
+                <p className="mt-2 text-lg sm:text-xl font-bold text-green-800 dark:text-green-400 flex items-center">
+                  ₱
+                  {parseFloat(property.price).toLocaleString("en-PH", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+              </div>
+            </Card>
+          </Link>
+        ))
+      ) : (
+        <p className="text-center text-gray-500 dark:text-gray-400 col-span-full">
+          No featured properties available.
+        </p>
+      )}
+    </div>
+  </div>
+</section>
+
   );
 }

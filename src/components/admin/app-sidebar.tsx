@@ -43,13 +43,22 @@ const data = {
       icon: SquareTerminal,
       isActive: true,
       items: [
-        { title: "Dashboard", url: "/admin/overview/dashboard" },
+        {
+          title: "Dashboard",
+          url: "/admin/overview/dashboard",
+        },
         {
           title: "Listed Properties",
           url: "/admin/overview/listed-properties",
         },
-        { title: "Job Applications", url: "/admin/overview/job-applications" },
-        { title: "Calendar", url: "/admin/overview/calendar/" },
+        {
+          title: "Job Applications",
+          url: "/admin/overview/job-applications",
+        },
+        {
+          title: "Calendar",
+          url: "/admin/overview/calendar/",
+        },
       ],
     },
     {

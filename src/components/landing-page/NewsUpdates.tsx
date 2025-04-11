@@ -97,7 +97,7 @@ export function NewsUpdates() {
           {filteredNews.map((article) => (
             <Card
               key={article.id}
-              className="p-4 shadow-md dark:shadow-lg bg-white dark:bg-gray-800 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+              className="p-4 shadow-md dark:shadow-lg bg-white dark:bg-[#18181a] hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
             >
               {article.image && (
                 <Image

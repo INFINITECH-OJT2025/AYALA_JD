@@ -64,7 +64,7 @@ export function ContactForm() {
     <div className="bg-white dark:bg-black">
       <div className="px-6 py-12">
         {/* Contact Section */}
-        <Card className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg dark:shadow-md">
+        <Card className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-[#18181a] p-8 rounded-xl shadow-lg dark:shadow-md">
           {/* Left Side - Contact Info with Background */}
           <div
             className="relative w-full h-full p-6 rounded-lg bg-cover bg-center"

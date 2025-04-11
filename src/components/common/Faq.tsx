@@ -27,11 +27,11 @@ export default function FAQSection() {
   };
 
   return (
-    <div className="w-full mt-10">
+    <div className="w-full mt-10 bg-white dark:bg-black">
       {/* Title Section */}
-      <h2 className="text-2xl sm:text-3xl font-bold text-green-700 dark:text-green-400">
-        Frequently Asked Questions
-      </h2>
+      <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+          Frequently Asked Questions
+        </h2>
       <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base mt-2">
         Find answers to common questions about buying, selling, and renting properties.
       </p>

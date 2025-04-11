@@ -298,7 +298,7 @@ export default function JobCreateModal({
             <Input type="file" onChange={handleImageChange} />
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button variant="success" type="submit" className="w-full" disabled={loading}>
             {loading ? "Creating..." : "Create Job"}
           </Button>
         </form>

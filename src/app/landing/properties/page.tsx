@@ -20,6 +20,7 @@ import CreateListingLand from "@/components/common/CreateListingLanding";
 import ComparisonModal from "@/components/common/ComparisonModal"; // Adjust path if needed
 import { Property } from "@/components/types/property";
 import { Eye } from "lucide-react"; // Import the eye icon
+import { Card } from "@/components/ui/card";
 
 export default function FeaturedProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -120,9 +121,9 @@ export default function FeaturedProperties() {
         </div>
       </div>
 
-      <section className="bg-white dark:bg-gray-900 py-6">
+      <section className="bg-white dark:bg-black py-6">
         <div className="container mx-auto px-6">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 items-center">
+          <div className="bg-white dark:bg-[#18181a] p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 items-center">
             <input
               type="text"
               placeholder="Search by property name or location..."
@@ -215,9 +216,9 @@ export default function FeaturedProperties() {
             <div className="grid md:grid-cols-5 gap-6 mt-6">
               {filteredProperties.length > 0 ? (
                 filteredProperties.map((property) => (
-                  <div
+                  <Card
                     key={property.id}
-                    className="bg-white dark:bg-gray-800 shadow-md dark:shadow-lg rounded-2xl overflow-hidden flex flex-col h-full"
+                    className="bg-white dark:bg-[#18181a] shadow-md dark:shadow-lg rounded-2xl overflow-hidden flex flex-col h-full"
                   >
                     {/* ✅ Only Image is Clickable */}
                     <Link
@@ -312,7 +313,7 @@ export default function FeaturedProperties() {
                         </Button>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 ))
               ) : (
                 <p className="text-gray-500 dark:text-gray-400 text-center col-span-5">

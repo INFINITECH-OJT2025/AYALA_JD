@@ -52,7 +52,7 @@ export default function TestimonialModal() {
       <DialogTrigger asChild>
         <Button
           variant="success"
-          className="px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-blue-700 transition"
+          className="px-6 py-2 text-sm font-semibold"
             >
           Can you share it with us?
         </Button>

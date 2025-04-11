@@ -88,7 +88,7 @@ export function Careers() {
             {jobs.map((job) => (
               <Card
                 key={job.id}
-                className="shadow-md dark:shadow-lg bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
+                className="shadow-md dark:shadow-lg bg-white dark:bg-[#18181a] text-gray-700 dark:text-gray-300 hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
               >
                 <CardHeader>
                   <img

@@ -137,7 +137,7 @@ const JobListings = () => {
         </div>
       </div>
 
-      <section className="py-6 bg-white dark:bg-gray-900">
+      <section className="py-6 bg-white dark:bg-black">
         <Card className="max-w-6xl mx-auto px-0 overflow-hidden">
           {loading ? (
             <div className="flex justify-center items-center py-12">

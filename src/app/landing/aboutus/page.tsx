@@ -25,7 +25,7 @@ export default function AboutUsPage() {
   return (
     <>
       <Navbar />
-      <div className="bg-white dark:bg-gray-800">
+      <div className="bg-white dark:bg-black">
         {/* Hero Section */}
         <section className="relative h-[500px]">
           {aboutUs?.hero_image && (
@@ -62,9 +62,9 @@ export default function AboutUsPage() {
         </section>
 
         {/* Mission & Vision Section */}
-        <section className="py-16 px-8 lg:px-24">
+        <section className="py-16 px-8 lg:px-6">
           <div className="grid md:grid-cols-2 gap-12 text-center md:text-left">
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition">
+            <div className="bg-white dark:bg-[#18181a] p-8 rounded-lg shadow-lg hover:shadow-xl transition">
               <h2 className="text-4xl font-bold text-green-700 dark:text-green-400">
                 {aboutUs?.mission_title}
               </h2>
@@ -72,7 +72,7 @@ export default function AboutUsPage() {
                 {aboutUs?.mission_description}
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg hover:shadow-xl transition">
+            <div className="bg-white dark:bg-[#18181a] p-8 rounded-lg shadow-lg hover:shadow-xl transition">
               <h2 className="text-4xl font-bold text-green-700 dark:text-green-400">
                 {aboutUs?.vision_title}
               </h2>
@@ -84,7 +84,7 @@ export default function AboutUsPage() {
         </section>
 
         {/* History Section */}
-        <section className="bg-white dark:bg-gray-900 py-16 px-8 lg:px-24">
+        <section className="bg-white dark:bg-black py-16 px-8 lg:px-6">
           <h2 className="text-4xl font-bold text-center text-green-700 dark:text-green-400">
             OUR HISTORY
           </h2>
@@ -92,7 +92,7 @@ export default function AboutUsPage() {
             {aboutUs?.history?.map((item: any, index: number) => (
               <div
                 key={index}
-                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition"
+                className="bg-white dark:bg-[#18181a] p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition"
               >
                 {item.image && (
                   <img
@@ -119,7 +119,7 @@ export default function AboutUsPage() {
 
         {/* Programs Section */}
 
-        <section className="bg-white dark:bg-gray-800 py-16 px-8 lg:px-24">
+        <section className="bg-white dark:bg-black py-16 px-8 lg:px-6">
           <h2 className="text-4xl font-bold text-center text-green-700 dark:text-green-400">
             OUR PROGRAMS
           </h2>
@@ -140,7 +140,7 @@ export default function AboutUsPage() {
               return (
                 <div
                   key={index}
-                  className="bg-gray-100 dark:bg-gray-900 p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition relative group flex flex-col justify-between h-full"
+                  className="bg-gray-100 dark:bg-[#18181a] p-6 rounded-lg shadow-lg text-center hover:shadow-xl transition relative group flex flex-col justify-between h-full"
                 >
                   {/* Video or Image Preview */}
                   <div className="relative w-full h-48 overflow-hidden rounded-md">
@@ -251,7 +251,7 @@ export default function AboutUsPage() {
           </div>
         </section>
 
-        <WhyChooseUs />
+        {/* <WhyChooseUs /> */}
         <NewsUpdates />
       </div>
       <hr className="border-t border-gray-300 dark:border-gray-700" />

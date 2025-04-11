@@ -4,7 +4,6 @@ import { FaArrowRight } from "react-icons/fa"; // You can choose any icon from r
 export function Hero() {
   return (
     <section className="relative w-full h-screen flex items-center justify-start bg-gray-900 text-white">
-      {/* Background Video with HTML5 Controls */}
       <div className="absolute inset-0 transition-opacity duration-1000 ease-in-out">
         <video
           src="/ayala.mp4"
@@ -15,11 +14,8 @@ export function Hero() {
           className="object-cover w-full h-full opacity-70"
         />
       </div>
-
-      {/* Overlay to enhance text visibility */}
       <div className="absolute inset-0 bg-black opacity-50" />
 
-      {/* Hero Content */}
       <div className="relative z-10 w-full sm:w-1/2 px-6 py-10 sm:py-20 ml-4 sm:ml-12">
         <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold bg-gradient-to-r from-yellow-400 via-green-500 to-yellow-500 text-transparent bg-clip-text">
           Find Your{" "}

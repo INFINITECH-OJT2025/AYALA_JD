@@ -63,11 +63,8 @@ export default function ReschedulePage() {
   return (
     <>
       <Navbar />
-      <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 shadow-md rounded-lg flex flex-col md:flex-row gap-6">
-        {/* ✅ Displays Admin's Scheduled Date */}
+      <div className="max-w-6xl mx-auto p-6 m-6 bg-white dark:bg-[#18181a] shadow-md rounded-lg flex flex-col md:flex-row gap-6">
         <RescheduleDetails id={id} email={email} data={data} setData={setData} setError={setError} />
-
-        {/* ✅ RescheduleForm now allows any date selection */}
         <RescheduleForm id={id} email={email} data={data} setData={setData} />
       </div>
       <Footer />

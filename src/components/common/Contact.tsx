@@ -86,7 +86,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl shadow-md">
+    <div className="bg-gray-50 dark:bg-[#18181a] p-6 rounded-xl shadow-md">
       <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">
         Send Us an Inquiry
       </h3>

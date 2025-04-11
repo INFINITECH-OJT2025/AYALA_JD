@@ -87,10 +87,10 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 min-h-screen py-6">
+      <div className="bg-white dark:bg-black min-h-screen py-6">
         <div className="max-w-6xl mx-auto px-6">
           {/* Contact Section */}
-          <Card className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+          <Card className="grid md:grid-cols-2 gap-12 items-center bg-white dark:bg-[#18181a] p-8 rounded-xl shadow-lg">
             {/* Left Side - Contact Info */}
             <div>
               <h2 className="text-3xl font-bold text-green-700 dark:text-green-400">
