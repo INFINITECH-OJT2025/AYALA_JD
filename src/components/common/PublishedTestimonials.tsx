@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import TestimonialDetailsModal from "./TestimonialDetailsModal";
 import { Skeleton } from "../ui/skeleton";
 
-// Define the Testimonial type
 type Testimonial = {
   id: number;
   name: string;
@@ -24,30 +23,28 @@ type Testimonial = {
 export default function PublishedTestimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [selected, setSelected] = useState<Testimonial | null>(null);
-  const loading = testimonials.length === 0; // replace with actual loading logic
+  const loading = testimonials.length === 0;
 
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
         const allTestimonials = await getTestimonials();
-  
+
         const published = allTestimonials
           .filter((testimonial: Testimonial) => testimonial.status === "published")
           .sort((a: Testimonial, b: Testimonial) => {
-            // Sort by created_at descending (or use `b.id - a.id` if `created_at` is not available)
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
           })
-          .slice(0, 5); // Get only the latest 5
-  
+          .slice(0, 5);
+
         setTestimonials(published);
       } catch (error) {
         console.error("Error fetching testimonials:", error);
       }
     };
-  
+
     fetchTestimonials();
   }, []);
-  
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength
@@ -92,49 +89,18 @@ export default function PublishedTestimonials() {
               : testimonials.map((testimonial) => (
                   <Card
                     key={testimonial.id}
-                    className="p-4 flex flex-col items-center text-center rounded-lg shadow-md transition duration-300 hover:shadow-lg relative overflow-hidden bg-gray-800"
+                    className="p-4 flex flex-col items-center text-center rounded-lg shadow-md transition duration-300 hover:shadow-lg bg-white dark:bg-[#18181a]"
                   >
-                    {/* Media */}
-                    {testimonial.media_urls?.[0] ? (
-                      testimonial.media_urls[0].match(/\.(mp4|webm|ogg)$/i) ? (
-                        <video
-                          className="absolute inset-0 w-full h-full object-cover z-0"
-                          src={testimonial.media_urls[0]}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                        />
-                      ) : (
-                        <div
-                          className="absolute inset-0 bg-cover bg-center z-0"
-                          style={{
-                            backgroundImage: `url(${testimonial.media_urls[0]})`,
-                          }}
-                        />
-                      )
-                    ) : (
-                      <div
-                        className="absolute inset-0 bg-cover bg-center z-0"
-                        style={{ backgroundImage: `url('/defaultplay.png')` }}
-                      />
-                    )}
-
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-black/60 z-0" />
-
-                    {/* Content */}
-                    <div className="relative z-10 flex flex-col items-center text-center">
+                    <div className="flex flex-col items-center text-center">
                       <img
                         src={testimonial.photo_url || "/placeholder.png"}
                         alt={testimonial.name}
                         className="w-20 h-20 rounded-full object-cover border mb-3"
                       />
-                      <h3 className="font-semibold text-white">
+                      <h3 className="font-semibold">
                         {testimonial.name}
                       </h3>
 
-                      {/* Star Rating */}
                       <div className="flex items-center justify-center mt-1">
                         {Array.from({ length: 5 }, (_, i) => (
                           <svg
@@ -155,7 +121,7 @@ export default function PublishedTestimonials() {
                         ))}
                       </div>
 
-                      <p className="text-white text-sm mt-2 flex-grow">
+                      <p className="text-sm mt-2 flex-grow">
                         {truncateText(testimonial.experience, 100)}
                       </p>
                       <div className="mt-4 flex justify-center w-full">
