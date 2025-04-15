@@ -52,15 +52,6 @@ export function Footer() {
             Building sustainable communities and exceptional living spaces for a
             better future.
           </p>
-          <div className="items-start md:items-center">
-            <Link
-              href="/auth/login"
-              className="mt-6 md:mt-0 inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 py-2 rounded-lg text-sm"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              Login as Admin
-            </Link>
-          </div>
         </div>
 
         {/* Quick Links */}
