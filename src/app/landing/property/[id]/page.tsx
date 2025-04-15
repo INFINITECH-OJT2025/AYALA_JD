@@ -108,7 +108,7 @@ export default function PropertyDetails() {
   return (
     <>
       <Navbar />
-      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 p-5 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 p-5 bg-white dark:bg-black text-gray-800 dark:text-gray-100">
         {/* Left Section: Property Images & Details */}
         <div className="col-span-7">
           <div className="relative">
@@ -377,14 +377,13 @@ export default function PropertyDetails() {
               )}
             </div>
           </div>
-          <FAQSection/>
+          <FAQSection />
         </div>
 
         {/* Right Section: Inquiry Form */}
         <div className="col-span-7 md:col-span-5 lg:col-span-3">
-          <Inquiry propertyId={parseInt(id as string, 10)} />
-          <div className="mt-2">
-            <Nearby />
+          <div className="sticky top-20">
+            <Inquiry propertyId={parseInt(id as string, 10)} />
           </div>
         </div>
       </div>

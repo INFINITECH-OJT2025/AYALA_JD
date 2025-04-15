@@ -191,7 +191,7 @@ export default function ApplicationModal({
           <Button
             variant="success"
             type="submit"
-            className="w-full bg-blue-500 dark:bg-blue-700 text-white hover:bg-blue-600 dark:hover:bg-blue-800"
+            className="w-full"
             disabled={loading}
           >
             {loading ? "Submitting..." : "Submit Application"}

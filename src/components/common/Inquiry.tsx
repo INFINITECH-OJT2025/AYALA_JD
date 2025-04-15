@@ -57,23 +57,23 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full max-w-lg md:max-w-xl lg:max-w-2xl flex flex-col">
+    <div className="bg-gray-100 dark:bg-[#18181a] p-6 rounded-lg shadow-md w-full max-w-lg md:max-w-xl lg:max-w-2xl flex flex-col">
       <div className="flex space-x-2 mb-4">
         <Button
-          className={`px-4 py-2 rounded-md ${
+          className={`px-4 py-2 rounded-md transition-colors duration-200 ${
             activeTab === "inquiry"
-              ? "bg-blue-600 text-white"
-              : "bg-blue-400 dark:bg-blue-200"
+              ? "bg-emerald-600 text-white"
+              : "bg-emerald-400 dark:bg-emerald-200 hover:bg-emerald-500 dark:hover:bg-emerald-300"
           }`}
           onClick={() => setActiveTab("inquiry")}
         >
           Inquiry
         </Button>
         <Button
-          className={`px-4 py-2 rounded-md ${
+          className={`px-4 py-2 rounded-md transition-colors duration-200 ${
             activeTab === "appointment"
-              ? "bg-blue-600 text-white"
-              : "bg-blue-400 dark:bg-blue-200"
+              ? "bg-emerald-600 text-white"
+              : "bg-emerald-400 dark:bg-emerald-200 hover:bg-emerald-500 dark:hover:bg-emerald-300"
           }`}
           onClick={() => setActiveTab("appointment")}
         >
@@ -94,6 +94,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
               placeholder="Last Name"
               value={form.last_name}
               onChange={handleChange}
+              className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
               required
             />
             <Input
@@ -102,12 +103,14 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
               value={form.first_name}
               onChange={handleChange}
               required
+              className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
             />
             <Input
               name="email"
               type="email"
               placeholder="Email"
               value={form.email}
+              className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
               onChange={(e) => {
                 handleChange(e);
                 setEmailError(""); // Clear error when typing
@@ -126,6 +129,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
               name="phone"
               type="text"
               placeholder="Phone Number"
+              className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
               value={form.phone}
               onChange={(e) => {
                 const numericValue = e.target.value.replace(/\D/g, ""); // allow numbers only
@@ -141,6 +145,7 @@ export default function Inquiry({ propertyId }: { propertyId: number }) {
                 name="message"
                 placeholder="Leave us a message..."
                 value={form.message}
+                className="bg-gray-100 dark:bg-[#333333] text-black dark:text-white rounded-md p-2"
                 onChange={(e) => {
                   if (e.target.value.length <= 100) {
                     setForm({ ...form, message: e.target.value });

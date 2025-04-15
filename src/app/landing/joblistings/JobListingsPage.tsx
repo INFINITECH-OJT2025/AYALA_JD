@@ -42,6 +42,8 @@ const JobListings = () => {
   const [search, setSearch] = useState("");
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId"); // ✅ Get job ID from URL
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showFullQualification, setShowFullQualification] = useState(false);
 
   interface Job {
     id: number;
@@ -137,7 +139,7 @@ const JobListings = () => {
         </div>
       </div>
 
-      <section className="py-6 bg-white dark:bg-black">
+      <section className="py-6 px-6 bg-white dark:bg-black">
         <Card className="max-w-6xl mx-auto px-0 overflow-hidden">
           {loading ? (
             <div className="flex justify-center items-center py-12">
@@ -146,28 +148,25 @@ const JobListings = () => {
           ) : error ? (
             <p className="text-center text-red-500">{error}</p>
           ) : jobs.length > 0 ? (
-            <div className="relative h-[600px] w-full">
-              {/* Background Image */}
-              <div
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url('${
-                    selectedJob?.image_url || "/defaultJob.jpg"
-                  }')`,
-                }}
-              >
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-70" />
+            <div className="flex flex-col md:flex-row h-auto md:h-[600px] w-full">
+              {/* Left Side - Job Image */}
+              <div className="relative w-full md:w-1/2 h-64 md:h-full">
+                <img
+                  src={selectedJob?.image_url || "/defaultJob.jpg"}
+                  alt="Job"
+                  className="object-cover p-6 w-full h-full"
+                />
               </div>
 
-              {/* Content Overlay */}
-              <div className="relative z-10 h-full w-full flex flex-col justify-center px-6 md:px-12 text-white">
-                <div className="max-w-3xl space-y-4">
+              {/* Right Side - Content */}
+              <div className="w-full md:w-1/2 p-6 text-black dark:text-white bg-white dark:bg-zinc-900 flex flex-col justify-between overflow-y-auto">
+                <div className="space-y-4">
+                  {/* Dropdown */}
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
-                        className="bg-white text-black w-full max-w-sm"
+                        className="w-full bg-white text-black hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
                       >
                         {selectedJob?.title || "Select a Job"}
                         <ChevronsUpDown className="w-4 h-4 ml-auto text-gray-500" />
@@ -207,21 +206,12 @@ const JobListings = () => {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <div className="flex items-center gap-4 flex-wrap">
-                    <h2 className="text-4xl font-bold">
-                      {selectedJob?.title}{" "}
-                      <span className="text-xl font-medium">
-                        ({selectedJob?.slots ?? "N/A"} slots)
-                      </span>
-                    </h2>
-                  </div>
 
-                  {/* Job Dropdown */}
-
-                  <div className="flex items-center text-sm">
-                    <FaMoneyBill className="w-4 h-4 mr-2 text-green-400" />
+                  {/* Salary */}
+                  <div className="flex items-center text-md">
+                    <FaMoneyBill className="w-4 h-4 mr-2 text-emerald-400" />
                     Salary Starts:
-                    <span className="font-bold ml-2 text-green-400">
+                    <span className="font-bold ml-2 text-emerald-400">
                       {selectedJob?.salary
                         ? `₱${Number(selectedJob.salary).toLocaleString(
                             "en-PH",
@@ -234,7 +224,8 @@ const JobListings = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center text-sm">
+                  {/* Deadline */}
+                  <div className="flex items-center text-md">
                     <CalendarDays className="w-4 h-4 mr-2 text-red-400" />
                     <span className="font-medium">Deadline:</span>
                     <span className="font-bold ml-2 text-red-400">
@@ -244,76 +235,116 @@ const JobListings = () => {
                     </span>
                   </div>
 
-                  <div className="flex items-center text-sm">
+                  {/* Type */}
+                  <div className="flex items-center text-md">
                     <Clock className="w-4 h-4 mr-2 text-blue-400" />
                     Type: <span className="ml-2">{selectedJob?.type}</span>
                   </div>
 
+                  {/* Seniority */}
                   {selectedJob?.seniority_level && (
-                    <div className="text-sm">
+                    <div className="text-md">
                       <Star className="w-4 h-4 mr-2 inline-block text-yellow-400" />
                       Seniority Level:{" "}
                       <span>{selectedJob?.seniority_level}</span>
                     </div>
                   )}
 
+                  {/* Location */}
                   {selectedJob?.location && (
-                    <div className="text-sm">
+                    <div className="text-md">
                       <MapPin className="w-4 h-4 mr-2 inline-block text-orange-400" />
                       Location: <span>{selectedJob?.location}</span>
                     </div>
                   )}
 
+                  {/* Job Function */}
                   {selectedJob?.job_function && (
-                    <div className="text-sm">
-                      <Briefcase className="w-4 h-4 mr-2 inline-block text-gray-300" />
+                    <div className="text-md">
+                      <Briefcase className="w-4 h-4 mr-2 inline-block text-indigo-500" />
                       Job Function: <span>{selectedJob?.job_function}</span>
                     </div>
                   )}
 
-                  <div className="text-sm">
-                    <FileText className="w-4 h-4 mr-2 inline-block text-gray-300" />
-                    Description:{" "}
-                    <span className="text-justify">
-                      {selectedJob?.description}
+                  {/* Description */}
+                  <div className="text-md">
+                    <FileText className="w-4 h-4 mr-2 inline-block text-cyan-500" />
+                    <span className="font-medium">Description:</span>{" "}
+                    <span className="text-justify inline">
+                      {selectedJob?.description &&
+                      selectedJob.description.length > 100 ? (
+                        <>
+                          {showFullDescription
+                            ? selectedJob.description
+                            : selectedJob.description.slice(0, 100) + "... "}
+                          <button
+                            onClick={() =>
+                              setShowFullDescription(!showFullDescription)
+                            }
+                            className="text-blue-500 underline ml-1"
+                          >
+                            {showFullDescription ? "See less" : "See more"}
+                          </button>
+                        </>
+                      ) : (
+                        selectedJob?.description
+                      )}
                     </span>
                   </div>
 
+                  {/* Qualification */}
                   {selectedJob?.qualification && (
-                    <div className="text-sm">
+                    <div className="text-md">
                       <FaCertificate className="w-4 h-4 mr-2 inline-block text-blue-400" />
-                      Qualification:{" "}
-                      <span className="text-justify">
-                        {selectedJob?.qualification}
+                      <span className="font-medium">Qualification:</span>{" "}
+                      <span className="text-justify inline">
+                        {selectedJob.qualification.length > 100 ? (
+                          <>
+                            {showFullQualification
+                              ? selectedJob.qualification
+                              : selectedJob.qualification.slice(0, 100) +
+                                "... "}
+                            <button
+                              onClick={() =>
+                                setShowFullQualification(!showFullQualification)
+                              }
+                              className="text-blue-500 underline ml-1"
+                            >
+                              {showFullQualification ? "See less" : "See more"}
+                            </button>
+                          </>
+                        ) : (
+                          selectedJob.qualification
+                        )}
                       </span>
                     </div>
                   )}
-
-                  <Button
-                    className={` max-w-sm text-lg py-3 rounded-lg font-semibold transition mt-4 ${
-                      selectedJob?.deadline &&
-                      isJobExpired(selectedJob.deadline)
-                        ? "bg-red-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    }`}
-                    onClick={() => {
-                      if (
-                        selectedJob?.deadline &&
-                        !isJobExpired(selectedJob.deadline)
-                      ) {
-                        setIsModalOpen(true);
-                      }
-                    }}
-                    disabled={
-                      selectedJob?.deadline &&
-                      isJobExpired(selectedJob.deadline)
-                    }
-                  >
-                    {selectedJob?.deadline && isJobExpired(selectedJob.deadline)
-                      ? "Expired"
-                      : "Apply Now"}
-                  </Button>
                 </div>
+
+                {/* Apply Button */}
+                <Button
+                  className="w-full text-md py-3 mt-4 font-semibold"
+                  variant={
+                    selectedJob?.deadline && isJobExpired(selectedJob.deadline)
+                      ? "destructive"
+                      : "success"
+                  }
+                  onClick={() => {
+                    if (
+                      selectedJob?.deadline &&
+                      !isJobExpired(selectedJob.deadline)
+                    ) {
+                      setIsModalOpen(true);
+                    }
+                  }}
+                  disabled={
+                    selectedJob?.deadline && isJobExpired(selectedJob.deadline)
+                  }
+                >
+                  {selectedJob?.deadline && isJobExpired(selectedJob.deadline)
+                    ? "Expired"
+                    : "Apply Now"}
+                </Button>
               </div>
             </div>
           ) : (
@@ -321,17 +352,16 @@ const JobListings = () => {
               No jobs found.
             </p>
           )}
-
-          {/* Application Modal */}
-          {selectedJob && (
-            <ApplicationModal
-              job={selectedJob}
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-            />
-          )}
         </Card>
       </section>
+
+      {selectedJob && (
+        <ApplicationModal
+          job={selectedJob}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
 
       <hr className="border-t border-gray-300 dark:border-gray-700" />
       <Footer />

@@ -54,7 +54,7 @@ export function Navbar() {
 
   return (
     <>
-      <nav className="bg-[#16423C] dark:bg-[#003865] shadow-md fixed w-full z-50 top-0 left-0">
+      <nav className="bg-[#16423C] shadow-md fixed w-full z-50 top-0 left-0">
         <div className="container mx-auto px-6 py-4 flex flex-wrap justify-between items-center gap-y-4 max-w-screen-xl">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
@@ -76,9 +76,9 @@ export function Navbar() {
                 key={link.path}
                 href={link.path}
                 className={clsx(
-                  "hover:text-blue-400 dark:hover:text-green-400 transition text-lg font-semibold whitespace-nowrap",
+                  "hover:text-blue-400 transition text-lg font-semibold whitespace-nowrap",
                   pathname === link.path
-                    ? "text-blue-400 dark:text-green-400"
+                    ? "text-blue-400"
                     : "text-white"
                 )}
               >
@@ -124,7 +124,7 @@ export function Navbar() {
             {/* Tools Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button className="text-black dark:text-white font-semibold bg-gray-200 hover:bg-gray-300 dark:bg-blue-600 dark:hover:bg-blue-500 transition px-4 min-w-[160px] flex items-center gap-2">
+                <Button className="text-black font-semibold bg-gray-200 hover:bg-gray-300 transition px-4 min-w-[160px] flex items-center gap-2">
                   <Wrench className="w-5 h-5" /> Tools
                 </Button>
               </DropdownMenuTrigger>

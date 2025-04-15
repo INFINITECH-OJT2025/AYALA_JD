@@ -1,5 +1,7 @@
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import ClientWrapper from "@/components/ClientWrapper"; // Import wrapper
+import ClientWrapper from "@/components/ClientWrapper";
+import SocialIcons from "@/components/common/SocialIcons";
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider
@@ -8,8 +10,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      
-      <ClientWrapper /> {/* Handles Toaster & Service Worker */}
+      <ClientWrapper />
+      <SocialIcons />
       {children}
     </ThemeProvider>
   );
