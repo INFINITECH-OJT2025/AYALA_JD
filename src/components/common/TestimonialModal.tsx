@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { sendTestimonial } from "@/lib/api";
+import { Megaphone } from "lucide-react";
 
 export default function TestimonialModal() {
   const [loading, setLoading] = useState(false);
@@ -52,9 +53,10 @@ export default function TestimonialModal() {
       <DialogTrigger asChild>
         <Button
           variant="success"
-          className="px-6 py-2 text-sm font-semibold"
+          className="px-6 py-2 text-md font-semibold"
             >
-          Can you share it with us?
+          Share your experience
+          <Megaphone/>
         </Button>
       </DialogTrigger>
 

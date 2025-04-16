@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import TestimonialDetailsModal from "./TestimonialDetailsModal";
 import { Skeleton } from "../ui/skeleton";
+import TestimonialModal from "./TestimonialModal";
 
 type Testimonial = {
   id: number;
@@ -31,9 +32,14 @@ export default function PublishedTestimonials() {
         const allTestimonials = await getTestimonials();
 
         const published = allTestimonials
-          .filter((testimonial: Testimonial) => testimonial.status === "published")
+          .filter(
+            (testimonial: Testimonial) => testimonial.status === "published"
+          )
           .sort((a: Testimonial, b: Testimonial) => {
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            return (
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+            );
           })
           .slice(0, 5);
 
@@ -56,13 +62,21 @@ export default function PublishedTestimonials() {
     <>
       <div className="py-4 bg-white dark:bg-black">
         <div className="container px-6 sm:px-6 lg:px-6">
-          <h2 className="text-4xl sm:text-4xl font-bold text-left text-gray-900 dark:text-white mb-2">
-            What Our Clients Say
-          </h2>
-          <p className="text-left text-lg text-gray-600 dark:text-gray-300 mb-4">
-            Hear from our satisfied clients about their experiences with our
-            services.
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+            <div>
+              <h2 className="text-4xl font-bold text-left text-gray-900 dark:text-white">
+                What Our Clients Say
+              </h2>
+              <p className="text-left text-lg text-gray-600 dark:text-gray-300">
+                Hear from our satisfied clients about their experiences with our
+                services.
+              </p>
+            </div>
+
+            <div>
+              <TestimonialModal />
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
             {loading
@@ -97,9 +111,7 @@ export default function PublishedTestimonials() {
                         alt={testimonial.name}
                         className="w-20 h-20 rounded-full object-cover border mb-3"
                       />
-                      <h3 className="font-semibold">
-                        {testimonial.name}
-                      </h3>
+                      <h3 className="font-semibold">{testimonial.name}</h3>
 
                       <div className="flex items-center justify-center mt-1">
                         {Array.from({ length: 5 }, (_, i) => (

@@ -77,7 +77,7 @@ export function NewsUpdates() {
         <div className="self-start md:self-auto">
           <a
             href="/landing/News"
-            className="inline-flex items-center px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-blue-700 transition"
+            className="inline-flex items-center px-6 py-2 bg-emerald-700 dark:bg-emerald-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-emerald-800 dark:hover:bg-emerald-700 transition"
           >
             See All News
             <FaArrowRight className="ml-2 rotate-45" />
