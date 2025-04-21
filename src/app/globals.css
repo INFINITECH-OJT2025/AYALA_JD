@@ -93,6 +93,22 @@ body {
   animation-timing-function: linear;
 }
 
+/* Example: styles/globals.css */
+.rcb-chat-button {
+  background-color: white !important;
+  padding: 8px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Resize the icon/logo inside the button */
+.rcb-chat-button img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+
 
 @layer base {
   * {

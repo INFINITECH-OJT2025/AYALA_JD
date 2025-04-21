@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import LayoutClient from "./layout-client";
 import { Toaster } from "sonner"; // ✅ Import from Sonner
+import ChatBotWidget from "@/components/landing-page/Chatbot";
 
 const fontSans = FontSans({
   subsets: ["latin"],

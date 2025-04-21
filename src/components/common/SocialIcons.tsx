@@ -104,12 +104,12 @@ export default function SocialIcons() {
   return (
     <>
       {/* Desktop View (always visible) */}
-      <div className="fixed top-1/3 right-4 z-50 hidden md:flex flex-col space-y-3">
+      <div className="fixed top-1/3 right-10 z-50 hidden md:flex flex-col space-y-3">
         {renderIcons()}
       </div>
   
       {/* Mobile View (toggle dropdown) */}
-      <div className="fixed bottom-4 right-4 z-50 md:hidden">
+      <div className="fixed bottom-28 right-9 z-50 md:hidden">
         <div className="flex flex-col items-end">
           {openMobile && (
             <div className="mb-2 flex flex-col-reverse space-y-reverse space-y-3 mr-1 items-end">
