@@ -61,7 +61,7 @@ export function NewsUpdates() {
       : news.filter((article) => article.category === selectedCategory);
 
   return (
-    <section className="py-12 px-6 bg-white dark:bg-black">
+    <section className="py-16 px-6 bg-white dark:bg-black">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
         {/* Title and Description (Left side) */}
         <div className="text-left">

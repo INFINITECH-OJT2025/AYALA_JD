@@ -60,7 +60,7 @@ export default function PublishedTestimonials() {
 
   return (
     <>
-      <div className="py-4 bg-white dark:bg-black">
+      <div className="py-16 bg-white dark:bg-black">
         <div className="container px-6 sm:px-6 lg:px-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
             <div>

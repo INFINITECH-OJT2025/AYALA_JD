@@ -95,7 +95,7 @@ export function FeaturedProperties() {
   }, []);
 
   return (
-<section className="bg-white dark:bg-black py-8">
+<section className="bg-white dark:bg-black py-16">
   <div className="container px-6 sm:px-6 lg:px-6">
     <div className="w-full mb-6">
       {/* Title and Description Section */}

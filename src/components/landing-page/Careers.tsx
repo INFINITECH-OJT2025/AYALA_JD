@@ -69,7 +69,7 @@ export function Careers() {
   const router = useRouter();
 
   return (
-    <section className="py-6 px-6 bg-white dark:bg-black">
+    <section className="py-16 px-6 bg-white dark:bg-black">
         <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 text-left mb-2">
           Join Our Team
         </h2>

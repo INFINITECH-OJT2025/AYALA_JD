@@ -27,7 +27,7 @@ export default function FAQSection() {
   };
 
   return (
-    <div className="w-full mt-10 bg-white dark:bg-black">
+    <div className="w-full py-16 bg-white dark:bg-black">
       {/* Title Section */}
       <h2 className="text-2xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
           Frequently Asked Questions
