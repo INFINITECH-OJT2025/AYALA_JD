@@ -77,9 +77,7 @@ export function Navbar() {
                 href={link.path}
                 className={clsx(
                   "hover:text-blue-400 transition text-lg font-semibold whitespace-nowrap",
-                  pathname === link.path
-                    ? "text-blue-400"
-                    : "text-white"
+                  pathname === link.path ? "text-blue-400" : "text-white"
                 )}
               >
                 {link.name}
@@ -132,6 +130,8 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link
                     href="/landing/loancalculator"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-2"
                   >
                     <Calculator className="w-5 h-5" /> Loan Calculator

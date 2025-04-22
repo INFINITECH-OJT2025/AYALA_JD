@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -54,6 +54,10 @@ export function LoanCalculator() {
     setMonthlyPayment(parseFloat(monthlyPay.toFixed(2)));
     setTotalLoanAmount(parseFloat(totalAmount.toFixed(2)));
   };
+
+  useEffect(() => {
+    calculateLoan();
+  }, [loanAmount, years, months, interestRate]);
   
   
   
@@ -139,14 +143,6 @@ export function LoanCalculator() {
           />
         </div>
       </div>
-
-      {/* Calculate Button */}
-      <Button
-        className="w-full mt-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
-        onClick={calculateLoan}
-      >
-        Calculate Loan
-      </Button>
 
       {/* Loan Details */}
       <div ref={pdfRef}>
