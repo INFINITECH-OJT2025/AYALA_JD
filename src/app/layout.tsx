@@ -4,7 +4,6 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import LayoutClient from "./layout-client";
 import { Toaster } from "sonner"; // ✅ Import from Sonner
-import ChatBotWidget from "@/components/landing-page/Chatbot";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,7 +28,7 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Toaster position="top-right" richColors /> {/* ✅ Fixed */}
+        <Toaster position="top-right" richColors />
         <LayoutClient>{children}</LayoutClient>
       </body>
     </html>

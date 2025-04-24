@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import ChatBot from 'react-chatbotify';
+import Chatbot from 'react-chatbotify';
 
 const MyChatBot: React.FC = () => {
   const [form, setForm] = useState<Record<string, any>>({});
@@ -23,14 +23,9 @@ const MyChatBot: React.FC = () => {
     },
     ask_interest: {
       message: (params: any) => `Nice to meet you, ${params.userInput}! What type of property are you interested in?`,
-      options: ["Condominium", "House and Lot", "Commercial Space", "Lot Only"],
+      options: ["Studio Type", "1BR", "2BR", "Loft", "Penthouse"],
       chatDisabled: true,
       function: (params: any) => setForm((prev) => ({ ...prev, property_interest: params.userInput })),
-      path: "ask_location",
-    },
-    ask_location: {
-      message: "Which location are you considering?",
-      function: (params: any) => setForm((prev) => ({ ...prev, preferred_location: params.userInput })),
       path: "ask_budget",
     },
     ask_budget: {
@@ -38,11 +33,6 @@ const MyChatBot: React.FC = () => {
       options: ["Below ₱2M", "₱2M - ₱5M", "₱5M - ₱10M", "Above ₱10M"],
       chatDisabled: true,
       function: (params: any) => setForm((prev) => ({ ...prev, budget: params.userInput })),
-      path: "ask_contact",
-    },
-    ask_contact: {
-      message: "Please provide your contact number or email so we can get in touch.",
-      function: (params: any) => setForm((prev) => ({ ...prev, contact: params.userInput })),
       path: "end",
     },
     end: {
@@ -51,9 +41,7 @@ const MyChatBot: React.FC = () => {
         <div style={formStyle}>
           <p><strong>Name:</strong> {form.name}</p>
           <p><strong>Property Interest:</strong> {form.property_interest}</p>
-          <p><strong>Preferred Location:</strong> {form.preferred_location}</p>
           <p><strong>Budget:</strong> {form.budget}</p>
-          <p><strong>Contact:</strong> {form.contact}</p>
         </div>
       ),
       options: ["Start New Inquiry"],
@@ -61,10 +49,11 @@ const MyChatBot: React.FC = () => {
       path: "start",
     },
   };
+  
 
   return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <ChatBot
+      <Chatbot
         flow={flow}
         settings={{
           chatHistory: { storageKey: "ayalaland_property_inquiry" },

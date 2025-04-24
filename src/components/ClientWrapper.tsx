@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect } from "react";
 
 export default function ClientWrapper() {
@@ -9,10 +8,11 @@ export default function ClientWrapper() {
       navigator.serviceWorker
         .register("/service-worker.js")
         .then(() => console.log("✅ Service Worker Registered"))
-        .catch((error) => console.error("❌ Service Worker Registration Failed:", error));
+        .catch((error) =>
+          console.error("❌ Service Worker Registration Failed:", error)
+        );
     }
   }, []);
 
-  return <></>
-
+  return <></>;
 }
