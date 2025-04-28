@@ -18,6 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import LoadingPage from "./LoadingPage";
 
 interface Service {
   id: number;
@@ -50,9 +51,7 @@ export function Services() {
   return (
 <section className="py-6 px-6 bg-white dark:bg-black">
   {loading ? (
-    <p className="text-center text-gray-500 dark:text-gray-300">
-      Loading services...
-    </p>
+   <LoadingPage/>
   ) : error ? (
     <p className="text-center text-red-500">{error}</p>
   ) : services.length > 0 ? (

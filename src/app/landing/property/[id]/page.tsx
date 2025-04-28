@@ -26,6 +26,7 @@ import {
 import Inquiry from "@/components/common/Inquiry";
 import Nearby from "@/components/common/Nearby";
 import FAQSection from "@/components/common/Faq";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Property {
   id: number;
@@ -114,14 +115,18 @@ export default function PropertyDetails() {
           <div className="relative">
             {property.property_image?.length ? (
               <>
-                {/* Thumbnail View */}
-                <img
-                  src={property.property_image[currentImageIndex]}
-                  alt={`Property ${currentImageIndex + 1}`}
-                  className="w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] object-cover rounded-lg cursor-pointer"
-                  onClick={() => openFullScreen(currentImageIndex)}
-                />
+                {/* Main Image or Skeleton */}
+                {!property.property_image[currentImageIndex] ? (
+                  <Skeleton className="w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] rounded-lg" />
+                ) : (
+                  <img
+                    src={property.property_image[currentImageIndex]}
+                    className="w-full h-[50vh] sm:h-[60vh] lg:h-[70vh] object-cover rounded-lg cursor-pointer"
+                    onClick={() => openFullScreen(currentImageIndex)}
+                  />
+                )}
 
+                {/* Location Badge */}
                 <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-md flex items-center gap-1 text-sm sm:text-base shadow-md">
                   <FaMapMarkerAlt className="text-red-400" />
                   <a
@@ -169,7 +174,6 @@ export default function PropertyDetails() {
                       className="max-w-full max-h-full object-contain"
                     />
 
-                    {/* Close Button */}
                     <button
                       className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black"
                       onClick={closeFullScreen}
@@ -177,7 +181,6 @@ export default function PropertyDetails() {
                       <X className="w-6 h-6" />
                     </button>
 
-                    {/* Full Screen Navigation */}
                     <button
                       className="absolute top-1/2 left-4 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black"
                       onClick={() =>
@@ -211,21 +214,37 @@ export default function PropertyDetails() {
             )}
           </div>
 
-          {/* Image Thumbnails */}
+          {/* Thumbnail Section */}
           <div className="flex justify-center space-x-2 mt-4 overflow-x-auto">
-            {property.property_image?.map((src, index) => (
-              <img
-                key={index}
-                src={src}
-                alt={`Thumbnail ${index + 1}`}
-                className={`w-16 sm:w-20 h-12 sm:h-14 object-cover rounded-lg cursor-pointer border-2 ${
-                  currentImageIndex === index
-                    ? "border-blue-500"
-                    : "border-gray-300 dark:border-gray-600"
-                }`}
-                onClick={() => setCurrentImageIndex(index)}
-              />
-            ))}
+            {property.property_image?.length ? (
+              property.property_image.map((src, index) => (
+                <div key={index}>
+                  {!src ? (
+                    <Skeleton className="w-16 sm:w-20 h-12 sm:h-14 rounded-lg" />
+                  ) : (
+                    <img
+                      src={src}
+                      className={`w-16 sm:w-20 h-12 sm:h-14 object-cover rounded-lg cursor-pointer border-2 ${
+                        currentImageIndex === index
+                          ? "border-blue-500"
+                          : "border-gray-300 dark:border-gray-600"
+                      }`}
+                      onClick={() => setCurrentImageIndex(index)}
+                    />
+                  )}
+                </div>
+              ))
+            ) : (
+              <>
+                {/* Skeletons while loading thumbnails */}
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    className="w-16 sm:w-20 h-12 sm:h-14 rounded-lg"
+                  />
+                ))}
+              </>
+            )}
           </div>
 
           {/* Property Details */}

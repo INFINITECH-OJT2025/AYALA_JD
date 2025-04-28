@@ -3,7 +3,8 @@ import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import LayoutClient from "./layout-client";
-import { Toaster } from "sonner"; // ✅ Import from Sonner
+import { Toaster } from "sonner";
+import LoadingSection from "@/components/common/LoadingSection"; // ✅ Import
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -28,8 +29,10 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Toaster position="top-right" richColors />
-        <LayoutClient>{children}</LayoutClient>
+        <LoadingSection> {/* ✅ Wrap everything inside */}
+          <Toaster position="top-right" richColors />
+          <LayoutClient>{children}</LayoutClient>
+        </LoadingSection>
       </body>
     </html>
   );

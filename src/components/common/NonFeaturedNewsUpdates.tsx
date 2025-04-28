@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import LoadingPage from "./LoadingPage";
 
 interface NewsItem {
   id: number;
@@ -59,7 +60,12 @@ export function NonFeaturedNewsUpdates() {
 
   return (
     <section className="py-4 px-6 bg-white dark:bg-black">
-
+    {loading ? (
+      <div className="flex justify-center items-center py-12">
+        <LoadingPage />
+      </div>
+    ) : (
+      <>
         {/* Category Buttons - Responsive */}
         <div className="mb-6">
           {/* Mobile Dropdown */}
@@ -71,7 +77,7 @@ export function NonFeaturedNewsUpdates() {
               {selectedCategory || "Select Category"}
               <span className="ml-2">{dropdownOpen ? "▲" : "▼"}</span>
             </button>
-
+  
             {dropdownOpen && (
               <div className="absolute w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg z-10">
                 {categories.map((category) => (
@@ -93,7 +99,7 @@ export function NonFeaturedNewsUpdates() {
               </div>
             )}
           </div>
-
+  
           {/* Desktop Buttons */}
           <div className="hidden sm:flex flex-wrap justify-center gap-2">
             {categories.map((category) => (
@@ -111,10 +117,9 @@ export function NonFeaturedNewsUpdates() {
             ))}
           </div>
         </div>
-
+  
         {/* Content Handling */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-
           {filteredNews.map((article) => (
             <Card
               key={article.id}
@@ -134,7 +139,7 @@ export function NonFeaturedNewsUpdates() {
                   className="w-full h-40 object-cover rounded-md"
                 />
               )}
-
+  
               {/* Title and Metadata */}
               <CardHeader className="mb-2">
                 <CardTitle className="text-lg font-semibold truncate">
@@ -149,14 +154,14 @@ export function NonFeaturedNewsUpdates() {
                   })}
                 </p>
               </CardHeader>
-
+  
               {/* Description */}
               <CardContent className="flex-grow">
                 <p className="text-gray-600 dark:text-gray-300 line-clamp-3">
                   {article.content}
                 </p>
               </CardContent>
-
+  
               {/* Read More Button */}
               <div className="mt-auto">
                 <Button
@@ -170,45 +175,49 @@ export function NonFeaturedNewsUpdates() {
             </Card>
           ))}
         </div>
-
-      {selectedNews && (
-        <Dialog
-          open={!!selectedNews}
-          onOpenChange={() => setSelectedNews(null)}
-        >
-          <DialogContent className="max-w-2xl h-[80vh] flex flex-col">
-            <DialogHeader>
-              <DialogTitle>{selectedNews.title}</DialogTitle>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {selectedNews.category} •{" "}
-                {new Date(selectedNews.created_at).toLocaleDateString()}
-              </p>
-            </DialogHeader>
-
-            {selectedNews.image && (
-              <Image
-                src={
-                  selectedNews.image.startsWith("http")
-                    ? selectedNews.image
-                    : `/storage/news_images/${selectedNews.image}`
-                }
-                alt={selectedNews.title}
-                width={800}
-                height={400}
-                className="w-full h-64 object-cover rounded-md mb-4"
-              />
-            )}
-
-            <div className="flex-1 overflow-y-auto max-h-[40vh] p-2">
-              <p className="text-gray-700 dark:text-gray-300 text-justify">
-                {selectedNews.content}
-              </p>
-            </div>
-
-            <DialogFooter></DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
-    </section>
+  
+        {/* Dialog for News Details */}
+        {selectedNews && (
+          <Dialog
+            open={!!selectedNews}
+            onOpenChange={() => setSelectedNews(null)}
+          >
+            <DialogContent className="max-w-2xl h-[80vh] flex flex-col">
+              <DialogHeader>
+                <DialogTitle>{selectedNews.title}</DialogTitle>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {selectedNews.category} •{" "}
+                  {new Date(selectedNews.created_at).toLocaleDateString()}
+                </p>
+              </DialogHeader>
+  
+              {selectedNews.image && (
+                <Image
+                  src={
+                    selectedNews.image.startsWith("http")
+                      ? selectedNews.image
+                      : `/storage/news_images/${selectedNews.image}`
+                  }
+                  alt={selectedNews.title}
+                  width={800}
+                  height={400}
+                  className="w-full h-64 object-cover rounded-md mb-4"
+                />
+              )}
+  
+              <div className="flex-1 overflow-y-auto max-h-[40vh] p-2">
+                <p className="text-gray-700 dark:text-gray-300 text-justify">
+                  {selectedNews.content}
+                </p>
+              </div>
+  
+              <DialogFooter />
+            </DialogContent>
+          </Dialog>
+        )}
+      </>
+    )}
+  </section>
+  
   );
 }

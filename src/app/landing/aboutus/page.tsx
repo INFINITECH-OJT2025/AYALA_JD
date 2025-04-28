@@ -6,6 +6,7 @@ import { fetchAboutUsContent } from "@/lib/api";
 import { NewsUpdates } from "@/components/landing-page/NewsUpdates";
 import { WhyChooseUs } from "@/components/landing-page/Whychooseus";
 import { Button } from "@/components/ui/button";
+import LoadingSection from "@/components/common/LoadingSection";
 
 export default function AboutUsPage() {
   const [aboutUs, setAboutUs] = useState<any>(null);
@@ -20,7 +21,7 @@ export default function AboutUsPage() {
     getContent();
   }, []);
 
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <LoadingSection/> ;
 
   return (
     <>

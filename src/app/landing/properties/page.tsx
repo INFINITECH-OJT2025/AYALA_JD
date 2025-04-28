@@ -21,6 +21,7 @@ import ComparisonModal from "@/components/common/ComparisonModal"; // Adjust pat
 import { Property } from "@/components/types/property";
 import { Eye } from "lucide-react"; // Import the eye icon
 import { Card } from "@/components/ui/card";
+import LoadingPage from "@/components/common/LoadingPage";
 
 export default function FeaturedProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -210,7 +211,7 @@ export default function FeaturedProperties() {
           {/* ✅ Show Loading Spinner if Data is Loading */}
           {loading ? (
             <div className="flex justify-center items-center mt-6">
-              <Loader2 className="animate-spin w-10 h-10 text-green-600 dark:text-green-400" />
+              <LoadingPage/>
             </div>
           ) : (
             <div className="grid md:grid-cols-5 gap-6 mt-6">

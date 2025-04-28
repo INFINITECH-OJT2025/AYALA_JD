@@ -74,7 +74,7 @@ export function NewsUpdates() {
         </div>
 
         {/* "See All News" Button (Right side) */}
-        <div className="self-start md:self-auto">
+        {/* <div className="self-start md:self-auto">
           <a
             href="/landing/News"
             className="inline-flex items-center px-6 py-2 bg-emerald-700 dark:bg-emerald-600 text-white text-sm font-semibold rounded-md shadow-md hover:bg-emerald-800 dark:hover:bg-emerald-700 transition"
@@ -82,7 +82,7 @@ export function NewsUpdates() {
             See All News
             <FaArrowRight className="ml-2 rotate-45" />
           </a>
-        </div>
+        </div> */}
       </div>
 
       {loading ? (

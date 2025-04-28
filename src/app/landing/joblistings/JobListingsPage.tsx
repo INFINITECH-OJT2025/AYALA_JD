@@ -32,6 +32,7 @@ import { ChevronsUpDown } from "lucide-react";
 import { format } from "date-fns"; // ✅ Import date formatting
 import { useSearchParams } from "next/navigation"; // ✅ Import Next.js hook
 import { Card } from "@/components/ui/card";
+import LoadingPage from "@/components/common/LoadingPage";
 const JobListings = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [selectedJob, setSelectedJob] = useState<any | null>(null);
@@ -143,7 +144,7 @@ const JobListings = () => {
         <Card className="max-w-6xl mx-auto px-0 overflow-hidden">
           {loading ? (
             <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
+              <LoadingPage/>
             </div>
           ) : error ? (
             <p className="text-center text-red-500">{error}</p>
