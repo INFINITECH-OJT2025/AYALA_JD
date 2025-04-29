@@ -88,7 +88,8 @@ export function DownloadPDF({ targetRef, loanDetails }: DownloadPDFProps) {
   return (
     <Button
       onClick={downloadPDF}
-      className="w-full mt-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+      className="w-full mt-4"
+      variant="success"
     >
       Download Table as PDF
     </Button>

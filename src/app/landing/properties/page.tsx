@@ -122,8 +122,8 @@ export default function FeaturedProperties() {
         </div>
       </div>
 
-      <section className="bg-white dark:bg-black py-6">
-        <div className="container mx-auto px-6">
+      <section className="bg-white dark:bg-black py-6 w-full">
+        <div className="px-6 sm:px-6 lg:px-6 max-w-full">
           <div className="bg-white dark:bg-[#18181a] p-6 rounded-lg shadow-lg flex flex-col md:flex-row gap-4 items-center">
             <input
               type="text"
@@ -211,7 +211,7 @@ export default function FeaturedProperties() {
           {/* ✅ Show Loading Spinner if Data is Loading */}
           {loading ? (
             <div className="flex justify-center items-center mt-6">
-              <LoadingPage/>
+              <LoadingPage />
             </div>
           ) : (
             <div className="grid md:grid-cols-5 gap-6 mt-6">

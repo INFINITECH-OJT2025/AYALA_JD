@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
+import { Skeleton } from "../ui/skeleton";
 
 interface NewsItem {
   id: number;
@@ -31,6 +32,7 @@ export function NewsUpdates() {
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   useEffect(() => {
     const getNews = async () => {
@@ -93,24 +95,31 @@ export function NewsUpdates() {
         <p className="text-center text-red-500">{error}</p>
       ) : filteredNews.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-
           {filteredNews.map((article) => (
             <Card
               key={article.id}
               className="p-4 shadow-md dark:shadow-lg bg-white dark:bg-[#18181a] hover:shadow-lg dark:hover:shadow-xl transition flex flex-col h-full"
             >
               {article.image && (
-                <Image
-                  src={
-                    article.image.startsWith("http")
-                      ? article.image
-                      : `/storage/news_images/${article.image}`
-                  }
-                  alt={article.title}
-                  width={500}
-                  height={300}
-                  className="w-full h-40 object-cover rounded-lg block hover:scale-105 transition-transform duration-300"
-                />
+                <div className="relative w-full h-40 mb-4">
+                  {!imageLoaded && (
+                    <Skeleton className="w-full h-40 rounded-lg absolute top-0 left-0" />
+                  )}
+                  <Image
+                    src={
+                      article.image.startsWith("http")
+                        ? article.image
+                        : `/storage/news_images/${article.image}`
+                    }
+                    alt={article.title}
+                    width={500}
+                    height={300}
+                    className={`w-full h-40 object-cover rounded-lg block hover:scale-105 transition-transform duration-300 ${
+                      imageLoaded ? "opacity-100" : "opacity-0"
+                    }`}
+                    onLoad={() => setImageLoaded(true)}
+                  />
+                </div>
               )}
 
               {/* ✅ Title & Date are aligned properly */}
